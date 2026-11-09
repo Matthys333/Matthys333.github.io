@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCG L2 - Authentification</title>
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+    <div class="auth-container">
+        <h1 class="logo">TCG <span>L2 INFO</span></h1>
+
+        <!-- Formulaire de Connexion -->
+        <form id="login-form" class="auth-form active">
+            <h2>Connexion</h2>
+            <div class="input-group">
+                <label for="login-username">Identifiant (Nom)</label>
+                <input type="text" id="login-username" required placeholder="ex: Matthys">
+            </div>
+            <div class="input-group">
+                <label for="login-password">Mot de passe</label>
+                <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-primary">Se connecter</button>
+            <p class="switch-msg">Pas encore de compte ? <a href="#" id="show-register">Créer un compte</a></p>
+        </form>
+
+        <!-- Formulaire d'Inscription -->
+        <form id="register-form" class="auth-form hidden">
+            <h2>Inscription</h2>
+            <div class="input-group">
+                <label for="reg-username">Identifiant (Nom)</label>
+                <input type="text" id="reg-username" required placeholder="ex: Matthys">
+            </div>
+            <div class="input-group">
+                <label for="reg-password">Mot de passe</label>
+                <input type="password" id="reg-password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn-success">Créer le compte</button>
+            <p class="switch-msg">Déjà inscrit ? <a href="#" id="show-login">Se connecter</a></p>
+        </form>
+
+        <div id="status-message" class="message"></div>
+    </div>
+
+    <script>
+        // Bascule entre Formulaire de Connexion et Inscription
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const statusMsg = document.getElementById('status-message');
+
+        document.getElementById('show-register').onclick = (e) => {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            statusMsg.textContent = '';
+        };
+
+        document.getElementById('show-login').onclick = (e) => {
+            e.preventDefault();
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            statusMsg.textContent = '';
+        };
+
+        // Inscription
+        registerForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+
+            const res = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            statusMsg.textContent = data.message;
+            statusMsg.className = res.ok ? 'message success' : 'message error';
+        };
+
+        // Connexion
+        loginForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                statusMsg.className = 'message success';
+                statusMsg.textContent = `Bienvenue ${data.username} ! Redirection...`;
+                // Sauvegarde de la session locale simple
+                localStorage.setItem('user', JSON.stringify(data));
+                setTimeout(() => window.location.href = '/board.html', 1500);
+            } else {
+                statusMsg.className = 'message error';
+                statusMsg.textContent = data.message;
+            }
+        };
+    </script>
+</body>
+</html>

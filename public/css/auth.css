@@ -1,0 +1,100 @@
+:root {
+    --bg-color: #1e1e1e;
+    --card-bg: #252526;
+    --input-bg: #3c3c3c;
+    --text-color: #cccccc;
+    --accent-blue: #007acc;
+    --accent-green: #4ec9b0;
+    --error-color: #f44747;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.auth-container {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    width: 320px;
+    border: 1px solid #333;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.logo span {
+    color: var(--accent-blue);
+}
+
+.auth-form h2 {
+    margin-top: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: var(--input-bg);
+    border: 1px solid #555;
+    color: #fff;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 0.6rem;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.btn-primary { background-color: var(--accent-blue); }
+.btn-success { background-color: var(--accent-green); color: #1e1e1e; }
+
+.hidden { display: none; }
+
+.switch-msg {
+    font-size: 0.8rem;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.switch-msg a {
+    color: var(--accent-blue);
+    text-decoration: none;
+}
+
+.message {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    text-align: center;
+}
+.message.success { color: var(--accent-green); }
+.message.error { color: var(--error-color); }

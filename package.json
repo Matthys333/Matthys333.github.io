@@ -1,0 +1,24 @@
+{
+  "name": "matthys333.github.io",
+  "version": "1.0.0",
+  "description": "Il contiendra :         - Une partie dans laquelle l'utilisateur pourra se connecter à son compte         - Des cartes à tirer avec le temps         - Des boosters de 5 cartes         - Un marché pour trade entre les utilisateurs         - Un système d'évolutions des cartes en fonction de ses réussites (on verra les critères après)         - Une vitrine que les utilisateurs pourront se servir pour exhiber leurs meilleures cartes",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matthys333/Matthys333.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Matthys333/Matthys333.github.io/issues"
+  },
+  "homepage": "https://github.com/Matthys333/Matthys333.github.io#readme",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
