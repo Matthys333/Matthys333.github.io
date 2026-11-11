@@ -96,9 +96,14 @@
             if (res.ok) {
                 statusMsg.className = 'message success';
                 statusMsg.textContent = `Bienvenue ${data.username} ! Redirection...`;
-                // Sauvegarde de la session locale simple
-                localStorage.setItem('user', JSON.stringify(data));
-                setTimeout(() => window.location.href = '/board.html', 1500);
+                
+                // Sauvegarde des clés de session attendues par index.html
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', data.username);
+                localStorage.setItem('ects', '60'); // Valeur par défaut pour l'affichage
+
+                // Redirection vers le tableau de bord
+                setTimeout(() => window.location.href = '/index.html', 1500);
             } else {
                 statusMsg.className = 'message error';
                 statusMsg.textContent = data.message;
