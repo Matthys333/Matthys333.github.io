@@ -1,0 +1,320 @@
+:root {
+  --bg-main: #0b0e14;
+  --bg-topbar: #121821;
+  --bg-subbar: #161f2c;
+  --border-color: #212d3d;
+  --text-main: #e6edf3;
+  --text-muted: #8b949e;
+  --accent-blue: #388bfd;
+  --accent-cyan: #58a6ff;
+  --accent-glow: rgba(56, 139, 253, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Barre de navigation principale */
+.top-nav {
+  background-color: var(--bg-topbar);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  height: 60px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.brand-logo {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--accent-cyan);
+  letter-spacing: 1px;
+}
+
+.main-menu {
+  display: flex;
+  gap: 25px;
+}
+
+.main-menu a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+
+.main-menu a:hover, .main-menu a.active {
+  color: var(--text-main);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  background-color: #21262d;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--border-color);
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid #f85149;
+  color: #f85149;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-logout:hover {
+  background-color: rgba(248, 81, 73, 0.15);
+}
+
+/* Sous-barre de navigation secondaire */
+.sub-nav {
+  background-color: var(--bg-subbar);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+  height: 50px;
+}
+
+.sub-menu-items {
+  display: flex;
+  gap: 30px;
+}
+
+.sub-item {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+
+.sub-item:hover, .sub-item.active {
+  color: var(--text-main);
+}
+
+.sub-item .dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-blue);
+  border-radius: 50%;
+  display: none;
+}
+
+.sub-item.active .dot {
+  display: inline-block;
+}
+
+.currency-badge {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Contenu Principal - Section Boosters */
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.booster-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.hero-header .subtitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+}
+
+.title-glow {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 0 30px var(--accent-glow);
+  letter-spacing: 1px;
+  margin-top: 5px;
+}
+
+/* Effet de pile de boosters 3D */
+.booster-display-area {
+  position: relative;
+  width: 260px;
+  height: 380px;
+  margin: 10px 0;
+}
+
+.booster-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.booster-card {
+  position: absolute;
+  width: 240px;
+  height: 350px;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+  border: 2px solid var(--accent-blue);
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.layer-3 {
+  top: 0;
+  left: 20px;
+  transform: scale(0.9) rotate(4deg);
+  opacity: 0.5;
+  filter: brightness(0.6);
+}
+
+.layer-2 {
+  top: 0;
+  left: 10px;
+  transform: scale(0.95) rotate(-3deg);
+  opacity: 0.75;
+  filter: brightness(0.8);
+}
+
+.layer-1 {
+  top: 0;
+  left: 0;
+  transform: scale(1) rotate(0deg);
+  z-index: 3;
+  box-shadow: 0 20px 40px var(--accent-glow);
+}
+
+.booster-badge {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background-color: var(--accent-blue);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.booster-brand {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  font-weight: bold;
+  text-align: center;
+}
+
+.booster-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.booster-info {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 12px;
+}
+
+/* Bouton d'action */
+.btn-open-booster {
+  background-color: var(--accent-blue);
+  color: white;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 5px 20px var(--accent-glow);
+  transition: all 0.2s ease;
+  display: inline-block;
+  font-family: 'Fira Code', monospace;
+}
+
+.btn-open-booster:hover {
+  background-color: #2b70e6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(56, 139, 253, 0.4);
+}
