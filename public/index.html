@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  
+  <!-- Script de vérification de session -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html" class="active">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation secondaire (style de la capture) -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item active"><span class="dot"></span> ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item">📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ects-display">60</span> ECTS
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content">
+      <section class="booster-hero">
+        <div class="hero-header">
+          <span class="subtitle">TES BOOSTERS</span>
+          <h1 class="title-glow">4 À OUVRIR</h1>
+        </div>
+
+        <!-- Visuel des boosters en cascade -->
+        <div class="booster-display-area">
+          <div class="booster-stack">
+            <div class="booster-card layer-3"></div>
+            <div class="booster-card layer-2"></div>
+            <div class="booster-card layer-1">
+              <div class="booster-brand">L2 INFO TCG</div>
+              <div class="booster-title">BOOSTER GRATUIT</div>
+              <div class="booster-info">5 CARTES • RARE GARANTIE</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-container">
+          <a href="shop.html" class="btn-open-booster">
+            OUVRIR UN PAQUET ($ exec open.sh)
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Script dynamique -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const username = localStorage.getItem('username') || 'Étudiant';
+      const ects = localStorage.getItem('ects') || '60';
+
+      document.getElementById('username-display').textContent = username;
+      document.getElementById('ects-display').textContent = ects;
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('username');
+        localStorage.removeItem('ects');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>
