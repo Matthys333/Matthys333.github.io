@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Collection</title>
+  <link rel="stylesheet" href="css/card.css">
+  <style>
+    /* Grille de cartes adaptative */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    /* Style Carte Full-Art */
+    .tcg-card {
+      position: relative;
+      width: 240px;
+      height: 350px;
+      background-color: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s, border-color 0.2s;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .tcg-card:hover {
+      transform: translateY(-5px);
+      border-color: #58a6ff;
+      box-shadow: 0 15px 35px rgba(88, 166, 255, 0.4);
+    }
+
+    /* L'image commence sous la ligne pointillée (environ 55px du haut) */
+    .card-bg-image {
+      position: absolute;
+      top: 30px; 
+      left: 0;
+      width: 100%;
+      height: calc(100% - 55px);
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    /* Fond noir uni et net pour l'en-tête, s'arrête net aux pointillés */
+    .card-header-info {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d1117;
+      border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+      padding-bottom: 8px;
+      margin: -15px -15px 0 -15px;
+      padding: 15px 15px 8px 15px;
+    }
+
+    /* Dégradé sombre uniquement en BAS pour faire ressortir les stats et la description */
+    .tcg-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 40%, rgba(13, 17, 23, 0.5) 75%, transparent);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Les éléments du bas passent au premier plan */
+    .card-stats, .card-desc {
+      position: relative;
+      z-index: 3;
+    }
+
+    .card-name {
+      font-size: 1,05rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .card-rarity {
+      font-size: 0,65rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background-color: rgba(188, 140, 255, 0.25);
+      color: #bc8cff;
+      border: 1px solid #bc8cff;
+      font-weight: bold;
+    }
+
+    .card-stats {
+      display: flex;
+      justify-content: space-between;
+      background-color: rgba(13, 17, 23, 0,75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0,75rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-cafe { color: #ffbd2e; font-weight: bold; }
+    .stat-ects { color: #58a6ff; font-weight: bold; }
+
+    .card-desc {
+      font-size: 0,65rem;
+      color: #c9d1d9;
+      font-style: italic;
+      line-height: 1.3;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    }
+  </style>
+
+  <!-- Vérification de session -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html" class="active">COLLECTION</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item">ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item active"><span class="dot"></span> 📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ects-display">60</span> ECTS
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content" style="flex-direction: column; align-items: flex-start; padding: 40px; justify-content: flex-start;">
+      <h1>// COLLECTION DE CARTES</h1>
+      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Consultez la base de données des cartes disponibles.</p>
+
+      <!-- Grille dynamique -->
+      <div id="cards-grid" class="cards-grid">
+        <p style="color: #8b949e;">Chargement des cartes en cours...</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script de chargement dynamique -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Affichage des infos utilisateur
+      document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
+      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+
+      try {
+        // Récupération des cartes depuis l'API Node.js
+        const response = await fetch('/api/cards');
+        const cards = await response.json();
+        
+        const grid = document.getElementById('cards-grid');
+        grid.innerHTML = '';
+
+        if (!cards || cards.length === 0) {
+          grid.innerHTML = '<p style="color: #8b949e;">Aucune carte enregistrée pour le moment.</p>';
+          return;
+        }
+
+        // Génération dynamique de chaque carte
+        cards.forEach(card => {
+          const cardEl = document.createElement('div');
+          cardEl.className = 'tcg-card';
+          cardEl.innerHTML = `
+            <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+            <div class="card-header-info">
+              <span class="card-name">${card.nom}</span>
+              <span class="card-rarity">${card.rarete ? card.rarete.toUpperCase() : 'COMMUN'}</span>
+            </div>
+            <div class="card-stats">
+              <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+              <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+            </div>
+            <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+          `;
+          grid.appendChild(cardEl);
+        });
+
+      } catch (error) {
+        console.error('Erreur lors du chargement des cartes:', error);
+        document.getElementById('cards-grid').innerHTML = '<p style="color: #f85149;">Erreur lors de la récupération des cartes depuis le serveur.</p>';
+      }
+
+      // Gestion de la déconnexion
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('username');
+        localStorage.removeItem('ects');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>
