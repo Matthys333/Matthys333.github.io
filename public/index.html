@@ -35,7 +35,7 @@
       </div>
     </header>
 
-    <!-- Sous-barre de navigation secondaire (style de la capture) -->
+    <!-- Sous-barre de navigation secondaire -->
     <div class="sub-nav">
       <div class="sub-menu-items">
         <a href="index.html" class="sub-item active"><span class="dot"></span> ACCUEIL</a>
@@ -57,16 +57,17 @@
     <main class="main-content">
       <section class="booster-hero">
         <div class="hero-header">
-          <span class="subtitle">TES BOOSTERS</span>
-          <h1 class="title-glow">4 À OUVRIR</h1>
+          <span class="subtitle" id="timer-status">PROCHAIN BOOSTER DANS : 10:00</span>
+          <h1 class="title-glow" id="booster-title-count">0 À OUVRIR</h1>
         </div>
 
-        <!-- Visuel des boosters en cascade -->
+        <!-- Visuel des boosters -->
         <div class="booster-display-area">
           <div class="booster-stack">
             <div class="booster-card layer-3"></div>
             <div class="booster-card layer-2"></div>
             <div class="booster-card layer-1">
+              <div class="booster-badge" id="booster-badge-count">x0</div>
               <div class="booster-brand">L2 INFO TCG</div>
               <div class="booster-title">BOOSTER GRATUIT</div>
               <div class="booster-info">5 CARTES • RARE GARANTIE</div>
@@ -74,23 +75,147 @@
           </div>
         </div>
 
-        <div class="action-container">
-          <a href="shop.html" class="btn-open-booster">
-            OUVRIR UN PAQUET ($ exec open.sh)
-          </a>
+        <!-- Boutons d'ouverture -->
+        <div class="action-container" style="display: flex; gap: 15px; justify-content: center;">
+          <button id="btn-open-one" class="btn-open-booster">OUVRIR 1 BOOSTER</button>
+          <button id="btn-open-all" class="btn-open-booster btn-secondary-action">TOUT OUVRIR</button>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- Script dynamique -->
+  <!-- Script de gestion du Compteur persistant (fermeture de page incluse) -->
+  <!-- Script de gestion du Compteur persistant (Corrigé) -->
   <script>
+    const TIMER_DURATION = 10 * 60 * 1000; // 10 minutes
+    const MAX_BOOSTERS = 6;
+
+    // 1. Initialisation unique au tout premier lancement
+    if (localStorage.getItem('boosterCount') === null) {
+      localStorage.setItem('boosterCount', '4');
+    }
+    if (localStorage.getItem('lastTimestamp') === null) {
+      localStorage.setItem('lastTimestamp', Date.now().toString());
+    }
+
+    // 2. Calcul du temps écoulé (y compris pendant la fermeture de la page)
+    function calculateOfflineProgress() {
+      let count = parseInt(localStorage.getItem('boosterCount'), 10);
+      let lastTimestamp = parseInt(localStorage.getItem('lastTimestamp'), 10);
+      let now = Date.now();
+
+      // Si la clé timestamp a été perdue, on la recrée sans réinitialiser si possible
+      if (isNaN(lastTimestamp)) {
+        lastTimestamp = now;
+        localStorage.setItem('lastTimestamp', now.toString());
+      }
+
+      // Si on est déjà au max, pas de calcul de progression
+      if (count >= MAX_BOOSTERS) {
+        return;
+      }
+
+      let elapsed = now - lastTimestamp;
+
+      if (elapsed >= TIMER_DURATION) {
+        let boostersGained = Math.floor(elapsed / TIMER_DURATION);
+        count += boostersGained;
+
+        if (count >= MAX_BOOSTERS) {
+          count = MAX_BOOSTERS;
+          // Bloque le timestamp au moment exact où le max est atteint
+          localStorage.setItem('lastTimestamp', now.toString());
+        } else {
+          // Décale le timestamp du nombre exact de tranches de 10 min écoulées
+          let newTimestamp = lastTimestamp + (boostersGained * TIMER_DURATION);
+          localStorage.setItem('lastTimestamp', newTimestamp.toString());
+        }
+
+        localStorage.setItem('boosterCount', count.toString());
+      }
+    }
+
+    function updateUI() {
+      const count = parseInt(localStorage.getItem('boosterCount'), 10);
+      document.getElementById('booster-title-count').textContent = `${count} À OUVRIR`;
+      document.getElementById('booster-badge-count').textContent = `x${count}`;
+
+      const btnOne = document.getElementById('btn-open-one');
+      const btnAll = document.getElementById('btn-open-all');
+      
+      btnOne.disabled = count === 0;
+      btnAll.disabled = count === 0;
+      btnOne.style.opacity = count === 0 ? '0.5' : '1';
+      btnAll.style.opacity = count === 0 ? '0.5' : '1';
+    }
+
+    function tick() {
+      let count = parseInt(localStorage.getItem('boosterCount'), 10);
+      let lastTimestamp = parseInt(localStorage.getItem('lastTimestamp'), 10);
+      let now = Date.now();
+
+      if (count >= MAX_BOOSTERS) {
+        document.getElementById('timer-status').textContent = 'STOCK MAX ATTEINT (6/6)';
+        return;
+      }
+
+      let elapsed = now - lastTimestamp;
+      let remaining = TIMER_DURATION - elapsed;
+
+      // Si le temps est dépassé pendant qu'on regarde la page
+      if (remaining <= 0) {
+        calculateOfflineProgress();
+        updateUI();
+      } else {
+        const minutes = Math.floor(remaining / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+        document.getElementById('timer-status').textContent = 
+          `PROCHAIN BOOSTER DANS : ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+    }
+
+    // Ouvrir 1 booster
+    document.getElementById('btn-open-one').addEventListener('click', () => {
+      let count = parseInt(localStorage.getItem('boosterCount'), 10);
+      if (count > 0) {
+        // Si on était au max (6), relance du chrono au moment exact de l'ouverture
+        if (count >= MAX_BOOSTERS) {
+          localStorage.setItem('lastTimestamp', Date.now().toString());
+        }
+        count--;
+        localStorage.setItem('boosterCount', count.toString());
+        updateUI();
+        tick();
+        alert("Booster ouvert !");
+      }
+    });
+
+    // Tout ouvrir
+    document.getElementById('btn-open-all').addEventListener('click', () => {
+      let count = parseInt(localStorage.getItem('boosterCount'), 10);
+      if (count > 0) {
+        const opened = count;
+        // Relance du chrono dès que la place se libère
+        localStorage.setItem('boosterCount', '0');
+        localStorage.setItem('lastTimestamp', Date.now().toString());
+        updateUI();
+        tick();
+        alert(`Vous avez ouvert vos ${opened} boosters !`);
+      }
+    });
+
+    // Démarrage
     document.addEventListener('DOMContentLoaded', () => {
       const username = localStorage.getItem('username') || 'Étudiant';
       const ects = localStorage.getItem('ects') || '60';
 
       document.getElementById('username-display').textContent = username;
       document.getElementById('ects-display').textContent = ects;
+
+      calculateOfflineProgress();
+      updateUI();
+      tick();
+      setInterval(tick, 1000);
 
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
