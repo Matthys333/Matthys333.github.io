@@ -1,0 +1,6 @@
+DEFINITION DE LA CARTE :
+    - Un rareté (qui évoluera par la suite)
+    - Un rang d'apparition
+    - Le nom de la personne
+    - Une image
+    - Une valeur de base
