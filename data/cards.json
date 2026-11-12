@@ -1,0 +1,43 @@
+[
+  {
+    "id": "card_001",
+    "nom": "Dyclane",
+    "role": "Le fou",
+    "rarete": "Pue la merde",
+    "rangApparition": 1,
+    "image": "Image_TCG/cards/Dyclane.png",
+    "stats": {
+      "cafe": 4,
+      "ects": 10
+    },
+    "description": "14h de Genshin d'affilé"
+  },
+  {
+    "id": "card_002",
+    "nom": "Victor",
+    "role": "Malade mental",
+    "rarete": "Rare",
+    "rangApparition": 1,
+    "image": "Image_TCG/cards/Victor_1.png",
+    "stats": {
+      "cafe": 550,
+      "ects": 10
+    },
+    "description": "Toujours pas mort de crise cardiaque"
+  },
+  
+  
+  {
+    "id": "card_003",
+    "nom": "Gabryel",
+    "role": "Farmer d'aura",
+    "rarete": "Légendaire",
+    "rangApparition": 1,
+    "image": "Image_TCG/cards/Gabryel.png",
+    "stats": {
+      "cafe": 25,
+      "ects": 10
+    },
+    "description": "utilise un clavier 60% à 15€ sur AliExpress"
+  }
+]
