@@ -8,6 +8,8 @@ const USERS_FILE = path.join(__dirname, 'data', 'users.json');
 
 app.use(express.json());
 app.use(express.static('public'));
+// Permet d'accéder aux images situées dans le dossier Image_TCG à la racine
+app.use('/Image_TCG', express.static(path.join(__dirname, 'Image_TCG')));
 
 // Utilitaire pour lire les utilisateurs du fichier JSON
 function getUsers() {
@@ -66,4 +68,15 @@ app.post('/api/login', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Serveur TCG démarré sur http://localhost:${PORT}`);
+});
+
+const CARDS_FILE = path.join(__dirname, 'data', 'cards.json');
+
+// Route pour récupérer toutes les cartes
+app.get('/api/cards', (req, res) => {
+    if (!fs.existsSync(CARDS_FILE)) {
+        return res.json([]);
+    }
+    const data = fs.readFileSync(CARDS_FILE, 'utf-8');
+    res.json(JSON.parse(data || '[]'));
 });
