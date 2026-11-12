@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Boutique</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    body {
+      background-color: #0d1117;
+      background-image: 
+        radial-gradient(rgba(88, 166, 255, 0.12) 1px, transparent 1px),
+        radial-gradient(rgba(88, 166, 255, 0.08) 1px, #0d1117 1px);
+      background-size: 40px 40px;
+      background-position: 0 0, 20px 20px;
+      color: #f0f6fc;
+      font-family: 'Fira Code', monospace;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .shop-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+    .booster-pack {
+      background: linear-gradient(135deg, #1f6feb, #8957e5);
+      border-radius: 16px;
+      width: 220px;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(31, 111, 235, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      margin-top: 20px;
+    }
+    .booster-pack:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(137, 87, 229, 0.6);
+    }
+    .booster-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .booster-price {
+      margin-top: 15px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: #ffbd2e;
+    }
+
+    /* Grille des 5 cartes obtenues */
+    .pull-results {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+      max-width: 1300px;
+    }
+
+    /* Style exact de la carte de collection */
+    .tcg-card {
+      position: relative;
+      width: 220px;
+      height: 320px;
+      background-color: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-family: 'Fira Code', monospace;
+    }
+
+    .card-bg-image {
+      position: absolute;
+      top: 55px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 55px);
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .card-header-info {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d1117;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+      margin: -15px -15px 0 -15px;
+      padding: 15px 15px 8px 15px;
+    }
+
+    .card-name {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .card-rarity {
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background-color: rgba(188, 140, 255, 0.25);
+      color: #bc8cff;
+      border: 1px solid #bc8cff;
+      font-weight: bold;
+    }
+
+    .card-stats {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      background-color: rgba(13, 17, 23, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-cafe { color: #ffbd2e; font-weight: bold; }
+    .stat-ects { color: #58a6ff; font-weight: bold; }
+
+    .card-desc {
+      position: absolute;
+      bottom: 48px;
+      left: 12px;
+      right: 12px;
+      z-index: 3;
+      font-size: 0.6rem;
+      color: #c9d1d9;
+      font-style: italic;
+      line-height: 1.3;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html" class="active">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+        </div>
+        <div class="currency-badge">🪙 <span id="ects-display">60</span> ECTS</div>
+      </div>
+    </header>
+
+    <main class="shop-container">
+      <h1>// BOUTIQUE DE BOOSTERS</h1>
+      <p style="color: #8b949e;">Cliquez sur le booster pour l'ouvrir et découvrir 5 cartes aléatoires !</p>
+
+      <div class="booster-pack" id="buy-booster-btn">
+        <div class="booster-icon" style="font-size: 3rem;">📦</div>
+        <div class="booster-title">Booster L2 Info</div>
+        <div class="booster-price">🪙 20 ECTS</div>
+      </div>
+
+      <div id="pull-results" class="pull-results"></div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
+      let currentEcts = parseInt(localStorage.getItem('ects') || '60', 10);
+      document.getElementById('ects-display').textContent = currentEcts;
+
+      document.getElementById('buy-booster-btn').addEventListener('click', async () => {
+        if (currentEcts < 20) {
+          alert("Vous n'avez pas assez d'ECTS pour ouvrir un booster !");
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/open-booster', { method: 'POST' });
+          const data = await response.json();
+
+          if (data.success) {
+            currentEcts -= 20;
+            localStorage.setItem('ects', currentEcts);
+            document.getElementById('ects-display').textContent = currentEcts;
+
+            const resultsContainer = document.getElementById('pull-results');
+            resultsContainer.innerHTML = '<h2 style="width: 100%; text-align: center; margin-bottom: 10px;">// 5 CARTES OBTENUES :</h2>';
+            
+            data.cards.forEach(card => {
+              const cardEl = document.createElement('div');
+              cardEl.className = 'tcg-card';
+              cardEl.innerHTML = `
+                <div class="card-header-info">
+                  <span class="card-name">${card.nom}</span>
+                  <span class="card-rarity">${card.rarete ? card.rarete.toUpperCase() : 'COMMUN'}</span>
+                </div>
+                <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+                <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+                <div class="card-stats">
+                  <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+                  <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+                </div>
+              `;
+              resultsContainer.appendChild(cardEl);
+            });
+          } else {
+            alert(data.error || "Erreur lors de l'ouverture.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Erreur de connexion au serveur.");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

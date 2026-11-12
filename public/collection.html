@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Collection</title>
-  <link rel="stylesheet" href="css/card.css">
+  <link rel="stylesheet" href="css/dashboard.css">
   <style>
     /* Grille de cartes adaptative */
     .cards-grid {
@@ -26,7 +26,6 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       padding: 15px;
       border: 1px solid rgba(255, 255, 255, 0.2);
       transition: transform 0.2s, border-color 0.2s;
@@ -100,10 +99,16 @@
       font-weight: bold;
     }
 
+    /* Boîte des stats positionnée plus bas */
     .card-stats {
+      position: absolute;
+      bottom: 10px; /* Ajuste cette valeur pour monter ou descendre les stats */
+      left: 15px;
+      right: 15px;
+      z-index: 3;
       display: flex;
       justify-content: space-between;
-      background-color: rgba(13, 17, 23, 0,75);
+      background-color: rgba(13, 17, 23, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 6px 10px;
       border-radius: 6px;
@@ -114,12 +119,21 @@
     .stat-cafe { color: #ffbd2e; font-weight: bold; }
     .stat-ects { color: #58a6ff; font-weight: bold; }
 
+    /* Description placée juste au-dessus des stats */
     .card-desc {
-      font-size: 0,65rem;
+      position: absolute;
+      bottom: 48px; /* Se place directement au-dessus de la barre de stats */
+      left: 12px;
+      right: 12px;
+      z-index: 3;
+      font-size: 0.65rem;
       color: #c9d1d9;
-      font-style: italic;
-      line-height: 1.3;
+      /*font-style: italic;*/
+      
+      font-family: ;
+      line-height: 2;
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      margin: 0;
     }
   </style>
 

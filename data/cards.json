@@ -1,43 +1,236 @@
 [
-  {
-    "id": "card_001",
-    "nom": "Dyclane",
-    "role": "Le fou",
-    "rarete": "Pue la merde",
-    "rangApparition": 1,
-    "image": "Image_TCG/cards/Dyclane.png",
-    "stats": {
-      "cafe": 4,
-      "ects": 10
+    {
+        "id": "card_001",
+        "nom": "Dyclane",
+        "role": "Le fou",
+        "rarete": "Mythique",
+        "rangApparition": 1,
+        "image": "Image_TCG/cards/Dyclane.png",
+        "stats": {
+            "cafe": 4,
+            "ects": 10
+        },
+        "description": "14h de Genshin d'affilé"
     },
-    "description": "14h de Genshin d'affilé"
-  },
-  {
-    "id": "card_002",
-    "nom": "Victor",
-    "role": "Malade mental",
-    "rarete": "Rare",
-    "rangApparition": 1,
-    "image": "Image_TCG/cards/Victor_1.png",
-    "stats": {
-      "cafe": 550,
-      "ects": 10
+    {
+        "id": "card_002",
+        "nom": "Victor",
+        "role": "Malade mental",
+        "rarete": "Rare",
+        "rangApparition": 1,
+        "image": "Image_TCG/cards/Victor_1.png",
+        "stats": {
+            "cafe": 550,
+            "ects": 10
+        },
+        "description": "Toujours pas mort de crise cardiaque"
     },
-    "description": "Toujours pas mort de crise cardiaque"
-  },
-  
-  
-  {
-    "id": "card_003",
-    "nom": "Gabryel",
-    "role": "Farmer d'aura",
-    "rarete": "Légendaire",
-    "rangApparition": 1,
-    "image": "Image_TCG/cards/Gabryel.png",
-    "stats": {
-      "cafe": 25,
-      "ects": 10
+    {
+        "id": "card_003",
+        "nom": "Gabryel",
+        "role": "Farmer d'aura",
+        "rarete": "Légendaire",
+        "rangApparition": 1,
+        "image": "Image_TCG/cards/Gabryel.png",
+        "stats": {
+            "cafe": 25,
+            "ects": 10
+        },
+        "description": "utilise un clavier 60% à 15€ sur AliExpress"
     },
-    "description": "utilise un clavier 60% à 15€ sur AliExpress"
-  }
+    {
+        "id": "card_1794501835196_958",
+        "nom": "Christian",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 4,
+        "image": "/Image_TCG/cards/Christian.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": "Veut devenir riche mais n'y arrive pas"
+    },
+    {
+        "id": "card_1794501835208_270",
+        "nom": "Jean-Luc",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 5,
+        "image": "/Image_TCG/cards/Jean-Luc.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794501835208_287",
+        "nom": "Jeremie",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 6,
+        "image": "/Image_TCG/cards/Jeremie.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": "Sah j'ai pas d'idées frr"
+    },
+    {
+        "id": "card_1794501835208_918",
+        "nom": "Victor_2",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 7,
+        "image": "/Image_TCG/cards/Victor_2.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794501835208_499",
+        "nom": "Victor_3",
+        "role": "",
+        "rarete": "Légendaire",
+        "rangApparition": 8,
+        "image": "/Image_TCG/cards/Victor_3.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794504441015_767",
+        "nom": "Meïla",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 10,
+        "image": "/Image_TCG/cards/Meïla.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794520057032_28",
+        "nom": "Phileas",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 10,
+        "image": "/Image_TCG/cards/Phileas.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225388_959",
+        "nom": "Phileas_1",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 11,
+        "image": "/Image_TCG/cards/Phileas_1.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225388_2",
+        "nom": "Phileas_2",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 12,
+        "image": "/Image_TCG/cards/Phileas_2.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225389_112",
+        "nom": "Phileas_3",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 13,
+        "image": "/Image_TCG/cards/Phileas_3.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225389_248",
+        "nom": "Phileas_4",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 14,
+        "image": "/Image_TCG/cards/Phileas_4.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225389_117",
+        "nom": "Phileas_5",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 15,
+        "image": "/Image_TCG/cards/Phileas_5.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225390_102",
+        "nom": "Phileas_6",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 16,
+        "image": "/Image_TCG/cards/Phileas_6.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225391_547",
+        "nom": "Phileas_7",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 17,
+        "image": "/Image_TCG/cards/Phileas_7.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794522225391_366",
+        "nom": "Phileas_8",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 18,
+        "image": "/Image_TCG/cards/Phileas_8.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    }
 ]
