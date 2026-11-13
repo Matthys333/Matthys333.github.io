@@ -12,6 +12,114 @@
       window.location.replace('login.html');
     }
   </script>
+  <style>
+    .tcg-card {
+      position: relative;
+      width: 220px;
+      height: 320px;
+      background-color: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-family: 'Fira Code', monospace;
+      animation: cardPop 0.35s ease-out forwards;
+    }
+
+    @keyframes cardPop {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .card-bg-image {
+      position: absolute;
+      top: 55px;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 55px);
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .card-header-info {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d1117;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+      margin: -15px -15px 0 -15px;
+      padding: 15px 15px 8px 15px;
+    }
+
+    .tcg-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 40%, rgba(13, 17, 23, 0.5) 75%, transparent);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .card-name {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .card-rarity {
+      font-size: 0.6rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background-color: rgba(188, 140, 255, 0.25);
+      color: #bc8cff;
+      border: 1px solid #bc8cff;
+      font-weight: bold;
+    }
+
+    .card-stats {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      background-color: rgba(13, 17, 23, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-cafe { color: #ffbd2e; font-weight: bold; }
+    .stat-ects { color: #58a6ff; font-weight: bold; }
+
+    .card-desc {
+      position: absolute;
+      bottom: 48px;
+      left: 12px;
+      right: 12px;
+      z-index: 3;
+      font-size: 0.6rem;
+      color: #c9d1d9;
+      font-style: italic;
+      line-height: 1.3;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      margin: 0;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
   <div class="app-container">
@@ -54,15 +162,15 @@
     </div>
 
     <!-- Contenu Principal -->
-    <main class="main-content">
-      <section class="booster-hero">
+    <main class="main-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+      <section class="booster-hero" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%;">
         <div class="hero-header">
           <span class="subtitle" id="timer-status">PROCHAIN BOOSTER DANS : 10:00</span>
           <h1 class="title-glow" id="booster-title-count">0 À OUVRIR</h1>
         </div>
-
-        <!-- Visuel des boosters -->
-        <div class="booster-display-area">
+        
+        <!-- Visuel des boosters bien centré -->
+        <div class="booster-display-area" style="display: flex; justify-content: center; margin: 20px 0;">
           <div class="booster-stack">
             <div class="booster-card layer-3"></div>
             <div class="booster-card layer-2"></div>
@@ -75,22 +183,23 @@
           </div>
         </div>
 
-        <!-- Boutons d'ouverture -->
+        <!-- Boutons d'ouverture bleus -->
         <div class="action-container" style="display: flex; gap: 15px; justify-content: center;">
           <button id="btn-open-one" class="btn-open-booster">OUVRIR 1 BOOSTER</button>
           <button id="btn-open-all" class="btn-open-booster btn-secondary-action">TOUT OUVRIR</button>
         </div>
       </section>
+
+      <!-- Zone d'affichage centrée pour les 5 cartes qui sortent au clic sur le bouton bleu -->
+      <div id="stored-pull-results" style="display: flex; gap: 20px; margin-top: 35px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1300px;"></div>
     </main>
   </div>
 
-  <!-- Script de gestion du Compteur persistant (fermeture de page incluse) -->
-  <!-- Script de gestion du Compteur persistant (Corrigé) -->
+  <!-- Script global de gestion -->
   <script>
     const TIMER_DURATION = 10 * 60 * 1000; // 10 minutes
     const MAX_BOOSTERS = 6;
 
-    // 1. Initialisation unique au tout premier lancement
     if (localStorage.getItem('boosterCount') === null) {
       localStorage.setItem('boosterCount', '4');
     }
@@ -98,35 +207,27 @@
       localStorage.setItem('lastTimestamp', Date.now().toString());
     }
 
-    // 2. Calcul du temps écoulé (y compris pendant la fermeture de la page)
     function calculateOfflineProgress() {
       let count = parseInt(localStorage.getItem('boosterCount'), 10);
       let lastTimestamp = parseInt(localStorage.getItem('lastTimestamp'), 10);
       let now = Date.now();
 
-      // Si la clé timestamp a été perdue, on la recrée sans réinitialiser si possible
       if (isNaN(lastTimestamp)) {
         lastTimestamp = now;
         localStorage.setItem('lastTimestamp', now.toString());
       }
 
-      // Si on est déjà au max, pas de calcul de progression
-      if (count >= MAX_BOOSTERS) {
-        return;
-      }
+      if (count >= MAX_BOOSTERS) return;
 
       let elapsed = now - lastTimestamp;
-
       if (elapsed >= TIMER_DURATION) {
         let boostersGained = Math.floor(elapsed / TIMER_DURATION);
         count += boostersGained;
 
         if (count >= MAX_BOOSTERS) {
           count = MAX_BOOSTERS;
-          // Bloque le timestamp au moment exact où le max est atteint
           localStorage.setItem('lastTimestamp', now.toString());
         } else {
-          // Décale le timestamp du nombre exact de tranches de 10 min écoulées
           let newTimestamp = lastTimestamp + (boostersGained * TIMER_DURATION);
           localStorage.setItem('lastTimestamp', newTimestamp.toString());
         }
@@ -136,21 +237,23 @@
     }
 
     function updateUI() {
-      const count = parseInt(localStorage.getItem('boosterCount'), 10);
+      const count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
       document.getElementById('booster-title-count').textContent = `${count} À OUVRIR`;
       document.getElementById('booster-badge-count').textContent = `x${count}`;
 
       const btnOne = document.getElementById('btn-open-one');
       const btnAll = document.getElementById('btn-open-all');
       
-      btnOne.disabled = count === 0;
-      btnAll.disabled = count === 0;
-      btnOne.style.opacity = count === 0 ? '0.5' : '1';
-      btnAll.style.opacity = count === 0 ? '0.5' : '1';
+      if (btnOne && btnAll) {
+        btnOne.disabled = count === 0;
+        btnAll.disabled = count === 0;
+        btnOne.style.opacity = count === 0 ? '0.5' : '1';
+        btnAll.style.opacity = count === 0 ? '0.5' : '1';
+      }
     }
 
     function tick() {
-      let count = parseInt(localStorage.getItem('boosterCount'), 10);
+      let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
       let lastTimestamp = parseInt(localStorage.getItem('lastTimestamp'), 10);
       let now = Date.now();
 
@@ -162,7 +265,6 @@
       let elapsed = now - lastTimestamp;
       let remaining = TIMER_DURATION - elapsed;
 
-      // Si le temps est dépassé pendant qu'on regarde la page
       if (remaining <= 0) {
         calculateOfflineProgress();
         updateUI();
@@ -174,43 +276,32 @@
       }
     }
 
-    // Ouvrir 1 booster
-    document.getElementById('btn-open-one').addEventListener('click', () => {
-      let count = parseInt(localStorage.getItem('boosterCount'), 10);
-      if (count > 0) {
-        // Si on était au max (6), relance du chrono au moment exact de l'ouverture
-        if (count >= MAX_BOOSTERS) {
-          localStorage.setItem('lastTimestamp', Date.now().toString());
-        }
-        count--;
-        localStorage.setItem('boosterCount', count.toString());
-        updateUI();
-        tick();
-        alert("Booster ouvert !");
-      }
-    });
+    function displayPulledCards(cards) {
+      const resultsContainer = document.getElementById('stored-pull-results');
+      resultsContainer.innerHTML = '<h2 style="width: 100%; text-align: center; margin-top: 10px;">// 5 CARTES OBTENUES :</h2>';
+      
+      cards.forEach(card => {
+        const cardEl = document.createElement('div');
+        cardEl.className = 'tcg-card';
+        cardEl.innerHTML = `
+          <div class="card-header-info">
+            <span class="card-name">${card.nom}</span>
+            <span class="card-rarity">${card.rarete ? card.rarete.toUpperCase() : 'COMMUN'}</span>
+          </div>
+          <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+          <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+          <div class="card-stats">
+            <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+            <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+          </div>
+        `;
+        resultsContainer.appendChild(cardEl);
+      });
+    }
 
-    // Tout ouvrir
-    document.getElementById('btn-open-all').addEventListener('click', () => {
-      let count = parseInt(localStorage.getItem('boosterCount'), 10);
-      if (count > 0) {
-        const opened = count;
-        // Relance du chrono dès que la place se libère
-        localStorage.setItem('boosterCount', '0');
-        localStorage.setItem('lastTimestamp', Date.now().toString());
-        updateUI();
-        tick();
-        alert(`Vous avez ouvert vos ${opened} boosters !`);
-      }
-    });
-
-    // Démarrage
     document.addEventListener('DOMContentLoaded', () => {
-      const username = localStorage.getItem('username') || 'Étudiant';
-      const ects = localStorage.getItem('ects') || '60';
-
-      document.getElementById('username-display').textContent = username;
-      document.getElementById('ects-display').textContent = ects;
+      document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
+      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
 
       calculateOfflineProgress();
       updateUI();
@@ -222,6 +313,46 @@
         localStorage.removeItem('username');
         localStorage.removeItem('ects');
         window.location.href = 'login.html';
+      });
+
+      // Ouvrir 1 booster (Unique et propre)
+      document.getElementById('btn-open-one').addEventListener('click', async () => {
+        let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
+        if (count > 0) {
+          try {
+            const response = await fetch('/api/open-stored-booster', { method: 'POST' });
+            const data = await response.json();
+
+            if (data.success) {
+              if (count >= MAX_BOOSTERS) {
+                localStorage.setItem('lastTimestamp', Date.now().toString());
+              }
+              count--;
+              localStorage.setItem('boosterCount', count.toString());
+              updateUI();
+              tick();
+              displayPulledCards(data.cards);
+            } else {
+              alert(data.error);
+            }
+          } catch (e) {
+            console.error(e);
+            alert("Erreur serveur.");
+          }
+        }
+      });
+
+      // Tout ouvrir
+      document.getElementById('btn-open-all').addEventListener('click', () => {
+        let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
+        if (count > 0) {
+          const opened = count;
+          localStorage.setItem('boosterCount', '0');
+          localStorage.setItem('lastTimestamp', Date.now().toString());
+          updateUI();
+          tick();
+          alert(`Vous avez ouvert vos ${opened} boosters !`);
+        }
       });
     });
   </script>
