@@ -1,62 +1,75 @@
 [
     {
-        "id": "card_001",
+        "id": "card_1794573065486_437",
         "nom": "Dyclane",
-        "role": "Le fou",
-        "rarete": "Mythique",
+        "role": "",
+        "rarete": "Vulgaris",
         "rangApparition": 1,
-        "image": "Image_TCG/cards/Dyclane.png",
+        "image": "/Image_TCG/cards/Dyclane.png",
         "stats": {
-            "cafe": 4,
-            "ects": 10
+            "cafe": 0,
+            "ects": 0
         },
-        "description": "14h de Genshin d'affilé"
+        "description": ""
     },
     {
-        "id": "card_002",
-        "nom": "Victor",
-        "role": "Malade mental",
-        "rarete": "Rare",
-        "rangApparition": 1,
-        "image": "Image_TCG/cards/Victor_1.png",
-        "stats": {
-            "cafe": 550,
-            "ects": 10
-        },
-        "description": "Toujours pas mort de crise cardiaque"
-    },
-    {
-        "id": "card_003",
+        "id": "card_1794573068141_472",
         "nom": "Gabryel",
-        "role": "Farmer d'aura",
-        "rarete": "Légendaire",
-        "rangApparition": 1,
-        "image": "Image_TCG/cards/Gabryel.png",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 2,
+        "image": "/Image_TCG/cards/Gabryel.png",
         "stats": {
-            "cafe": 25,
-            "ects": 10
+            "cafe": 0,
+            "ects": 0
         },
-        "description": "utilise un clavier 60% à 15€ sur AliExpress"
+        "description": ""
     },
     {
-        "id": "card_1794501835196_958",
+        "id": "card_1794573070639_357",
+        "nom": "Meïla",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 3,
+        "image": "/Image_TCG/cards/Meïla.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573075069_278",
+        "nom": "Jeremie",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 4,
+        "image": "/Image_TCG/cards/Jeremie.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573076113_122",
         "nom": "Christian",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 4,
+        "rarete": "Vulgaris",
+        "rangApparition": 5,
         "image": "/Image_TCG/cards/Christian.png",
         "stats": {
             "cafe": 0,
             "ects": 0
         },
-        "description": "Veut devenir riche mais n'y arrive pas"
+        "description": ""
     },
     {
-        "id": "card_1794501835208_270",
+        "id": "card_1794573077058_710",
         "nom": "Jean-Luc",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 5,
+        "rarete": "Vulgaris",
+        "rangApparition": 6,
         "image": "/Image_TCG/cards/Jean-Luc.png",
         "stats": {
             "cafe": 0,
@@ -65,25 +78,12 @@
         "description": ""
     },
     {
-        "id": "card_1794501835208_287",
-        "nom": "Jeremie",
+        "id": "card_1794573082110_162",
+        "nom": "Karl Marx",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 6,
-        "image": "/Image_TCG/cards/Jeremie.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": "Sah j'ai pas d'idées frr"
-    },
-    {
-        "id": "card_1794501835208_918",
-        "nom": "Victor_2",
-        "role": "",
-        "rarete": "Commun",
+        "rarete": "Vulgaris",
         "rangApparition": 7,
-        "image": "/Image_TCG/cards/Victor_2.png",
+        "image": "/Image_TCG/cards/Karl Marx.png",
         "stats": {
             "cafe": 0,
             "ects": 0
@@ -91,10 +91,10 @@
         "description": ""
     },
     {
-        "id": "card_1794501835208_499",
+        "id": "card_1794573086178_98",
         "nom": "Victor_3",
         "role": "",
-        "rarete": "Légendaire",
+        "rarete": "Vulgaris",
         "rangApparition": 8,
         "image": "/Image_TCG/cards/Victor_3.png",
         "stats": {
@@ -104,24 +104,11 @@
         "description": ""
     },
     {
-        "id": "card_1794504441015_767",
-        "nom": "Meïla",
-        "role": "",
-        "rarete": "Commun",
-        "rangApparition": 10,
-        "image": "/Image_TCG/cards/Meïla.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794520057032_28",
+        "id": "card_1794573089667_216",
         "nom": "Phileas",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 10,
+        "rarete": "Vulgaris",
+        "rangApparition": 9,
         "image": "/Image_TCG/cards/Phileas.png",
         "stats": {
             "cafe": 0,
@@ -130,11 +117,11 @@
         "description": ""
     },
     {
-        "id": "card_1794522225388_959",
+        "id": "card_1794573089668_400",
         "nom": "Phileas_1",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 11,
+        "rarete": "Vulgaris",
+        "rangApparition": 10,
         "image": "/Image_TCG/cards/Phileas_1.png",
         "stats": {
             "cafe": 0,
@@ -143,11 +130,11 @@
         "description": ""
     },
     {
-        "id": "card_1794522225388_2",
+        "id": "card_1794573089668_194",
         "nom": "Phileas_2",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 12,
+        "rarete": "Vulgaris",
+        "rangApparition": 11,
         "image": "/Image_TCG/cards/Phileas_2.png",
         "stats": {
             "cafe": 0,
@@ -156,11 +143,11 @@
         "description": ""
     },
     {
-        "id": "card_1794522225389_112",
+        "id": "card_1794573089668_326",
         "nom": "Phileas_3",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 13,
+        "rarete": "Vulgaris",
+        "rangApparition": 12,
         "image": "/Image_TCG/cards/Phileas_3.png",
         "stats": {
             "cafe": 0,
@@ -169,11 +156,11 @@
         "description": ""
     },
     {
-        "id": "card_1794522225389_248",
+        "id": "card_1794573089668_231",
         "nom": "Phileas_4",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 14,
+        "rarete": "Vulgaris",
+        "rangApparition": 13,
         "image": "/Image_TCG/cards/Phileas_4.png",
         "stats": {
             "cafe": 0,
@@ -182,11 +169,11 @@
         "description": ""
     },
     {
-        "id": "card_1794522225389_117",
+        "id": "card_1794573089668_442",
         "nom": "Phileas_5",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 15,
+        "rarete": "Vulgaris",
+        "rangApparition": 14,
         "image": "/Image_TCG/cards/Phileas_5.png",
         "stats": {
             "cafe": 0,
@@ -195,50 +182,11 @@
         "description": ""
     },
     {
-        "id": "card_1794522225390_102",
-        "nom": "Phileas_6",
-        "role": "",
-        "rarete": "Commun",
-        "rangApparition": 16,
-        "image": "/Image_TCG/cards/Phileas_6.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794522225391_547",
-        "nom": "Phileas_7",
-        "role": "",
-        "rarete": "Commun",
-        "rangApparition": 17,
-        "image": "/Image_TCG/cards/Phileas_7.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794522225391_366",
-        "nom": "Phileas_8",
-        "role": "",
-        "rarete": "Commun",
-        "rangApparition": 18,
-        "image": "/Image_TCG/cards/Phileas_8.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794524810095_684",
+        "id": "card_1794573089671_999",
         "nom": "Phileas_10",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 19,
+        "rarete": "Vulgaris",
+        "rangApparition": 15,
         "image": "/Image_TCG/cards/Phileas_10.png",
         "stats": {
             "cafe": 0,
@@ -247,11 +195,11 @@
         "description": ""
     },
     {
-        "id": "card_1794525356969_750",
+        "id": "card_1794573089671_431",
         "nom": "Phileas_11",
         "role": "",
-        "rarete": "Commun",
-        "rangApparition": 21,
+        "rarete": "Vulgaris",
+        "rangApparition": 16,
         "image": "/Image_TCG/cards/Phileas_11.png",
         "stats": {
             "cafe": 0,
@@ -260,12 +208,77 @@
         "description": ""
     },
     {
-        "id": "card_1794525440067_158",
-        "nom": "Karl Marx",
+        "id": "card_1794573089671_254",
+        "nom": "Phileas_12",
         "role": "",
-        "rarete": "Commun",
+        "rarete": "Vulgaris",
+        "rangApparition": 17,
+        "image": "/Image_TCG/cards/Phileas_12.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573089671_223",
+        "nom": "Phileas_6",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 18,
+        "image": "/Image_TCG/cards/Phileas_6.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573089671_600",
+        "nom": "Phileas_7",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 19,
+        "image": "/Image_TCG/cards/Phileas_7.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573089671_147",
+        "nom": "Phileas_8",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 20,
+        "image": "/Image_TCG/cards/Phileas_8.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573089671_910",
+        "nom": "Victor_1",
+        "role": "",
+        "rarete": "Vulgaris",
         "rangApparition": 21,
-        "image": "/Image_TCG/cards/Karl Marx.png",
+        "image": "/Image_TCG/cards/Victor_1.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794573089671_705",
+        "nom": "Victor_2",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 22,
+        "image": "/Image_TCG/cards/Victor_2.png",
         "stats": {
             "cafe": 0,
             "ects": 0
