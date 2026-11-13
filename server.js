@@ -80,3 +80,28 @@ app.get('/api/cards', (req, res) => {
     const data = fs.readFileSync(CARDS_FILE, 'utf-8');
     res.json(JSON.parse(data || '[]'));
 });
+
+app.post('/api/open-stored-booster', (req, res) => {
+    // Simulation : on vérifie ou décrémente les boosters en stock (à adapter si tu as un système d'utilisateurs)
+    const cardsPath = path.join(__dirname, 'data', 'cards.json');
+    if (!fs.existsSync(cardsPath)) {
+        return res.status(404).json({ error: "Aucune carte disponible." });
+    }
+
+    const cardsData = JSON.parse(fs.readFileSync(cardsPath, 'utf-8'));
+    if (cardsData.length === 0) {
+        return res.status(400).json({ error: "Le deck de cartes est vide." });
+    }
+
+    // Tirer 5 cartes aléatoires
+    const pulledCards = [];
+    for (let i = 0; i < 5; i++) {
+        const randomIndex = Math.floor(Math.random() * cardsData.length);
+        pulledCards.push(cardsData[randomIndex]);
+    }
+
+    res.json({
+        success: true,
+        cards: pulledCards
+    });
+});
