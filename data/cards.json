@@ -232,5 +232,44 @@
             "ects": 0
         },
         "description": ""
+    },
+    {
+        "id": "card_1794524810095_684",
+        "nom": "Phileas_10",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 19,
+        "image": "/Image_TCG/cards/Phileas_10.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794525356969_750",
+        "nom": "Phileas_11",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 21,
+        "image": "/Image_TCG/cards/Phileas_11.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794525440067_158",
+        "nom": "Karl Marx",
+        "role": "",
+        "rarete": "Commun",
+        "rangApparition": 21,
+        "image": "/Image_TCG/cards/Karl Marx.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
     }
 ]
