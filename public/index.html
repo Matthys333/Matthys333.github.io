@@ -315,7 +315,7 @@
         window.location.href = 'login.html';
       });
 
-      // Ouvrir 1 booster (Unique et propre)
+      // Ouvrir 1 booster
       document.getElementById('btn-open-one').addEventListener('click', async () => {
         let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
         if (count > 0) {
@@ -343,15 +343,51 @@
       });
 
       // Tout ouvrir
-      document.getElementById('btn-open-all').addEventListener('click', () => {
+      document.getElementById('btn-open-all').addEventListener('click', async () => {
         let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
         if (count > 0) {
-          const opened = count;
-          localStorage.setItem('boosterCount', '0');
-          localStorage.setItem('lastTimestamp', Date.now().toString());
-          updateUI();
-          tick();
-          alert(`Vous avez ouvert vos ${opened} boosters !`);
+          const totalBoostersToOpen = count;
+          let allPulledCards = [];
+
+          try {
+            for (let i = 0; i < totalBoostersToOpen; i++) {
+              const response = await fetch('/api/open-stored-booster', { method: 'POST' });
+              const data = await response.json();
+              if (data.success && data.cards) {
+                allPulledCards = allPulledCards.concat(data.cards);
+              }
+            }
+
+            localStorage.setItem('boosterCount', '0');
+            localStorage.setItem('lastTimestamp', Date.now().toString());
+            updateUI();
+            tick();
+
+            const resultsContainer = document.getElementById('stored-pull-results');
+            resultsContainer.innerHTML = `<h2 style="width: 100%; text-align: center; margin-top: 10px;">// ${allPulledCards.length} CARTES OBTENUES (${totalBoostersToOpen} BOOSTERS OUVERTS) :</h2>`;
+            
+            allPulledCards.forEach(card => {
+              const cardEl = document.createElement('div');
+              cardEl.className = 'tcg-card';
+              cardEl.innerHTML = `
+                <div class="card-header-info">
+                  <span class="card-name">${card.nom}</span>
+                  <span class="card-rarity">${card.rarete ? card.rarete.toUpperCase() : 'COMMUN'}</span>
+                </div>
+                <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+                <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+                <div class="card-stats">
+                  <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+                  <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+                </div>
+              `;
+              resultsContainer.appendChild(cardEl);
+            });
+
+          } catch (e) {
+            console.error(e);
+            alert("Erreur lors de l'ouverture groupée.");
+          }
         }
       });
     });
