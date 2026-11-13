@@ -82,7 +82,6 @@ app.get('/api/cards', (req, res) => {
 });
 
 app.post('/api/open-stored-booster', (req, res) => {
-    // Simulation : on vérifie ou décrémente les boosters en stock (à adapter si tu as un système d'utilisateurs)
     const cardsPath = path.join(__dirname, 'data', 'cards.json');
     if (!fs.existsSync(cardsPath)) {
         return res.status(404).json({ error: "Aucune carte disponible." });
@@ -93,11 +92,35 @@ app.post('/api/open-stored-booster', (req, res) => {
         return res.status(400).json({ error: "Le deck de cartes est vide." });
     }
 
-    // Tirer 5 cartes aléatoires
+    // Fonction pour tirer une carte selon les probabilités de rareté latines
+    function pullCardByRarity() {
+        const rand = Math.random() * 100;
+        let targetRarity = 'Vulgaris';
+
+        if (rand < 0.2) targetRarity = 'Arcanus';          // 0.2%
+        else if (rand < 1.0) targetRarity = 'Mythicus';      // 0.8%
+        else if (rand < 4.0) targetRarity = 'Legendarius';   // 3%
+        else if (rand < 11.0) targetRarity = 'Eximius';      // 7%
+        else if (rand < 25.0) targetRarity = 'Rarus';        // 14%
+        else if (rand < 50.0) targetRarity = 'Insolitus';    // 25%
+        else targetRarity = 'Vulgaris';                      // 50%
+
+        // Filtrer les cartes correspondant à cette rareté (insensible à la casse)
+        let filteredCards = cardsData.filter(c => c.rarete && c.rarete.toLowerCase() === targetRarity.toLowerCase());
+
+        // Fallback de sécurité si aucune carte de cette rareté n'existe dans cards.json
+        if (filteredCards.length === 0) {
+            filteredCards = cardsData;
+        }
+
+        // Tirer une carte aléatoire parmi les cartes filtrées
+        return filteredCards[Math.floor(Math.random() * filteredCards.length)];
+    }
+
+    // Tirer 5 cartes pour le booster
     const pulledCards = [];
     for (let i = 0; i < 5; i++) {
-        const randomIndex = Math.floor(Math.random() * cardsData.length);
-        pulledCards.push(cardsData[randomIndex]);
+        pulledCards.push(pullCardByRarity());
     }
 
     res.json({
