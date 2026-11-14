@@ -26,4 +26,6 @@
         - classement
     - Les boutons d'ouverture de boosters
     - Des "boîtes" de connexion propre à chacun et pas communes
-    
+
+# Propostition de Jorlui :
+    - Quand une carte est révélée, un son particulier en ressort
