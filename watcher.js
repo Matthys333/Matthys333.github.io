@@ -54,7 +54,7 @@ function syncImagesToCards() {
                 id: `card_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
                 nom: baseName,
                 role: "",
-                rarete: "Vulgaris",
+                rarete: "vulgaris",
                 rangApparition: cards.length + 1,
                 image: imagePathRoute,
                 stats: {
