@@ -3,7 +3,7 @@
         "id": "card_1794573065486_437",
         "nom": "Dyclane",
         "role": "",
-        "rarete": "Vulgaris",
+        "rarete": "Arcanus",
         "rangApparition": 1,
         "image": "/Image_TCG/cards/Dyclane.png",
         "stats": {
@@ -16,7 +16,7 @@
         "id": "card_1794573068141_472",
         "nom": "Gabryel",
         "role": "",
-        "rarete": "Vulgaris",
+        "rarete": "legendarius",
         "rangApparition": 2,
         "image": "/Image_TCG/cards/Gabryel.png",
         "stats": {
@@ -29,7 +29,7 @@
         "id": "card_1794573070639_357",
         "nom": "Meïla",
         "role": "",
-        "rarete": "Vulgaris",
+        "rarete": "rarus",
         "rangApparition": 3,
         "image": "/Image_TCG/cards/Meïla.png",
         "stats": {
@@ -42,7 +42,7 @@
         "id": "card_1794573075069_278",
         "nom": "Jeremie",
         "role": "",
-        "rarete": "Vulgaris",
+        "rarete": "insolitus",
         "rangApparition": 4,
         "image": "/Image_TCG/cards/Jeremie.png",
         "stats": {
@@ -55,22 +55,9 @@
         "id": "card_1794573076113_122",
         "nom": "Christian",
         "role": "",
-        "rarete": "Vulgaris",
+        "rarete": "Eximius",
         "rangApparition": 5,
         "image": "/Image_TCG/cards/Christian.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573077058_710",
-        "nom": "Jean-Luc",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 6,
-        "image": "/Image_TCG/cards/Jean-Luc.png",
         "stats": {
             "cafe": 0,
             "ects": 0
@@ -276,9 +263,87 @@
         "id": "card_1794573089671_705",
         "nom": "Victor_2",
         "role": "",
-        "rarete": "Vulgaris",
+        "rarete": "mythicus",
         "rangApparition": 22,
         "image": "/Image_TCG/cards/Victor_2.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794579778593_120",
+        "nom": "Matthys",
+        "role": "",
+        "rarete": "Arcanus",
+        "rangApparition": 24,
+        "image": "/Image_TCG/cards/Matthys.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794580348499_748",
+        "nom": "Daniel_1",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 25,
+        "image": "/Image_TCG/cards/Daniel_1.jpeg",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794580359993_919",
+        "nom": "Daniel",
+        "role": "",
+        "rarete": "Vulgaris",
+        "rangApparition": 26,
+        "image": "/Image_TCG/cards/Daniel.jpeg",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794584723866_84",
+        "nom": "Soul Master Disappointment",
+        "role": "",
+        "rarete": "vulgaris",
+        "rangApparition": 25,
+        "image": "/Image_TCG/cards/Soul Master Disappointment.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794592703689_155",
+        "nom": "Olivio",
+        "role": "",
+        "rarete": "vulgaris",
+        "rangApparition": 26,
+        "image": "/Image_TCG/cards/Olivio.jpeg",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794592715318_967",
+        "nom": "Jean-Luc",
+        "role": "",
+        "rarete": "vulgaris",
+        "rangApparition": 27,
+        "image": "/Image_TCG/cards/Jean-Luc.png",
         "stats": {
             "cafe": 0,
             "ects": 0
