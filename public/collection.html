@@ -130,7 +130,7 @@
       color: #c9d1d9;
       /*font-style: italic;*/
       
-      font-family: ;
+      font-family: sans-serif;
       line-height: 2;
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
       margin: 0;
@@ -197,7 +197,23 @@
   </div>
 
   <!-- Script de chargement dynamique -->
+  <!-- Script de chargement dynamique -->
   <script>
+    // Configuration des 7 raretés latines (Abréviations, couleurs et styles)
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       // Affichage des infos utilisateur
       document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
@@ -216,15 +232,20 @@
           return;
         }
 
-        // Génération dynamique de chaque carte
+        // Génération dynamique de chaque carte avec sa rareté adaptée
         cards.forEach(card => {
+          const style = getRarityConfig(card.rarete);
           const cardEl = document.createElement('div');
           cardEl.className = 'tcg-card';
+          cardEl.style.borderColor = style.border; // Applique la couleur de bordure selon la rareté
+
           cardEl.innerHTML = `
             <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
             <div class="card-header-info">
               <span class="card-name">${card.nom}</span>
-              <span class="card-rarity">${card.rarete ? card.rarete.toUpperCase() : 'COMMUN'}</span>
+              <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
+                ${style.abbr}
+              </span>
             </div>
             <div class="card-stats">
               <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
