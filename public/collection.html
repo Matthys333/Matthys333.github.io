@@ -83,14 +83,14 @@
     }
 
     .card-name {
-      font-size: 1,05rem;
+      font-size: 1.05rem;
       font-weight: bold;
       color: #ffffff;
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
 
     .card-rarity {
-      font-size: 0,65rem;
+      font-size: 0.65rem;
       padding: 3px 8px;
       border-radius: 4px;
       background-color: rgba(188, 140, 255, 0.25);
@@ -102,7 +102,7 @@
     /* Boîte des stats positionnée plus bas */
     .card-stats {
       position: absolute;
-      bottom: 10px; /* Ajuste cette valeur pour monter ou descendre les stats */
+      bottom: 10px;
       left: 15px;
       right: 15px;
       z-index: 3;
@@ -112,7 +112,7 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 6px 10px;
       border-radius: 6px;
-      font-size: 0,75rem;
+      font-size: 0.75rem;
       backdrop-filter: blur(4px);
     }
 
@@ -122,18 +122,32 @@
     /* Description placée juste au-dessus des stats */
     .card-desc {
       position: absolute;
-      bottom: 48px; /* Se place directement au-dessus de la barre de stats */
+      bottom: 48px;
       left: 12px;
       right: 12px;
       z-index: 3;
       font-size: 0.65rem;
       color: #c9d1d9;
-      /*font-style: italic;*/
-      
       font-family: sans-serif;
       line-height: 2;
       text-shadow: 0 1px 2px rgba(0,0,0,0.8);
       margin: 0;
+    }
+
+    /* Badge de quantité (Stack) */
+    .card-quantity-badge {
+      position: absolute;
+      top: 52px;
+      right: 12px;
+      z-index: 4;
+      background-color: rgba(13, 17, 23, 0.9);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
     }
   </style>
 
@@ -187,19 +201,17 @@
     <!-- Contenu Principal -->
     <main class="main-content" style="flex-direction: column; align-items: flex-start; padding: 40px; justify-content: flex-start;">
       <h1>// COLLECTION DE CARTES</h1>
-      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Consultez la base de données des cartes disponibles.</p>
+      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Consultez vos cartes obtenues.</p>
 
       <!-- Grille dynamique -->
       <div id="cards-grid" class="cards-grid">
-        <p style="color: #8b949e;">Chargement des cartes en cours...</p>
+        <p style="color: #8b949e;">Chargement de la collection...</p>
       </div>
     </main>
   </div>
 
-  <!-- Script de chargement dynamique -->
-  <!-- Script de chargement dynamique -->
+  <!-- Script de chargement dynamique et stacking -->
   <script>
-    // Configuration des 7 raretés latines (Abréviations, couleurs et styles)
     function getRarityConfig(rarete) {
       const r = (rarete || 'vulgaris').toLowerCase();
       const configs = {
@@ -215,32 +227,48 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // Affichage des infos utilisateur
-      document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
+      const username = localStorage.getItem('username');
+      document.getElementById('username-display').textContent = username || 'Étudiant';
       document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
 
       try {
-        // Récupération des cartes depuis l'API Node.js
-        const response = await fetch('/api/cards');
-        const cards = await response.json();
+        // 1. Récupération de la collection spécifique au joueur connecté
+        const response = await fetch(`/api/collection/${encodeURIComponent(username)}`);
+        const rawCards = await response.json();
         
         const grid = document.getElementById('cards-grid');
         grid.innerHTML = '';
 
-        if (!cards || cards.length === 0) {
-          grid.innerHTML = '<p style="color: #8b949e;">Aucune carte enregistrée pour le moment.</p>';
+        if (!rawCards || rawCards.length === 0) {
+          grid.innerHTML = '<p style="color: #8b949e;">Ta collection est vide. Ouvre des boosters sur l\'accueil pour obtenir des cartes !</p>';
           return;
         }
 
-        // Génération dynamique de chaque carte avec sa rareté adaptée
-        cards.forEach(card => {
+        // 2. Regroupement (Stacking) des cartes identiques
+        const stackedMap = new Map();
+        rawCards.forEach(card => {
+          const key = card.id || card.nom;
+          if (stackedMap.has(key)) {
+            stackedMap.get(key).count += 1;
+          } else {
+            stackedMap.set(key, { ...card, count: 1 });
+          }
+        });
+
+        // 3. Affichage des cartes empilées avec badge de quantité
+        stackedMap.forEach(card => {
           const style = getRarityConfig(card.rarete);
           const cardEl = document.createElement('div');
           cardEl.className = 'tcg-card';
-          cardEl.style.borderColor = style.border; // Applique la couleur de bordure selon la rareté
+          cardEl.style.borderColor = style.border;
+
+          const quantityBadge = card.count > 1 
+            ? `<div class="card-quantity-badge">x${card.count}</div>` 
+            : '';
 
           cardEl.innerHTML = `
             <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+            ${quantityBadge}
             <div class="card-header-info">
               <span class="card-name">${card.nom}</span>
               <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
@@ -257,8 +285,8 @@
         });
 
       } catch (error) {
-        console.error('Erreur lors du chargement des cartes:', error);
-        document.getElementById('cards-grid').innerHTML = '<p style="color: #f85149;">Erreur lors de la récupération des cartes depuis le serveur.</p>';
+        console.error('Erreur lors du chargement de la collection:', error);
+        document.getElementById('cards-grid').innerHTML = '<p style="color: #f85149;">Erreur lors de la récupération de ta collection.</p>';
       }
 
       // Gestion de la déconnexion
