@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Codex</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    /* Grille de cartes adaptative */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    /* Style Carte Full-Art unifié */
+    .tcg-card {
+      position: relative;
+      width: 240px;
+      height: 350px;
+      background-color: #0d1117;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      padding: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s, border-color 0.2s;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .tcg-card:hover {
+      transform: translateY(-5px);
+      border-color: #58a6ff;
+      box-shadow: 0 15px 35px rgba(88, 166, 255, 0.4);
+    }
+
+    /* Style pour les cartes non possédées (verrouillées/grisées) */
+    .tcg-card.locked {
+      filter: grayscale(100%) brightness(0.4);
+      opacity: 0.5;
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .tcg-card.locked:hover {
+      transform: none;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .tcg-card.locked .card-bg-image {
+      opacity: 0.3;
+    }
+
+    /* L'image commence sous la ligne pointillée */
+    .card-bg-image {
+      position: absolute;
+      top: 30px; 
+      left: 0;
+      width: 100%;
+      height: calc(100% - 55px);
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    /* En-tête de carte */
+    .card-header-info {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #0d1117;
+      border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+      padding-bottom: 8px;
+      margin: -15px -15px 0 -15px;
+      padding: 15px 15px 8px 15px;
+    }
+
+    /* Dégradé bas */
+    .tcg-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 40%, rgba(13, 17, 23, 0.5) 75%, transparent);
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .card-stats, .card-desc {
+      position: relative;
+      z-index: 3;
+    }
+
+    .card-name {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .card-rarity {
+      font-size: 0.9rem;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .card-stats {
+      position: absolute;
+      bottom: 10px;
+      left: 15px;
+      right: 15px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      background-color: rgba(13, 17, 23, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-cafe { color: #ffbd2e; font-weight: bold; }
+    .stat-ects { color: #58a6ff; font-weight: bold; }
+
+    .card-desc {
+      position: absolute;
+      bottom: 48px;
+      left: 12px;
+      right: 12px;
+      z-index: 3;
+      font-size: 0.65rem;
+      color: #c9d1d9;
+      font-family: sans-serif;
+      line-height: 2;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      margin: 0;
+    }
+
+    /* Badge de quantité (Stack) / Verrouillé */
+    .card-quantity-badge {
+      position: absolute;
+      top: 52px;
+      right: 12px;
+      z-index: 4;
+      background-color: rgba(13, 17, 23, 0.9);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+
+  <!-- Vérification de session -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+          <a href="codex.html" class="active">CODEX</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item">ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item">📑 COLLECTION</a>
+        <a href="codex.html" class="sub-item active"><span class="dot"></span> 📖 CODEX</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ects-display">60</span> ECTS
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content" style="flex-direction: column; align-items: flex-start; padding: 40px; justify-content: flex-start;">
+      <h1>// CODEX GÉNÉRAL</h1>
+      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Encyclopédie de toutes les cartes existantes dans le jeu.</p>
+
+      <!-- Grille dynamique -->
+      <div id="cards-grid" class="cards-grid">
+        <p style="color: #8b949e;">Chargement du Codex...</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script de chargement du Codex -->
+  <script>
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const username = localStorage.getItem('username');
+      document.getElementById('username-display').textContent = username || 'Étudiant';
+      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+
+      try {
+        // Récupération simultanée du catalogue global (cards.json) et de l'inventaire du joueur
+        const [cardsRes, collectionRes] = await Promise.all([
+          fetch('/api/cards'),
+          fetch(`/api/collection/${encodeURIComponent(username)}`)
+        ]);
+
+        const allCards = await cardsRes.json();
+        const userInventory = await collectionRes.json(); // Objet { cardId: count }
+
+        const grid = document.getElementById('cards-grid');
+        grid.innerHTML = '';
+
+        if (!allCards || allCards.length === 0) {
+          grid.innerHTML = '<p style="color: #8b949e;">Aucune carte enregistrée dans le jeu.</p>';
+          return;
+        }
+
+        // Affichage de toutes les cartes du jeu
+        allCards.forEach(card => {
+          const style = getRarityConfig(card.rarete);
+          const cardId = card.id || card.nom;
+          const count = userInventory[cardId] || 0; // Quantité possédée
+          const isAcquired = count > 0;
+
+          const cardEl = document.createElement('div');
+          cardEl.className = `tcg-card ${isAcquired ? '' : 'locked'}`;
+          cardEl.style.borderColor = isAcquired ? style.border : 'rgba(255, 255, 255, 0.1)';
+
+          // Badge affichant la quantité ou l'état verrouillé
+          let badgeHtml = '';
+          if (isAcquired) {
+            if (count > 1) {
+              badgeHtml = `<div class="card-quantity-badge">x${count}</div>`;
+            }
+          } else {
+            badgeHtml = `<div class="card-quantity-badge" style="color: #8b949e; border-color: #8b949e;">🔒 0</div>`;
+          }
+
+          cardEl.innerHTML = `
+            <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+            ${badgeHtml}
+            <div class="card-header-info">
+              <span class="card-name">${card.nom}</span>
+              <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
+                ${style.abbr}
+              </span>
+            </div>
+            <div class="card-stats">
+              <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+              <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+            </div>
+            <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+          `;
+          grid.appendChild(cardEl);
+        });
+
+      } catch (error) {
+        console.error('Erreur lors du chargement du Codex:', error);
+        document.getElementById('cards-grid').innerHTML = '<p style="color: #f85149;">Erreur lors du chargement du Codex depuis le serveur.</p>';
+      }
+
+      // Gestion de la déconnexion
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('username');
+        localStorage.removeItem('ects');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>
