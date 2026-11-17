@@ -17,15 +17,18 @@
             - Les échanges
             - Le marché
             - Le classement
-            - L'ouverture des boosters (1 par 1 ou tout d'un coup) (EN COURS...)
+            - L'ouverture des boosters (1 par 1 ou tout d'un coup)
 
 # Ce qu'il faut implémenter :
     - Les pages de :
         - échanges
         - marché
         - classement
-    - Les boutons d'ouverture de boosters
     - Des "boîtes" de connexion propre à chacun et pas communes
+    - Une animation lors de l'ouverture des boosters
 
 # Propostition de Jorlui :
     - Quand une carte est révélée, un son particulier en ressort
+
+# Proposition de Philéas :
+    - Ajouter un effet ou une petite animation en fonction de la rareté de la carte
