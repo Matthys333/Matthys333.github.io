@@ -8,7 +8,7 @@
   
   <!-- Script de vérification de session -->
   <script>
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
+    if (localStorage.getItem('isLoggedIn') !== 'true') {ard_1794573076113_122
       window.location.replace('login.html');
     }
   </script>
@@ -97,7 +97,7 @@
     }
 
     .card-rarity {
-      font-size: 0,65rem;
+      font-size: 0,9rem;
       padding: 3px 8px;
       border-radius: 4px;
       background-color: rgba(188, 140, 255, 0.25);
@@ -133,7 +133,7 @@
       left: 12px;
       right: 12px;
       z-index: 3;
-      font-size: 0.65rem;
+      font-size: 0.85rem;
       color: #c9d1d9;
       /*font-style: italic;*/
       
@@ -175,6 +175,7 @@
         <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
         <a href="market.html" class="sub-item">📈 MARCHÉ</a>
         <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
       </div>
       <div class="sub-nav-right">
         <div class="currency-badge">
@@ -366,7 +367,11 @@
         let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
         if (count > 0) {
           try {
-            const response = await fetch('/api/open-stored-booster', { method: 'POST' });
+            const response = await fetch('/api/open-stored-booster', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: localStorage.getItem('username') })
+            });
             const data = await response.json();
 
             if (data.success) {
