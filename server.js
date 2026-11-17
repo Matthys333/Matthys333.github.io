@@ -5,6 +5,7 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 const USERS_FILE = path.join(__dirname, 'data', 'users.json');
+const CARDS_FILE = path.join(__dirname, 'data', 'cards.json');
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -40,10 +41,10 @@ app.post('/api/register', (req, res) => {
         return res.status(400).json({ message: 'Cet identifiant existe déjà !' });
     }
 
-    // Ajout de l'utilisateur avec son mot de passe en clair
     users.push({
         username,
         password,
+        collection: {}, // Initialisation du dictionnaire de collection vide
         created_at: new Date().toISOString()
     });
 
@@ -58,7 +59,6 @@ app.post('/api/login', (req, res) => {
     const users = getUsers();
     const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
 
-    // Vérification directe en clair
     if (!user || user.password !== password) {
         return res.status(401).json({ message: 'Identifiant ou mot de passe incorrect.' });
     }
@@ -66,13 +66,7 @@ app.post('/api/login', (req, res) => {
     res.json({ message: 'Connexion réussie', username: user.username });
 });
 
-app.listen(PORT, () => {
-    console.log(`Serveur TCG démarré sur http://localhost:${PORT}`);
-});
-
-const CARDS_FILE = path.join(__dirname, 'data', 'cards.json');
-
-// Route pour récupérer toutes les cartes
+// 3. Route pour récupérer toutes les cartes du jeu (Codex)
 app.get('/api/cards', (req, res) => {
     if (!fs.existsSync(CARDS_FILE)) {
         return res.json([]);
@@ -81,18 +75,19 @@ app.get('/api/cards', (req, res) => {
     res.json(JSON.parse(data || '[]'));
 });
 
+// 4. Route pour ouvrir un booster et stocker les IDs/quantités dans le dictionnaire utilisateur
 app.post('/api/open-stored-booster', (req, res) => {
-    const cardsPath = path.join(__dirname, 'data', 'cards.json');
-    if (!fs.existsSync(cardsPath)) {
+    const { username } = req.body;
+    if (!fs.existsSync(CARDS_FILE)) {
         return res.status(404).json({ error: "Aucune carte disponible." });
     }
 
-    const cardsData = JSON.parse(fs.readFileSync(cardsPath, 'utf-8'));
+    const cardsData = JSON.parse(fs.readFileSync(CARDS_FILE, 'utf-8'));
     if (cardsData.length === 0) {
         return res.status(400).json({ error: "Le deck de cartes est vide." });
     }
 
-    // Fonction pour tirer une carte selon les probabilités de rareté latines
+    // Fonction de tirage par rareté latine
     function pullCardByRarity() {
         const rand = Math.random() * 100;
         let targetRarity = 'Vulgaris';
@@ -105,15 +100,12 @@ app.post('/api/open-stored-booster', (req, res) => {
         else if (rand < 50.0) targetRarity = 'Insolitus';    // 25%
         else targetRarity = 'Vulgaris';                      // 50%
 
-        // Filtrer les cartes correspondant à cette rareté (insensible à la casse)
         let filteredCards = cardsData.filter(c => c.rarete && c.rarete.toLowerCase() === targetRarity.toLowerCase());
 
-        // Fallback de sécurité si aucune carte de cette rareté n'existe dans cards.json
         if (filteredCards.length === 0) {
             filteredCards = cardsData;
         }
 
-        // Tirer une carte aléatoire parmi les cartes filtrées
         return filteredCards[Math.floor(Math.random() * filteredCards.length)];
     }
 
@@ -123,8 +115,58 @@ app.post('/api/open-stored-booster', (req, res) => {
         pulledCards.push(pullCardByRarity());
     }
 
+    // Enregistrement / Stacking inter-serveur dans le dictionnaire utilisateur
+    if (username) {
+        const users = getUsers();
+        const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+        if (user) {
+            // Si la collection n'existe pas ou était un ancien tableau, on initialise un objet
+            if (!user.collection || Array.isArray(user.collection)) {
+                user.collection = {};
+            }
+            
+            pulledCards.forEach(card => {
+                const cardId = card.id || card.nom;
+                if (!user.collection[cardId]) {
+                    user.collection[cardId] = 0;
+                }
+                user.collection[cardId] += 1;
+            });
+
+            saveUsers(users);
+        }
+    }
+
     res.json({
         success: true,
         cards: pulledCards
     });
+});
+
+// 5. Route pour récupérer l'inventaire d'un joueur sous forme d'objet { cardId: count }
+app.get('/api/collection/:username', (req, res) => {
+    const { username } = req.params;
+    const users = getUsers();
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+    if (!user) {
+        return res.status(404).json({ error: "Utilisateur introuvable." });
+    }
+
+    // Si l'utilisateur a encore un ancien format tableau dans users.json, on le convertit à la volée pour éviter les bugs
+    if (Array.isArray(user.collection)) {
+        const converted = {};
+        user.collection.forEach(card => {
+            const id = card.id || card.nom;
+            converted[id] = (converted[id] || 0) + 1;
+        });
+        user.collection = converted;
+        saveUsers(users);
+    }
+
+    res.json(user.collection || {});
+});
+
+app.listen(PORT, () => {
+    console.log(`Serveur TCG démarré sur http://localhost:${PORT}`);
 });
