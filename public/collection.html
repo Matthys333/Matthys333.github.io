@@ -38,7 +38,7 @@
       box-shadow: 0 15px 35px rgba(88, 166, 255, 0.4);
     }
 
-    /* L'image commence sous la ligne pointillée (environ 55px du haut) */
+    /* L'image commence sous la ligne pointillée */
     .card-bg-image {
       position: absolute;
       top: 30px; 
@@ -49,7 +49,7 @@
       z-index: 1;
     }
 
-    /* Fond noir uni et net pour l'en-tête, s'arrête net aux pointillés */
+    /* En-tête de carte */
     .card-header-info {
       position: relative;
       z-index: 3;
@@ -63,7 +63,7 @@
       padding: 15px 15px 8px 15px;
     }
 
-    /* Dégradé sombre uniquement en BAS pour faire ressortir les stats et la description */
+    /* Dégradé sombre en bas */
     .tcg-card::after {
       content: '';
       position: absolute;
@@ -76,7 +76,6 @@
       pointer-events: none;
     }
 
-    /* Les éléments du bas passent au premier plan */
     .card-stats, .card-desc {
       position: relative;
       z-index: 3;
@@ -90,16 +89,12 @@
     }
 
     .card-rarity {
-      font-size: 0.65rem;
-      padding: 3px 8px;
+      font-size: 0.9rem;
+      padding: 4px 10px;
       border-radius: 4px;
-      background-color: rgba(188, 140, 255, 0.25);
-      color: #bc8cff;
-      border: 1px solid #bc8cff;
       font-weight: bold;
     }
 
-    /* Boîte des stats positionnée plus bas */
     .card-stats {
       position: absolute;
       bottom: 10px;
@@ -119,7 +114,6 @@
     .stat-cafe { color: #ffbd2e; font-weight: bold; }
     .stat-ects { color: #58a6ff; font-weight: bold; }
 
-    /* Description placée juste au-dessus des stats */
     .card-desc {
       position: absolute;
       bottom: 48px;
@@ -168,6 +162,7 @@
           <a href="index.html">ACCUEIL</a>
           <a href="shop.html">BOUTIQUE</a>
           <a href="collection.html" class="active">COLLECTION</a>
+          <a href="codex.html">CODEX</a>
         </nav>
       </div>
 
@@ -186,6 +181,7 @@
         <a href="index.html" class="sub-item">ACCUEIL</a>
         <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
         <a href="collection.html" class="sub-item active"><span class="dot"></span> 📑 COLLECTION</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
         <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
         <a href="market.html" class="sub-item">📈 MARCHÉ</a>
         <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
@@ -201,7 +197,7 @@
     <!-- Contenu Principal -->
     <main class="main-content" style="flex-direction: column; align-items: flex-start; padding: 40px; justify-content: flex-start;">
       <h1>// COLLECTION DE CARTES</h1>
-      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Consultez vos cartes obtenues.</p>
+      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Consultez uniquement vos cartes obtenues.</p>
 
       <!-- Grille dynamique -->
       <div id="cards-grid" class="cards-grid">
@@ -210,7 +206,7 @@
     </main>
   </div>
 
-  <!-- Script de chargement dynamique et stacking -->
+  <!-- Script de chargement de la collection -->
   <script>
     function getRarityConfig(rarete) {
       const r = (rarete || 'vulgaris').toLowerCase();
@@ -232,38 +228,42 @@
       document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
 
       try {
-        // 1. Récupération de la collection spécifique au joueur connecté
-        const response = await fetch(`/api/collection/${encodeURIComponent(username)}`);
-        const rawCards = await response.json();
-        
+        // Récupération simultanée du catalogue global (cards.json) et de l'inventaire sous forme d'objet { cardId: count }
+        const [cardsRes, collectionRes] = await Promise.all([
+          fetch('/api/cards'),
+          fetch(`/api/collection/${encodeURIComponent(username)}`)
+        ]);
+
+        const allCards = await cardsRes.json();
+        const userInventory = await collectionRes.json();
+
         const grid = document.getElementById('cards-grid');
         grid.innerHTML = '';
 
-        if (!rawCards || rawCards.length === 0) {
-          grid.innerHTML = '<p style="color: #8b949e;">Ta collection est vide. Ouvre des boosters sur l\'accueil pour obtenir des cartes !</p>';
+        // Filtrer pour ne garder que les cartes possédées (count > 0)
+        const ownedCards = allCards.filter(card => {
+          const cardId = card.id || card.nom;
+          const count = userInventory[cardId] || userInventory[card.nom] || 0;
+          return count > 0;
+        });
+
+        if (ownedCards.length === 0) {
+          grid.innerHTML = '<p style="color: #8b949e;">Ta collection est vide. Ouvre des boosters sur l\'accueil ou consulte le Codex !</p>';
           return;
         }
 
-        // 2. Regroupement (Stacking) des cartes identiques
-        const stackedMap = new Map();
-        rawCards.forEach(card => {
-          const key = card.id || card.nom;
-          if (stackedMap.has(key)) {
-            stackedMap.get(key).count += 1;
-          } else {
-            stackedMap.set(key, { ...card, count: 1 });
-          }
-        });
-
-        // 3. Affichage des cartes empilées avec badge de quantité
-        stackedMap.forEach(card => {
+        // Affichage des cartes possédées avec leur badge de quantité
+        ownedCards.forEach(card => {
           const style = getRarityConfig(card.rarete);
+          const cardId = card.id || card.nom;
+          const count = userInventory[cardId] || userInventory[card.nom] || 1;
+
           const cardEl = document.createElement('div');
           cardEl.className = 'tcg-card';
           cardEl.style.borderColor = style.border;
 
-          const quantityBadge = card.count > 1 
-            ? `<div class="card-quantity-badge">x${card.count}</div>` 
+          const quantityBadge = count > 1 
+            ? `<div class="card-quantity-badge">x${count}</div>` 
             : '';
 
           cardEl.innerHTML = `
