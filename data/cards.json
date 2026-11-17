@@ -10,7 +10,7 @@
             "cafe": 0,
             "ects": 0
         },
-        "description": ""
+        "description": "14h de Genshin dans les pattes"
     },
     {
         "id": "card_1794573068141_472",
@@ -23,7 +23,7 @@
             "cafe": 0,
             "ects": 0
         },
-        "description": ""
+        "description": "Utilise un clavier 60% acheté sur AliExpress"
     },
     {
         "id": "card_1794573070639_357",
@@ -36,7 +36,7 @@
             "cafe": 0,
             "ects": 0
         },
-        "description": ""
+        "description": "Akuna MatataKae"
     },
     {
         "id": "card_1794573075069_278",
@@ -49,7 +49,7 @@
             "cafe": 0,
             "ects": 0
         },
-        "description": ""
+        "description": "Trahit tout ses potes sur le dilemme du prisonnier"
     },
     {
         "id": "card_1794573076113_122",
@@ -62,7 +62,7 @@
             "cafe": 0,
             "ects": 0
         },
-        "description": ""
+        "description": "Veut devenir riche mais n'y arrive pas"
     },
     {
         "id": "card_1794573082110_162",
@@ -344,6 +344,19 @@
         "rarete": "vulgaris",
         "rangApparition": 27,
         "image": "/Image_TCG/cards/Jean-Luc.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1794744465059_70",
+        "nom": "Meïla qui aura farm",
+        "role": "",
+        "rarete": "Arcanus",
+        "rangApparition": 28,
+        "image": "/Image_TCG/cards/Meïla qui aura farm.png",
         "stats": {
             "cafe": 0,
             "ects": 0
