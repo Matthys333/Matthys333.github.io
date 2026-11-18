@@ -1,0 +1,154 @@
+/* Grille de cartes adaptative */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 25px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+/* Style Carte Full-Art */
+.tcg-card {
+  position: relative;
+  width: 240px;
+  height: 350px;
+  background-color: #0d1117;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s, border-color 0.2s;
+  font-family: 'Fira Code', monospace;
+}
+
+.tcg-card:hover {
+  transform: translateY(-5px);
+  border-color: #58a6ff;
+  box-shadow: 0 15px 35px rgba(88, 166, 255, 0.4);
+}
+
+/* L'image commence sous la ligne pointillée */
+.card-bg-image {
+  position: absolute;
+  top: 30px; 
+  left: 0;
+  width: 100%;
+  height: calc(100% - 55px);
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* En-tête de carte */
+.card-header-info {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #0d1117;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+  padding-bottom: 8px;
+  margin: -15px -15px 0 -15px;
+  padding: 15px 15px 8px 15px;
+}
+
+/* Dégradé sombre en bas */
+.tcg-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(13, 17, 23, 0.95) 40%, rgba(13, 17, 23, 0.5) 75%, transparent);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.card-stats, .card-desc {
+  position: relative;
+  z-index: 3;
+}
+
+.card-name {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.card-rarity {
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.card-stats {
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+  right: 15px;
+  z-index: 3;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgba(13, 17, 23, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  backdrop-filter: blur(4px);
+}
+
+.stat-cafe { color: #ffbd2e; font-weight: bold; }
+.stat-ects { color: #58a6ff; font-weight: bold; }
+
+.card-desc {
+  position: absolute;
+  bottom: 48px;
+  left: 12px;
+  right: 12px;
+  z-index: 3;
+  font-size: 0.65rem;
+  color: #c9d1d9;
+  font-family: sans-serif;
+  line-height: 2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  margin: 0;
+}
+
+/* Badge de quantité (Stack) */
+.card-quantity-badge {
+  position: absolute;
+  top: 52px;
+  right: 12px;
+  z-index: 4;
+  background-color: rgba(13, 17, 23, 0.9);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
+}
+    
+/* Style pour les cartes non possédées (verrouillées/grisées dans le Codex) */
+.tcg-card.locked {
+  filter: grayscale(100%) brightness(0.8);
+  opacity: 0.5;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.tcg-card.locked:hover {
+  transform: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.tcg-card.locked .card-bg-image {
+  opacity: 0.3;
+}

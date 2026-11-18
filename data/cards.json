@@ -1,362 +1,37 @@
 [
     {
-        "id": "card_1794573065486_437",
-        "nom": "Dyclane",
+        "id": "card_1794919917157_905",
+        "nom": "ADHD",
         "role": "",
-        "rarete": "Arcanus",
+        "rarete": "vulgaris",
         "rangApparition": 1,
-        "image": "/Image_TCG/cards/Dyclane.png",
+        "image": "/Image_TCG/cards/ADHD.jpeg",
         "stats": {
             "cafe": 0,
             "ects": 0
         },
-        "description": "14h de Genshin dans les pattes"
+        "description": ""
     },
     {
-        "id": "card_1794573068141_472",
-        "nom": "Gabryel",
+        "id": "card_1794919917168_808",
+        "nom": "team_pied",
         "role": "",
-        "rarete": "legendarius",
+        "rarete": "vulgaris",
         "rangApparition": 2,
-        "image": "/Image_TCG/cards/Gabryel.png",
+        "image": "/Image_TCG/cards/team_pied.jpeg",
         "stats": {
             "cafe": 0,
             "ects": 0
         },
-        "description": "Utilise un clavier 60% acheté sur AliExpress"
+        "description": ""
     },
     {
-        "id": "card_1794573070639_357",
-        "nom": "Meïla",
-        "role": "",
-        "rarete": "rarus",
-        "rangApparition": 3,
-        "image": "/Image_TCG/cards/Meïla.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": "Akuna MatataKae"
-    },
-    {
-        "id": "card_1794573075069_278",
-        "nom": "Jeremie",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 4,
-        "image": "/Image_TCG/cards/Jeremie.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": "Trahit tout ses potes sur le dilemme du prisonnier"
-    },
-    {
-        "id": "card_1794573076113_122",
+        "id": "card_1794926463717_407",
         "nom": "Christian",
         "role": "",
-        "rarete": "Eximius",
-        "rangApparition": 5,
+        "rarete": "vulgaris",
+        "rangApparition": 3,
         "image": "/Image_TCG/cards/Christian.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": "Veut devenir riche mais n'y arrive pas"
-    },
-    {
-        "id": "card_1794573082110_162",
-        "nom": "Karl Marx",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 7,
-        "image": "/Image_TCG/cards/Karl Marx.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573086178_98",
-        "nom": "Victor_3",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 8,
-        "image": "/Image_TCG/cards/Victor_3.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089667_216",
-        "nom": "Phileas",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 9,
-        "image": "/Image_TCG/cards/Phileas.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089668_400",
-        "nom": "Phileas_1",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 10,
-        "image": "/Image_TCG/cards/Phileas_1.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089668_194",
-        "nom": "Phileas_2",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 11,
-        "image": "/Image_TCG/cards/Phileas_2.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089668_326",
-        "nom": "Phileas_3",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 12,
-        "image": "/Image_TCG/cards/Phileas_3.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089668_231",
-        "nom": "Phileas_4",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 13,
-        "image": "/Image_TCG/cards/Phileas_4.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089668_442",
-        "nom": "Phileas_5",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 14,
-        "image": "/Image_TCG/cards/Phileas_5.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_999",
-        "nom": "Phileas_10",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 15,
-        "image": "/Image_TCG/cards/Phileas_10.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_431",
-        "nom": "Phileas_11",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 16,
-        "image": "/Image_TCG/cards/Phileas_11.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_254",
-        "nom": "Phileas_12",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 17,
-        "image": "/Image_TCG/cards/Phileas_12.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_223",
-        "nom": "Phileas_6",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 18,
-        "image": "/Image_TCG/cards/Phileas_6.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_600",
-        "nom": "Phileas_7",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 19,
-        "image": "/Image_TCG/cards/Phileas_7.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_147",
-        "nom": "Phileas_8",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 20,
-        "image": "/Image_TCG/cards/Phileas_8.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_910",
-        "nom": "Victor_1",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 21,
-        "image": "/Image_TCG/cards/Victor_1.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794573089671_705",
-        "nom": "Victor_2",
-        "role": "",
-        "rarete": "mythicus",
-        "rangApparition": 22,
-        "image": "/Image_TCG/cards/Victor_2.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794579778593_120",
-        "nom": "Matthys",
-        "role": "",
-        "rarete": "Arcanus",
-        "rangApparition": 24,
-        "image": "/Image_TCG/cards/Matthys.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794580348499_748",
-        "nom": "Daniel_1",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 25,
-        "image": "/Image_TCG/cards/Daniel_1.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794580359993_919",
-        "nom": "Daniel",
-        "role": "",
-        "rarete": "Vulgaris",
-        "rangApparition": 26,
-        "image": "/Image_TCG/cards/Daniel.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794584723866_84",
-        "nom": "Soul Master Disappointment",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 25,
-        "image": "/Image_TCG/cards/Soul Master Disappointment.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794592703689_155",
-        "nom": "Olivio",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 26,
-        "image": "/Image_TCG/cards/Olivio.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794592715318_967",
-        "nom": "Jean-Luc",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 27,
-        "image": "/Image_TCG/cards/Jean-Luc.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1794744465059_70",
-        "nom": "Meïla qui aura farm",
-        "role": "",
-        "rarete": "Arcanus",
-        "rangApparition": 28,
-        "image": "/Image_TCG/cards/Meïla qui aura farm.png",
         "stats": {
             "cafe": 0,
             "ects": 0

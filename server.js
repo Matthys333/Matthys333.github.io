@@ -170,3 +170,116 @@ app.get('/api/collection/:username', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Serveur TCG démarré sur http://localhost:${PORT}`);
 });
+
+const TRADES_FILE = path.join(__dirname, 'data', 'trades.json');
+
+// Utilitaire pour lire les offres d'échanges
+function getTrades() {
+    if (!fs.existsSync(TRADES_FILE)) {
+        fs.writeFileSync(TRADES_FILE, JSON.stringify([]));
+    }
+    const data = fs.readFileSync(TRADES_FILE, 'utf-8');
+    return JSON.parse(data || '[]');
+}
+
+function saveTrades(trades) {
+    fs.writeFileSync(TRADES_FILE, JSON.stringify(trades, null, 2));
+}
+
+// 1. Récupérer toutes les offres d'échanges actives
+app.get('/api/trades', (req, res) => {
+    res.json(getTrades());
+});
+
+// 2. Créer une offre d'échange (Autorisé dès qu'on possède au moins 1 exemplaire)
+app.post('/api/trades/create', (req, res) => {
+    const { username, offeredCardId, wantedCardId } = req.body;
+    const users = getUsers();
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+    // Autorisé si le joueur possède au moins 1 exemplaire de la carte qu'il propose
+    if (!user || !user.collection || (user.collection[offeredCardId] || 0) < 1) {
+        return res.status(400).json({ error: "Vous ne possédez pas cette carte à échanger." });
+    }
+
+    const trades = getTrades();
+    const newTrade = {
+        id: `trade_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+        username,
+        offeredCardId,
+        wantedCardId,
+        createdAt: new Date().toISOString()
+    };
+
+    trades.push(newTrade);
+    saveTrades(trades);
+    res.json({ success: true, trade: newTrade });
+});
+
+// 3. Accepter un échange
+app.post('/api/trades/accept', (req, res) => {
+    const { username, tradeId } = req.body;
+    const trades = getTrades();
+    const tradeIndex = trades.findIndex(t => t.id === tradeId);
+
+    if (tradeIndex === -1) {
+        return res.status(404).json({ error: "Offre introuvable." });
+    }
+
+    const trade = trades[tradeIndex];
+    if (trade.username === username) {
+        return res.status(400).json({ error: "Vous ne pouvez pas accepter votre propre offre." });
+    }
+
+    const users = getUsers();
+    const creator = users.find(u => u.username.toLowerCase() === trade.username.toLowerCase());
+    const acceptor = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+    if (!creator || !acceptor) {
+        return res.status(404).json({ error: "Utilisateurs introuvables." });
+    }
+
+    // Vérifier que l'acquéreur possède bien la carte demandée (wantedCardId)
+    if (!acceptor.collection || (acceptor.collection[trade.wantedCardId] || 0) < 1) {
+        return res.status(400).json({ error: "Vous ne possédez pas la carte demandée par cette offre." });
+    }
+
+    // Vérifier que le créateur possède toujours la carte offerte (offeredCardId)
+    if (!creator.collection || (creator.collection[trade.offeredCardId] || 0) < 1) {
+        return res.status(400).json({ error: "Le créateur de l'offre ne possède plus la carte." });
+    }
+
+    // --- EFFECTUER LE TRANSFERT DES CARTES ---
+    // 1. Le créateur donne offeredCardId et reçoit wantedCardId
+    creator.collection[trade.offeredCardId] -= 1;
+    if (creator.collection[trade.offeredCardId] <= 0) delete creator.collection[trade.offeredCardId];
+    creator.collection[trade.wantedCardId] = (creator.collection[trade.wantedCardId] || 0) + 1;
+
+    // 2. L'acquéreur donne wantedCardId et reçoit offeredCardId
+    acceptor.collection[trade.wantedCardId] -= 1;
+    if (acceptor.collection[trade.wantedCardId] <= 0) delete acceptor.collection[trade.wantedCardId];
+    acceptor.collection[trade.offeredCardId] = (acceptor.collection[trade.offeredCardId] || 0) + 1;
+
+    // Supprimer l'offre active
+    trades.splice(tradeIndex, 1);
+
+    saveUsers(users);
+    saveTrades(trades);
+
+    res.json({ success: true });
+});
+
+// 4. Annuler sa propre offre
+app.post('/api/trades/cancel', (req, res) => {
+    const { username, tradeId } = req.body;
+    let trades = getTrades();
+    const trade = trades.find(t => t.id === tradeId);
+
+    if (!trade || trade.username !== username) {
+        return res.status(403).json({ error: "Action non autorisée." });
+    }
+
+    trades = trades.filter(t => t.id !== tradeId);
+    saveTrades(trades);
+    res.json({ success: true });
+});

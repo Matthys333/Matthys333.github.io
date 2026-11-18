@@ -25,11 +25,10 @@ function syncImagesToCards() {
 
     let modified = false;
 
-    // 1. Supprimer les cartes dont l'image n'existe plus dans le dossier
+    // 1. Supprimer les cartes dont l'image n'existe plus sur le disque
     const initialLength = cards.length;
     cards = cards.filter(card => {
         if (!card.image) return false;
-        // Extrait le nom du fichier depuis le chemin de la carte (ex: /Image_TCG/cards/Dyclane.png -> Dyclane.png)
         const fileName = path.basename(card.image);
         const existsOnDisk = imageFiles.includes(fileName);
         if (!existsOnDisk) {
@@ -76,12 +75,16 @@ function syncImagesToCards() {
     }
 }
 
+// Lancement initial
 syncImagesToCards();
 
+// Surveillance avec debounce pour éviter les déclenchements multiples
+let watchTimeout = null;
 fs.watch(CARDS_DIR, (eventType, filename) => {
-    if (filename) {
+    if (watchTimeout) clearTimeout(watchTimeout);
+    watchTimeout = setTimeout(() => {
         syncImagesToCards();
-    }
+    }, 100);
 });
 
 console.log(`[WATCHER] Surveillance active sur le dossier : ${CARDS_DIR}`);
