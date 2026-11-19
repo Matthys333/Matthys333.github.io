@@ -283,3 +283,38 @@ app.post('/api/trades/cancel', (req, res) => {
     saveTrades(trades);
     res.json({ success: true });
 });
+
+// 6. Route pour gérer l'achat en boutique (Boosters et Cartes à l'unité)
+app.post('/api/shop/buy-pack', (req, res) => {
+    const { username, cost, cardIds } = req.body;
+    const users = getUsers();
+    const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+
+    if (!user) {
+        return res.status(404).json({ error: "Utilisateur introuvable." });
+    }
+
+    // Gestion de la monnaie ECTS (initialisée à 60 par défaut si absente)
+    const currentEcts = user.ects ?? 60;
+    if (currentEcts < cost) {
+        return res.status(400).json({ error: "Crédits ECTS insuffisants." });
+    }
+
+    // Déduction des ECTS
+    user.ects = currentEcts - cost;
+
+    // Sécurité : conversion de la collection en dictionnaire si c'était un ancien format tableau
+    if (!user.collection || Array.isArray(user.collection)) {
+        user.collection = {};
+    }
+
+    // Ajout des cartes achetées dans l'inventaire du joueur
+    if (Array.isArray(cardIds)) {
+        cardIds.forEach(id => {
+            user.collection[id] = (user.collection[id] || 0) + 1;
+        });
+    }
+
+    saveUsers(users);
+    res.json({ success: true, ects: user.ects, collection: user.collection });
+});
