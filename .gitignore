@@ -3,3 +3,5 @@ data/users.json
 .env
 index.html
 Image_TCG/
+data/market.json
+data/trades.json

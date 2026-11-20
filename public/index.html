@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Dashboard</title>
   <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/quizz.css"
   <link rel="stylesheet" href="css/cards.css">
   
   <!-- Script de vérification de session -->
@@ -47,10 +48,13 @@
         <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
         <a href="codex.html" class="sub-item">📖 CODEX</a>
       </div>
-      <div class="sub-nav-right">
+      <div class="sub-nav-right" style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="btn-open-ram-quiz" class="btn-open-booster" style="padding: 6px 14px; font-size: 0.75rem;">
+          🧠 GAGNER DE LA RAM
+        </button>
         <div class="currency-badge">
-          <span class="currency-icon">🪙</span>
-          <span id="ects-display">60</span> ECTS
+          <span class="currency-icon">🧠</span>
+          <span id="ram-display">60</span> RAM
         </div>
       </div>
     </div>
@@ -89,6 +93,35 @@
     </main>
   </div>
 
+  <!-- OVERLAY PLEIN ÉCRAN : QUIZ INFORMATIQUE POUR GAGNER DE LA RAM -->
+  <div id="ram-quiz-modal" class="pack-modal-overlay">
+    <div class="ram-quiz-box">
+      <div class="ram-quiz-header">
+        <span id="ram-gain-indicator" style="color: var(--accent-cyan); font-weight: 700;">
+          RÉCOMPENSE : +5 RAM / RÉPONSE
+        </span>
+        <span id="ram-streak-badge" class="ram-streak-badge">
+          🔥 STREAK : <span id="ram-streak-count">0</span>
+        </span>
+      </div>
+
+      <div id="ram-penalty-banner" class="ram-penalty-alert"></div>
+      <div id="ram-quiz-feedback" class="ram-quiz-feedback"></div>
+
+      <div>
+        <p id="ram-quiz-question" class="ram-quiz-question">Chargement de la question...</p>
+        <div id="ram-quiz-options" class="ram-quiz-options" style="margin-top: 16px;"></div>
+      </div>
+
+      <div class="ram-quiz-footer">
+        <span id="ram-best-streak-label">MEILLEURE STREAK : 0</span>
+        <button type="button" id="btn-quit-ram-quiz" class="btn-logout">
+          QUITTER LE QUIZ
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODALE DE RÉVÉLATION 1 PAR 1 AU CLIC + RÉCAPITULATIF FINAL -->
   <div id="pack-modal" class="pack-modal-overlay">
     <div id="reveal-progress" class="reveal-progress-bar">CARTE 1 / 5</div>
@@ -120,10 +153,6 @@
 
   <!-- Script global de gestion -->
   <script>
-    // ==========================================
-    // CONFIGURATION DU DÉCOMPTE DES BOOSTERS
-    // ==========================================
-    // Modifie cette valeur en secondes (ex: 600 = 10 min | 60 = 1 min | 3600 = 1 heure)
     const BOOSTER_COOLDOWN_SECONDS = 1;
     const MAX_BOOSTERS = 6;
 
@@ -253,7 +282,6 @@
         if (rankA !== rankB) {
           return rankA - rankB;
         }
-        // Légère variation aléatoire à rareté égale
         return Math.random() - 0.5;
       });
     }
@@ -281,9 +309,6 @@
       return cardEl;
     }
 
-    // ==========================================
-    // PALETTES PRISMATIQUES PAR RARETÉ
-    // ==========================================
     const RARITY_PRISMATIC_COLORS = {
       eximius:     ["#A855F7", "#7C3AED", "#6366F1"],
       legendarius: ["#FACC15", "#EAB308", "#F59E0B"],
@@ -436,7 +461,6 @@
       });
     }
 
-    // --- TIRAGE 1 PAR 1 AU CLIC + RÉCAPITULATIF AVEC HALOS ---
     let currentDrawList = [];
     let currentRevealIndex = 0;
 
@@ -533,11 +557,10 @@
       return '';
     }
 
-    // Durée du tremblement (en ms) selon la rareté
     const SHAKE_DURATIONS_MS = {
-      legendarius: 700,   // 0.7s
-      mythicus:    1350,  // 1.35s
-      arcanus:     2100   // 2.1s
+      legendarius: 700,
+      mythicus:    1350,
+      arcanus:     2100
     };
 
     function getShakeDuration(rarete) {
@@ -571,23 +594,434 @@
       document.getElementById('all-packs-modal').classList.remove('active');
     }
 
+    // ==========================================
+    // QUIZ RAM : 24 QUESTIONS, MODE HARDCORE >= 11 & ANTI-TRICHE -30%
+    // ==========================================
+    const QUIZ_STANDARD_QUESTIONS = [
+      { id: 'std_1', q: "En C, quelle fonction alloue dynamiquement de la mémoire sur le tas ?", options: ["malloc()", "sizeof()", "strcpy()"], answer: 0 },
+      { id: 'std_2', q: "Quelle structure de données suit le principe FIFO (First In, First Out) ?", options: ["La pile (Stack)", "La file (Queue)", "L'arbre couvrant"], answer: 1 },
+      { id: 'std_3', q: "Quelle est la complexité moyenne d'accès par clé dans une table de hachage ?", options: ["O(1)", "O(log n)", "O(n)"], answer: 0 },
+      { id: 'std_4', q: "Quel code HTTP correspond à une ressource interdite d'accès ?", options: ["201 Created", "403 Forbidden", "404 Not Found"], answer: 1 },
+      { id: 'std_5', q: "En SQL, quelle clause permet d'effectuer une jointure entre deux tables ?", options: ["JOIN", "MERGE", "BIND"], answer: 0 },
+      { id: 'std_6', q: "Quelle commande Git permet de créer une nouvelle branche et de se placer dessus ?", options: ["git checkout -b nom_branche", "git stash pop", "git fetch --all"], answer: 0 },
+      { id: 'std_7', q: "Dans un arbre binaire de recherche équilibré de n nœuds, quelle est la hauteur approximative ?", options: ["log2(n)", "n²", "n / 2"], answer: 0 },
+      { id: 'std_8', q: "Quel protocole réseau résout une adresse IP à partir d'une adresse MAC sur un réseau local ?", options: ["ARP", "SMTP", "FTP"], answer: 0 },
+      { id: 'std_9', q: "En langage C, quel opérateur permet d'obtenir l'adresse mémoire d'une variable ?", options: ["&", "*", "->"], answer: 0 },
+      { id: 'std_10', q: "Quelle commande Linux permet d'afficher les permissions et détails des fichiers d'un dossier ?", options: ["ls -la", "pwd -f", "cat -z"], answer: 0 },
+      { id: 'std_11', q: "Quelle structure est la plus adaptée pour implémenter un parcours en largeur (BFS) d'un graphe ?", options: ["Une file (Queue)", "Une pile (Stack)", "Un tas binaire"], answer: 0 },
+      { id: 'std_12', q: "Quel port TCP est utilisé par défaut pour le protocole SSH ?", options: ["22", "80", "443"], answer: 0 }
+    ];
+
+    const QUIZ_HARDCORE_QUESTIONS = [
+      {
+        id: 'hrd_1',
+        q: "[HARDCORE] En C (LP64), que vaut sizeof(void*) et que provoque le déréférencement d'un pointeur libéré (dangling pointer) ?",
+        options: [
+          "8 octets ; un comportement indéfini (Undefined Behavior)",
+          "4 octets ; une exception garantie à la compilation",
+          "8 octets ; un retour automatique à NULL"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_2',
+        q: "[HARDCORE] Quelle condition est indispensable (avec exclusion mutuelle, rétention/attente et non-préemption) pour qu'un interblocage (deadlock) apparaisse ?",
+        options: [
+          "Attente circulaire (circular wait) dans le graphe d'allocation",
+          "Ordonnancement Round-Robin avec quantum inférieur à 5 ms",
+          "Pagination à deux niveaux activée sur le noyau"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_3',
+        q: "[HARDCORE] Dans un tas binaire (min-heap) stocké dans un tableau indexé à 0, à quel indice se trouve le fils droit du nœud i ?",
+        options: ["2 * i + 2", "2 * i + 1", "(i - 1) / 2"],
+        answer: 0
+      },
+      {
+        id: 'hrd_4',
+        q: "[HARDCORE] En TCP, quel mécanisme permet de détecter la perte d'un segment avant l'expiration du RTO (Retransmission Timeout) ?",
+        options: [
+          "Les 3 Duplicate ACKs (Fast Retransmit)",
+          "Le drapeau FIN envoyé par le routeur intermédiaire",
+          "L'incrément du champ TTL à chaque saut"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_5',
+        q: "[HARDCORE] En SQL (ACID), quel niveau d'isolation autorise les lectures non reproductibles (non-repeatable reads) mais interdit les lectures sales (dirty reads) ?",
+        options: ["READ COMMITTED", "READ UNCOMMITTED", "SERIALIZABLE"],
+        answer: 0
+      },
+      {
+        id: 'hrd_6',
+        q: "[HARDCORE] Pourquoi un arbre AVL ou Rouge-Noir garantit-il O(log n) en recherche là où un ABR simple peut dégénérer en O(n) ?",
+        options: [
+          "Il maintient une contrainte d'équilibre limitant la hauteur à O(log n)",
+          "Il stocke tous les éléments dans un tableau contigu trié",
+          "Il supprime automatiquement les doublons à chaque insertion"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_7',
+        q: "[HARDCORE] En C, quelle est la différence fondamentale entre 'const int *p' et 'int * const p' ?",
+        options: [
+          "Le 1er interdit de modifier la valeur pointée ; le 2nd interdit de modifier l'adresse dans p",
+          "Ils sont strictement équivalents selon le standard ISO C11",
+          "Le 1er alloue sur la pile ; le 2nd alloue sur le tas"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_8',
+        q: "[HARDCORE] Quelle est la complexité temporelle d'un tri fusion (Merge Sort) dans le pire des cas et son empreinte mémoire auxiliaire ?",
+        options: [
+          "O(n log n) en temps et O(n) en espace auxiliaire",
+          "O(n²) en temps et O(1) en espace auxiliaire",
+          "O(n log n) en temps et O(1) en espace auxiliaire"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_9',
+        q: "[HARDCORE] Dans un système de fichiers Unix/Linux, que contient l'inode d'un fichier ?",
+        options: [
+          "Les métadonnées (droits, taille, propriétaire, pointeurs vers blocs) mais pas le nom du fichier",
+          "Le nom du fichier et le chemin absolu complet depuis '/'",
+          "Uniquement l'adresse physique du premier secteur disque"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_10',
+        q: "[HARDCORE] Lorsqu'un processus appelle fork() sous Linux avec Copy-On-Write (COW), quand la copie physique d'une page mémoire a-t-elle lieu ?",
+        options: [
+          "Uniquement lorsqu'un des processus tente d'écrire sur cette page",
+          "Dès l'appel système fork() pour toutes les pages du père",
+          "Uniquement lors de l'appel à exit()"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_11',
+        q: "[HARDCORE] En algèbre relationnelle / SQL, qu'est-ce qu'une dépendance fonctionnelle transitive (X -> Y et Y -> Z) empêche en 3NF ?",
+        options: [
+          "La dépendance d'un attribut non-clé vis-à-vis d'une clé via un autre attribut non-clé",
+          "L'utilisation de clés étrangères référençant une clé primaire composite",
+          "La création d'index composites sur deux colonnes"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_12',
+        q: "[HARDCORE] Dans l'algorithme de Dijkstra avec un graphe à poids positifs et une file de priorité binaire, quelle est sa complexité ?",
+        options: [
+          "O((V + E) log V)",
+          "O(V * E) dans tous les cas",
+          "O(V + E) sans tri ni tas"
+        ],
+        answer: 0
+      }
+    ];
+
+    let quizStreak = 0;
+    let quizBestStreak = 0;
+    let quizPenaltyRemainingMs = 0;
+    let quizPenaltyPercent = 0;
+    let quizQuestionsAnswered = 0;
+    let quizAskedIds = new Set();
+    let currentQuizQuestion = null;
+    let quizLocked = false;
+    let quizSessionRunning = false;
+
+    function isQuizModalOpen() {
+      const modal = document.getElementById('ram-quiz-modal');
+      return Boolean(modal && modal.classList.contains('active') && quizSessionRunning);
+    }
+
+    function updateRamCounter(val) {
+      localStorage.setItem('ram', val);
+      const ramEl = document.getElementById('ram-display');
+      if (ramEl) ramEl.textContent = val;
+    }
+
+    function renderQuizStatusUI() {
+      const streakBadge = document.getElementById('ram-streak-badge');
+      const streakCount = document.getElementById('ram-streak-count');
+      const gainIndicator = document.getElementById('ram-gain-indicator');
+      const bestLabel = document.getElementById('ram-best-streak-label');
+      const penaltyBanner = document.getElementById('ram-penalty-banner');
+
+      streakCount.textContent = quizStreak;
+      if (quizStreak >= 10) {
+        streakBadge.classList.add('visible');
+        gainIndicator.textContent = 'RÉCOMPENSE : +10 RAM / RÉPONSE (STREAK ≥ 10)';
+      } else {
+        streakBadge.classList.remove('visible');
+        gainIndicator.textContent = 'RÉCOMPENSE : +5 RAM / RÉPONSE';
+      }
+
+      const modeTag = quizQuestionsAnswered >= 10 ? 'HARDCORE (Q11+)' : `STANDARD (Q${quizQuestionsAnswered + 1}/10)`;
+      bestLabel.textContent = `MODE : ${modeTag} • MEILLEURE STREAK : ${quizBestStreak}`;
+
+      if (quizPenaltyRemainingMs > 0) {
+        const pctLabel = Math.round((quizPenaltyPercent || 0.10) * 100);
+        penaltyBanner.classList.add('active');
+        penaltyBanner.textContent = `⚠️ MALUS ACTIF : -${pctLabel}% sur les cartes de haute rareté pendant encore ${formatRemainingTime(quizPenaltyRemainingMs)}.`;
+      } else {
+        penaltyBanner.classList.remove('active');
+        penaltyBanner.textContent = '';
+      }
+    }
+
+    function showQuizFeedback(type, message) {
+      const fb = document.getElementById('ram-quiz-feedback');
+      fb.className = `ram-quiz-feedback ${type}`;
+      fb.textContent = message;
+    }
+
+    function pickNextQuizQuestion() {
+      const isHardcorePhase = quizQuestionsAnswered >= 10;
+      const primaryPool = isHardcorePhase ? QUIZ_HARDCORE_QUESTIONS : QUIZ_STANDARD_QUESTIONS;
+      const fallbackPool = isHardcorePhase ? QUIZ_STANDARD_QUESTIONS : QUIZ_HARDCORE_QUESTIONS;
+
+      let available = primaryPool.filter(q => !quizAskedIds.has(q.id));
+      if (available.length === 0) {
+        available = fallbackPool.filter(q => !quizAskedIds.has(q.id));
+      }
+      if (available.length === 0) {
+        quizAskedIds.clear();
+        available = primaryPool;
+      }
+
+      const baseQuestion = available[Math.floor(Math.random() * available.length)];
+
+      // Mélange l'ordre des options à chaque affichage tout en gardant la bonne réponse
+      const indexedOptions = baseQuestion.options.map((text, idx) => ({
+        text,
+        isRight: idx === baseQuestion.answer
+      }));
+      for (let i = indexedOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indexedOptions[i], indexedOptions[j]] = [indexedOptions[j], indexedOptions[i]];
+      }
+
+      currentQuizQuestion = {
+        id: baseQuestion.id,
+        q: baseQuestion.q,
+        shuffledOptions: indexedOptions
+      };
+
+      document.getElementById('ram-quiz-question').textContent = currentQuizQuestion.q;
+      const optsContainer = document.getElementById('ram-quiz-options');
+      optsContainer.innerHTML = '';
+
+      currentQuizQuestion.shuffledOptions.forEach((optObj) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ram-quiz-option-btn';
+        btn.textContent = optObj.text;
+        btn.onclick = () => submitQuizAnswer(optObj.isRight, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      renderQuizStatusUI();
+    }
+
+    async function submitQuizAnswer(isCorrect, clickedBtn) {
+      if (quizLocked || !quizSessionRunning) return;
+      quizLocked = true;
+
+      document.querySelectorAll('.ram-quiz-option-btn').forEach(b => { b.disabled = true; });
+      if (clickedBtn) {
+        clickedBtn.style.borderColor = isCorrect ? '#3fb950' : '#f85149';
+      }
+
+      try {
+        const username = localStorage.getItem('username');
+        const res = await fetch('/api/ram/quiz-answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username,
+            isCorrect,
+            questionId: currentQuizQuestion?.id
+          })
+        });
+        const data = await res.json();
+
+        if (typeof data.ram === 'number') {
+          updateRamCounter(data.ram);
+        }
+        quizStreak = data.streak || 0;
+        quizBestStreak = Math.max(quizBestStreak, data.bestStreak || 0);
+        quizQuestionsAnswered = data.questionsAnswered ?? (quizQuestionsAnswered + 1);
+        if (Array.isArray(data.askedQuestionIds)) {
+          quizAskedIds = new Set(data.askedQuestionIds);
+        } else if (currentQuizQuestion?.id) {
+          quizAskedIds.add(currentQuizQuestion.id);
+        }
+
+        quizPenaltyRemainingMs = data.dropPenalty?.remainingMs || 0;
+        quizPenaltyPercent = data.dropPenalty?.reduction || 0;
+        renderQuizStatusUI();
+
+        if (data.correct) {
+          showQuizFeedback('ok', `✅ Bonne réponse ! +${data.reward} RAM gagnés.`);
+          setTimeout(() => {
+            if (!quizSessionRunning) return;
+            quizLocked = false;
+            pickNextQuizQuestion();
+          }, 500);
+        } else {
+          quizSessionRunning = false;
+          showQuizFeedback(
+            'err',
+            '❌ Mauvaise réponse ! Streak perdue et -10% sur les cartes rares pendant 15 minutes.'
+          );
+          setTimeout(() => {
+            document.getElementById('ram-quiz-modal').classList.remove('active');
+            quizLocked = false;
+          }, 1200);
+        }
+      } catch (err) {
+        console.error(err);
+        quizLocked = false;
+        document.querySelectorAll('.ram-quiz-option-btn').forEach(b => { b.disabled = false; });
+      }
+    }
+
+    async function openRamQuizModal() {
+      const username = localStorage.getItem('username');
+      const modal = document.getElementById('ram-quiz-modal');
+      document.getElementById('ram-quiz-feedback').className = 'ram-quiz-feedback';
+      document.getElementById('ram-quiz-feedback').textContent = '';
+
+      quizAskedIds = new Set();
+      quizQuestionsAnswered = 0;
+      quizSessionRunning = true;
+
+      try {
+        const res = await fetch('/api/ram/quiz-start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (typeof data.ram === 'number') updateRamCounter(data.ram);
+          quizStreak = data.streak || 0;
+          quizBestStreak = data.bestStreak || 0;
+          quizQuestionsAnswered = data.questionsAnswered || 0;
+          quizAskedIds = new Set(data.askedQuestionIds || []);
+          quizPenaltyRemainingMs = data.dropPenalty?.remainingMs || 0;
+          quizPenaltyPercent = data.dropPenalty?.reduction || 0;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      pickNextQuizQuestion();
+      quizLocked = false;
+      modal.classList.add('active');
+    }
+
+    async function quitRamQuizModal() {
+      if (!quizSessionRunning) return;
+      quizSessionRunning = false;
+      const username = localStorage.getItem('username');
+      try {
+        const res = await fetch('/api/ram/quiz-quit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (typeof data.ram === 'number') updateRamCounter(data.ram);
+          quizBestStreak = data.bestStreak || quizBestStreak;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      document.getElementById('ram-quiz-modal').classList.remove('active');
+    }
+
+    async function triggerAntiCheatPenalty() {
+      if (!isQuizModalOpen()) return;
+      quizSessionRunning = false;
+      quizLocked = true;
+      document.getElementById('ram-quiz-modal').classList.remove('active');
+
+      const username = localStorage.getItem('username');
+      try {
+        const res = await fetch('/api/ram/quiz-cheat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (typeof data.ram === 'number') updateRamCounter(data.ram);
+          quizStreak = 0;
+          quizPenaltyRemainingMs = data.dropPenalty?.remainingMs || (15 * 60 * 1000);
+          quizPenaltyPercent = data.dropPenalty?.reduction || 0.30;
+          renderQuizStatusUI();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      alert('🚨 TRICHE DÉTECTÉE : Tu as quitté le quiz en cours de partie ! Le quiz est arrêté, ta streak est perdue et tu reçois un malus de -30% sur les cartes rares pendant 15 minutes.');
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && isQuizModalOpen()) {
+        triggerAntiCheatPenalty();
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      if (isQuizModalOpen()) {
+        triggerAntiCheatPenalty();
+      }
+    });
+
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
-      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+      const initialRam = localStorage.getItem('ram') || localStorage.getItem('ects') || '60';
+      document.getElementById('ram-display').textContent = initialRam;
+      if (document.getElementById('ects-display')) {
+        document.getElementById('ects-display').textContent = initialRam;
+      }
 
       calculateOfflineProgress();
       updateUI();
       tick();
       setInterval(tick, 1000);
 
+      setInterval(() => {
+        if (quizPenaltyRemainingMs > 0) {
+          quizPenaltyRemainingMs = Math.max(0, quizPenaltyRemainingMs - 1000);
+          renderQuizStatusUI();
+        }
+      }, 1000);
+
+      document.getElementById('btn-open-ram-quiz').addEventListener('click', openRamQuizModal);
+      document.getElementById('btn-quit-ram-quiz').addEventListener('click', quitRamQuizModal);
+
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('username');
         localStorage.removeItem('ects');
+        localStorage.removeItem('ram');
         window.location.href = 'login.html';
       });
 
-      // Ouvrir 1 booster (révélation 1 par 1 au clic + récapitulatif)
       document.getElementById('btn-open-one').addEventListener('click', async () => {
         let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
         if (count > 0) {
@@ -618,7 +1052,6 @@
         }
       });
 
-      // Tout ouvrir : ouverture dans une page/modale dédiée, tremblement Legendarius+ et blur lumineux
       document.getElementById('btn-open-all').addEventListener('click', async () => {
         let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
         if (count > 0) {
@@ -653,7 +1086,6 @@
             grid.innerHTML = '';
             modal.classList.add('active');
 
-            // 1. Placement des dos de cartes de gauche à droite et de haut en bas
             const cardSlots = allPulledCards.map((card) => {
               const container = document.createElement('div');
               container.className = 'flip-card-container';
@@ -672,7 +1104,6 @@
                 <span class="card-back-footer">ENCRYPTED PACK</span>
               `;
 
-              // Face avant avec le blur coloré de la rareté
               const front = document.createElement('div');
               const blurClass = getBlurHaloClass(card.rarete);
               front.className = `flip-card-front ${blurClass}`;
@@ -683,7 +1114,6 @@
               container.appendChild(inner);
               grid.appendChild(container);
 
-              // Clic manuel possible également
               container.addEventListener('click', () => {
                 revealSingleGridCard(container, card);
               });
@@ -691,7 +1121,6 @@
               return { container, card };
             });
 
-            // 2. Retournement progressif en cascade de gauche à droite, ligne par ligne
             const FLIP_STEP_DELAY_MS = 280;
             cardSlots.forEach((slot, index) => {
               setTimeout(() => {
