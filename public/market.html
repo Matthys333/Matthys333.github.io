@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Marché & Enchères</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/cards.css">
   <script>
@@ -34,7 +35,7 @@
 
     <div class="sub-nav">
       <div class="sub-menu-items">
-        <a href="index.html" class="sub-item"><span class="dot"></span> ACCUEIL</a>
+        <a href="index.html" class="sub-item">ACCUEIL</a>
         <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
         <a href="collection.html" class="sub-item">📑 COLLECTION</a>
         <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
@@ -45,7 +46,7 @@
       <div class="sub-nav-right">
         <div class="currency-badge">
           <span class="currency-icon">🪙</span>
-          <span id="ects-display">60</span> ECTS
+          <span id="ram-display">60</span> RAM
         </div>
       </div>
     </div>
@@ -56,7 +57,7 @@
         <div>
           <h1 class="market-hero-title">LE MARCHÉ</h1>
           <p class="market-hero-desc">
-            Achète les cartes qui te manquent, à prix fixe ou aux enchères, et vends tes doublons en ECTS. Si personne n'achète ou n'enchérit avant la fin du décompte, la carte revient au vendeur.
+            Achète les cartes qui te manquent, à prix fixe ou aux enchères, et vends tes doublons en RAM. Si personne n'achète ou n'enchérit avant la fin du décompte, la carte revient au vendeur.
           </p>
         </div>
         <button id="btn-open-sell-modal" class="btn-sell-card-hero">
@@ -138,7 +139,7 @@
       </div>
 
       <div class="form-group">
-        <label id="price-label">PRIX DE VENTE (ECTS)</label>
+        <label id="price-label">PRIX DE VENTE (RAM)</label>
         <input type="number" id="sell-price-input" class="modern-select" min="1" value="15">
       </div>
 
@@ -206,7 +207,7 @@
         <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
         <div class="card-stats">
           <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
-          <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+          <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
         </div>
       `;
       return cardEl;
@@ -235,9 +236,9 @@
         allCardsCatalog[key] = c;
       });
 
-      if (userData && typeof userData.ects === 'number') {
-        localStorage.setItem('ects', userData.ects);
-        document.getElementById('ects-display').textContent = userData.ects;
+      if (userData && typeof userData.ram === 'number') {
+        localStorage.setItem('ram', userData.ram);
+        document.getElementById('ram-display').textContent = userData.ram;
       }
 
       const select = document.getElementById('sell-card-select');
@@ -345,7 +346,7 @@
           <div class="market-card-mount"></div>
           <div class="market-item-meta">
             <div>Vendeur : <strong>${item.seller}</strong></div>
-            <div>${isAuction ? 'Offre actuelle' : 'Prix'} : <strong style="color: var(--accent-cyan);">${item.currentPrice} ECTS</strong></div>
+            <div>${isAuction ? 'Offre actuelle' : 'Prix'} : <strong style="color: var(--accent-cyan);">${item.currentPrice} RAM</strong></div>
             ${isAuction ? `<div>Meilleur enchérisseur : <strong style="color: #e3b341;">${item.highestBidder || 'Aucun'}</strong></div>` : ''}
           </div>
           <div class="market-action-zone"></div>
@@ -359,7 +360,7 @@
         } else if (!isAuction) {
           const buyBtn = document.createElement('button');
           buyBtn.className = 'btn-accept-trade';
-          buyBtn.textContent = `ACHETER (${item.currentPrice} ECTS)`;
+          buyBtn.textContent = `ACHETER (${item.currentPrice} RAM)`;
           buyBtn.onclick = () => buyFixedCard(item.id);
           actionZone.appendChild(buyBtn);
         } else {
@@ -410,7 +411,7 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('username-display').textContent = currentUser || 'Étudiant';
-      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
 
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.clear();
@@ -430,7 +431,7 @@
 
       document.getElementById('sell-type-select').addEventListener('change', (e) => {
         document.getElementById('price-label').textContent =
-          e.target.value === 'auction' ? 'PRIX DE DÉPART ENCHÈRE (ECTS)' : 'PRIX DE VENTE (ECTS)';
+          e.target.value === 'auction' ? 'PRIX DE DÉPART ENCHÈRE (RAM)' : 'PRIX DE VENTE (RAM)';
       });
 
       document.querySelectorAll('.mode-pill-btn').forEach(btn => {

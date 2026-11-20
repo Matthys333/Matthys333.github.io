@@ -58,7 +58,7 @@ function syncImagesToCards() {
                 image: imagePathRoute,
                 stats: {
                     cafe: 0,
-                    ects: 0
+                    ram: 0
                 },
                 description: ""
             };

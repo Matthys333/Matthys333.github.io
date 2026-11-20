@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Classement</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
   <link rel="stylesheet" href="css/dashboard.css">
   <script>
     if (localStorage.getItem('isLoggedIn') !== 'true') {
@@ -33,7 +34,7 @@
 
     <div class="sub-nav">
       <div class="sub-menu-items">
-        <a href="index.html" class="sub-item"><span class="dot"></span> ACCUEIL</a>
+        <a href="index.html" class="sub-item"> ACCUEIL</a>
         <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
         <a href="collection.html" class="sub-item">📑 COLLECTION</a>
         <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
@@ -44,7 +45,7 @@
       <div class="sub-nav-right">
         <div class="currency-badge">
           <span class="currency-icon">🪙</span>
-          <span id="ects-display">60</span> ECTS
+          <span id="ram-display">60</span> RAM
         </div>
       </div>
     </div>
@@ -53,14 +54,14 @@
       <section>
         <h1 class="ranking-hero-title">🏆 CLASSEMENT</h1>
         <p class="ranking-hero-desc">
-          Compare ta progression avec les autres étudiants de la promo selon ta fortune en ECTS, la rareté de tes cartes ou la puissance globale de ton deck.
+          Compare ta progression avec les autres étudiants de la promo selon ta fortune en RAM, la rareté de tes cartes ou la puissance globale de ton deck.
         </p>
       </section>
 
       <div class="ranking-tabs">
-        <button class="ranking-tab-btn active" data-tab="ects">🪙 PLUS D'ECTS</button>
+        <button class="ranking-tab-btn active" data-tab="ram">🪙 PLUS DE RAM</button>
         <button class="ranking-tab-btn" data-tab="rarity">✨ MEILLEURES CARTES</button>
-        <button class="ranking-tab-btn" data-tab="power">⚡ PUISSANCE DECK (CAFÉ + ECTS)</button>
+        <button class="ranking-tab-btn" data-tab="power">⚡ PUISSANCE DECK (CAFÉ + RAM)</button>
       </div>
 
       <section class="leaderboard-card">
@@ -70,7 +71,7 @@
               <th>RANG</th>
               <th>JOUEUR</th>
               <th>CARTES (TOTAL / UNIQUES)</th>
-              <th id="score-column-header">SOLDE ECTS</th>
+              <th id="score-column-header">SOLDE RAM</th>
             </tr>
           </thead>
           <tbody id="ranking-tbody">
@@ -85,13 +86,13 @@
 
   <script>
     const currentUser = (localStorage.getItem('username') || 'Étudiant');
-    let rankingsData = { ects: [], rarity: [], power: [] };
-    let activeTab = 'ects';
+    let rankingsData = { ram: [], rarity: [], power: [] };
+    let activeTab = 'ram';
 
     const TAB_META = {
-      ects: {
-        header: 'SOLDE ECTS',
-        formatValue: (row) => `${row.ects} ECTS`
+      ram: {
+        header: 'SOLDE RAM',
+        formatValue: (row) => `${row.ram} RAM`
       },
       rarity: {
         header: 'SCORE RARETÉ',
@@ -106,7 +107,7 @@
     function renderRankingTable() {
       const tbody = document.getElementById('ranking-tbody');
       const headerEl = document.getElementById('score-column-header');
-      const meta = TAB_META[activeTab] || TAB_META.ects;
+      const meta = TAB_META[activeTab] || TAB_META.ram;
       const rows = rankingsData[activeTab] || [];
 
       headerEl.textContent = meta.header;
@@ -155,7 +156,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('username-display').textContent = currentUser;
-      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
 
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.clear();

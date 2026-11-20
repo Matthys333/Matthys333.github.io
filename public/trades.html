@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Échanges</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/cards.css">
 
@@ -42,15 +43,15 @@
         <a href="index.html" class="sub-item">ACCUEIL</a>
         <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
         <a href="collection.html" class="sub-item">📑 COLLECTION</a>
-        <a href="codex.html" class="sub-item">📖 CODEX</a>
         <a href="trades.html" class="sub-item active"><span class="dot"></span> 🔄 ÉCHANGES</a>
         <a href="market.html" class="sub-item">📈 MARCHÉ</a>
         <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
       </div>
       <div class="sub-nav-right">
         <div class="currency-badge">
           <span class="currency-icon">🪙</span>
-          <span id="ects-display">60</span> ECTS
+          <span id="ram-display">60</span> RAM
         </div>
       </div>
     </div>
@@ -142,7 +143,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const username = localStorage.getItem('username');
       document.getElementById('username-display').textContent = username || 'Étudiant';
-      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
 
       let cardMap = new Map();
       let userInventory = {};
@@ -347,7 +348,7 @@
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('username');
-        localStorage.removeItem('ects');
+        localStorage.removeItem('ram');
         window.location.href = 'login.html';
       });
 

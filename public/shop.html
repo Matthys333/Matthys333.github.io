@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Boutique</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/cards.css">
 
@@ -42,15 +43,15 @@
         <a href="index.html" class="sub-item">ACCUEIL</a>
         <a href="shop.html" class="sub-item active"><span class="dot"></span> 🛒 BOUTIQUE</a>
         <a href="collection.html" class="sub-item">📑 COLLECTION</a>
-        <a href="codex.html" class="sub-item">📖 CODEX</a>
         <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
         <a href="market.html" class="sub-item">📈 MARCHÉ</a>
         <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
       </div>
       <div class="sub-nav-right">
         <div class="currency-badge">
           <span class="currency-icon">🪙</span>
-          <span id="ects-display">60</span> ECTS
+          <span id="ram-display">60</span> RAM
         </div>
       </div>
     </div>
@@ -60,7 +61,7 @@
       <div>
         <h1 style="font-family: 'Fira Code', monospace;">// BOUTIQUE OFFICIELLE DU CAMPUS</h1>
         <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">
-          Dépensez vos crédits ECTS pour acquérir de nouveaux boosters ou compléter votre Codex à l'unité.
+          Dépensez vos crédits RAM pour acquérir de nouveaux boosters ou compléter votre Codex à l'unité.
         </p>
       </div>
 
@@ -89,7 +90,7 @@
               <span>• Legendarius+ : 2%</span>
             </div>
             <button class="btn-buy-pack" onclick="buyPack('standard', 15)">
-              ACHETER • 🪙 15 ECTS
+              ACHETER • 🪙 15 RAM
             </button>
           </div>
 
@@ -110,7 +111,7 @@
               <span>• Mythicus / Arcanus : 5%</span>
             </div>
             <button class="btn-buy-pack" style="background-color: #8957e5;" onclick="buyPack('pro', 35)">
-              ACHETER • 🪙 35 ECTS
+              ACHETER • 🪙 35 RAM
             </button>
           </div>
 
@@ -131,7 +132,7 @@
               <span>• Arcanus : 5%</span>
             </div>
             <button class="btn-buy-pack" style="background-color: #b08800;" onclick="buyPack('elite', 60)">
-              ACHETER • 🪙 60 ECTS
+              ACHETER • 🪙 60 RAM
             </button>
           </div>
         </div>
@@ -197,8 +198,8 @@
     let userInventoryCache = {};
 
     function updateEctsDisplay(newEcts) {
-      localStorage.setItem('ects', newEcts);
-      document.getElementById('ects-display').textContent = newEcts;
+      localStorage.setItem('ram', newEcts);
+      document.getElementById('ram-display').textContent = newEcts;
     }
 
     function renderCardHtml(card, badgeHtml = '') {
@@ -215,7 +216,7 @@
           </div>
           <div class="card-stats">
             <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
-            <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+            <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
           </div>
           <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
         </div>
@@ -247,7 +248,7 @@
     async function loadShop(isRefresh = false) {
       const username = localStorage.getItem('username');
       document.getElementById('username-display').textContent = username || 'Étudiant';
-      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
 
       try {
         const [cardsRes, invRes] = await Promise.all([
@@ -298,7 +299,7 @@
         wrapper.innerHTML = `
           ${renderCardHtml(card, badge)}
           <button class="btn-buy-pack" onclick="buySingleCard('${cardId}', ${price})">
-            ACHETER • 🪙 ${price} ECTS
+            ACHETER • 🪙 ${price} RAM
           </button>
         `;
         grid.appendChild(wrapper);
@@ -335,10 +336,10 @@
     // Achat d'un booster
     async function buyPack(tier, cost) {
       const username = localStorage.getItem('username');
-      let currentEcts = parseInt(localStorage.getItem('ects') || '0', 10);
+      let currentEcts = parseInt(localStorage.getItem('ram') || '0', 10);
 
       if (currentEcts < cost) {
-        alert("Crédits ECTS insuffisants pour acheter ce booster !");
+        alert("Crédits RAM insuffisants pour acheter ce booster !");
         return;
       }
 
@@ -366,7 +367,7 @@
 
         const data = await res.json();
         if (data.success) {
-          updateEctsDisplay(data.ects);
+          updateEctsDisplay(data.ram);
           showPackModal(drawnCards);
           loadShop();
         } else {
@@ -381,10 +382,10 @@
     // Achat d'une carte à l'unité
     async function buySingleCard(cardId, cost) {
       const username = localStorage.getItem('username');
-      let currentEcts = parseInt(localStorage.getItem('ects') || '0', 10);
+      let currentEcts = parseInt(localStorage.getItem('ram') || '0', 10);
 
       if (currentEcts < cost) {
-        alert("Crédits ECTS insuffisants !");
+        alert("Crédits RAM insuffisants !");
         return;
       }
 
@@ -401,7 +402,7 @@
 
         const data = await res.json();
         if (data.success) {
-          updateEctsDisplay(data.ects);
+          updateEctsDisplay(data.ram);
           const boughtCard = allCardsCache.find(c => (c.id || c.nom) === cardId);
           if (boughtCard) showPackModal([boughtCard]);
           loadShop();
@@ -426,7 +427,7 @@
     document.getElementById('logout-btn').addEventListener('click', () => {
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('username');
-      localStorage.removeItem('ects');
+      localStorage.removeItem('ram');
       window.location.href = 'login.html';
     });
 

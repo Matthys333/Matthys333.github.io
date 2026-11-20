@@ -28,6 +28,19 @@ function saveUsers(users) {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 }
 
+function getUserRam(user) {
+    if (typeof user.ram === 'number' && !Number.isNaN(user.ram)) {
+        return user.ram;
+    }
+    if (typeof user.ects === 'number' && !Number.isNaN(user.ects)) {
+        user.ram = user.ects;
+        delete user.ects;
+        return user.ram;
+    }
+    user.ram = 60;
+    return user.ram;
+}
+
 function ensureUserCollection(user) {
     if (!user.collection || Array.isArray(user.collection)) {
         const converted = {};
@@ -83,7 +96,7 @@ app.post('/api/login', (req, res) => {
     res.json({
         message: 'Connexion réussie',
         username: user.username,
-        ram: user.ram ?? 60
+        ram: getUserRam(user)
     });
 });
 
@@ -119,15 +132,15 @@ app.post('/api/open-stored-booster', (req, res) => {
     }
 
     function pullCardByRarity() {
-        const rand = Math.random() * 100;
+        const rand = Math.random() * 100 + penaltyPointsShift;
         let targetRarity = 'Vulgaris';
 
-        if (rand < 0.1) targetRarity = 'Arcanus';
-        else if (rand < 1.4) targetRarity = 'Mythicus';
-        else if (rand < 7.0) targetRarity = 'Legendarius';
-        else if (rand < 13.0) targetRarity = 'Eximius';
+        if (rand < 0.01) targetRarity = 'Arcanus';
+        else if (rand < 0.5) targetRarity = 'Mythicus';
+        else if (rand < 2.0) targetRarity = 'Legendarius';
+        else if (rand < 10.0) targetRarity = 'Eximius';
         else if (rand < 25.0) targetRarity = 'Rarus';
-        else if (rand < 50.0) targetRarity = 'Insolitus';
+        else if (rand < 62.49) targetRarity = 'Insolitus';
         else targetRarity = 'Vulgaris';
 
         let filteredCards = cardsData.filter(c => c.rarete && c.rarete.toLowerCase() === targetRarity.toLowerCase());
@@ -144,7 +157,6 @@ app.post('/api/open-stored-booster', (req, res) => {
     }
 
     if (username) {
-        const users = getUsers();
         const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
         if (user) {
             const collection = ensureUserCollection(user);
@@ -193,7 +205,7 @@ app.get('/api/user/:username', (req, res) => {
     const collection = ensureUserCollection(user);
     res.json({
         username: user.username,
-        ram: user.ram ?? 60,
+        ram: getUserRam(user),
         collection
     });
 });
@@ -304,7 +316,7 @@ app.post('/api/trades/cancel', (req, res) => {
 });
 
 // ==========================================
-// BOUTIQUE ram
+// BOUTIQUE RAM
 // ==========================================
 app.post('/api/shop/buy-pack', (req, res) => {
     const { username, cost, cardIds } = req.body;
@@ -315,12 +327,12 @@ app.post('/api/shop/buy-pack', (req, res) => {
         return res.status(404).json({ error: "Utilisateur introuvable." });
     }
 
-    const currentram = user.ram ?? 60;
-    if (currentram < cost) {
-        return res.status(400).json({ error: "Crédits ram insuffisants." });
+    const currentRam = getUserRam(user);
+    if (currentRam < cost) {
+        return res.status(400).json({ error: "Crédits RAM insuffisants." });
     }
 
-    user.ram = currentram - cost;
+    user.ram = currentRam - cost;
     const collection = ensureUserCollection(user);
 
     if (Array.isArray(cardIds)) {
@@ -368,7 +380,7 @@ function resolveExpiredListings() {
                     winnerCol[item.cardId] = (winnerCol[item.cardId] || 0) + 1;
                 }
                 if (seller) {
-                    seller.ram = (seller.ram ?? 60) + item.currentPrice;
+                    seller.ram = getUserRam(seller) + item.currentPrice;
                 }
             } else {
                 if (seller) {
@@ -459,24 +471,28 @@ app.post('/api/market/buy', (req, res) => {
     const buyer = users.find(u => u.username.toLowerCase() === username.toLowerCase());
     const seller = users.find(u => u.username.toLowerCase() === listing.seller.toLowerCase());
 
-    const buyerram = buyer?.ram ?? 60;
-    if (!buyer || buyerram < listing.currentPrice) {
-        return res.status(400).json({ success: false, error: 'ram insuffisants.' });
+    if (!buyer) {
+        return res.status(404).json({ success: false, error: 'Acheteur introuvable.' });
     }
 
-    buyer.ram = buyerram - listing.currentPrice;
+    const buyerRam = getUserRam(buyer);
+    if (buyerRam < listing.currentPrice) {
+        return res.status(400).json({ success: false, error: 'RAM insuffisants.' });
+    }
+
+    buyer.ram = buyerRam - listing.currentPrice;
     const buyerCol = ensureUserCollection(buyer);
     buyerCol[listing.cardId] = (buyerCol[listing.cardId] || 0) + 1;
 
     if (seller) {
-        seller.ram = (seller.ram ?? 60) + listing.currentPrice;
+        seller.ram = getUserRam(seller) + listing.currentPrice;
     }
 
     listings.splice(index, 1);
     saveUsers(users);
     writeMarket(listings);
 
-    res.json({ success: true, newram: buyer.ram });
+    res.json({ success: true, newRam: buyer.ram, ram: buyer.ram });
 });
 
 app.post('/api/market/bid', (req, res) => {
@@ -498,35 +514,35 @@ app.post('/api/market/bid', (req, res) => {
 
     const minRequired = listing.highestBidder ? listing.currentPrice + 1 : listing.startingPrice;
     if (isNaN(amount) || amount < minRequired) {
-        return res.status(400).json({ success: false, error: `L'enchère minimale est de ${minRequired} ram.` });
+        return res.status(400).json({ success: false, error: `L'enchère minimale est de ${minRequired} RAM.` });
     }
 
     const users = getUsers();
     const bidder = users.find(u => u.username.toLowerCase() === username.toLowerCase());
-    const bidderram = bidder?.ram ?? 60;
-    if (!bidder || bidderram < amount) {
-        return res.status(400).json({ success: false, error: 'ram insuffisants.' });
+    if (!bidder) {
+        return res.status(404).json({ success: false, error: 'Enchérisseur introuvable.' });
+    }
+
+    const bidderRam = getUserRam(bidder);
+    if (bidderRam < amount) {
+        return res.status(400).json({ success: false, error: 'RAM insuffisants.' });
     }
 
     if (listing.highestBidder) {
         const previousBidder = users.find(u => u.username.toLowerCase() === listing.highestBidder.toLowerCase());
         if (previousBidder) {
-            previousBidder.ram = (previousBidder.ram ?? 60) + listing.currentPrice;
+            previousBidder.ram = getUserRam(previousBidder) + listing.currentPrice;
         }
     }
 
-    bidder.ram = bidderram - amount;
+    bidder.ram = bidderRam - amount;
     listing.currentPrice = amount;
     listing.highestBidder = bidder.username;
 
     saveUsers(users);
     writeMarket(listings);
 
-    res.json({ success: true, newram: bidder.ram, listing });
-});
-
-app.listen(PORT, () => {
-    console.log(`Serveur TCG démarré sur http://localhost:${PORT}`);
+    res.json({ success: true, newRam: bidder.ram, ram: bidder.ram, listing });
 });
 
 // ==========================================
@@ -577,48 +593,44 @@ app.get('/api/ranking', (req, res) => {
                 rarityScore += rarityPts * count;
 
                 const cafe = Number(card.stats?.cafe) || 0;
-                const ramStat = Number(card.stats?.ram) || 0;
-                deckPowerScore += (cafe + ramStat) * count;
+                const ectsStat = Number(card.stats?.ects ?? card.stats?.ram) || 0;
+                deckPowerScore += (cafe + ectsStat) * count;
             }
         });
 
+        const currentStreak = Number(user.quizStreak) || 0;
+        const bestQuizStreak = Math.max(Number(user.bestQuizStreak) || 0, currentStreak);
+
         return {
             username: user.username,
-            ram: user.ram ?? 60,
+            ram: getUserRam(user),
             totalCards,
             uniqueCards,
             rarityScore,
-            deckPowerScore
+            deckPowerScore,
+            bestQuizStreak
         };
     });
 
-    const byram = [...entries].sort((a, b) => b.ram - a.ram || b.rarityScore - a.rarityScore);
+    const byRam = [...entries].sort((a, b) => b.ram - a.ram || b.rarityScore - a.rarityScore);
     const byRarity = [...entries].sort((a, b) => b.rarityScore - a.rarityScore || b.totalCards - a.totalCards);
     const byPower = [...entries].sort((a, b) => b.deckPowerScore - a.deckPowerScore || b.rarityScore - a.rarityScore);
+    const byQuizStreak = [...entries].sort((a, b) => b.bestQuizStreak - a.bestQuizStreak || b.ram - a.ram);
 
     res.json({
         success: true,
         rankings: {
-            ram: byram,
+            ram: byRam,
             rarity: byRarity,
-            power: byPower
+            power: byPower,
+            quiz: byQuizStreak
         }
     });
 });
 
-// Utilitaire pour lire/initialiser le solde RAM (compatible avec l'ancien champ ram)
-function getUserRam(user) {
-    if (typeof user.ram === 'number') return user.ram;
-    if (typeof user.ram === 'number') {
-        user.ram = user.ram;
-        delete user.ram;
-        return user.ram;
-    }
-    user.ram = 60;
-    return user.ram;
-}
-
-// Barème de recyclage (Garbage Collector) par rareté
+// ==========================================
+// GESTION RAM & RÉCOMPENSES
+// ==========================================
 const RECYCLE_RAM_VALUES = {
     vulgaris: 2,
     insolitus: 5,
@@ -629,7 +641,6 @@ const RECYCLE_RAM_VALUES = {
     arcanus: 400
 };
 
-// 1. Bonus quotidien (+40 RAM toutes les 24h)
 app.post('/api/ram/daily', (req, res) => {
     const { username } = req.body;
     const users = getUsers();
@@ -660,7 +671,6 @@ app.post('/api/ram/daily', (req, res) => {
     res.json({ success: true, reward, ram: user.ram, nextClaimAt: now + cooldownMs });
 });
 
-// 2. Recycler une carte (Garbage Collector)
 app.post('/api/ram/recycle', (req, res) => {
     const { username, cardId, quantity = 1 } = req.body;
     const qty = Math.max(1, parseInt(quantity, 10) || 1);
@@ -699,7 +709,6 @@ app.post('/api/ram/recycle', (req, res) => {
     });
 });
 
-// 3. Récompense mini-défi / Debug Express (+15 RAM, cooldown 3 min)
 app.post('/api/ram/quiz-reward', (req, res) => {
     const { username } = req.body;
     const users = getUsers();
@@ -732,7 +741,6 @@ app.post('/api/ram/quiz-reward', (req, res) => {
 // ==========================================
 // QUIZ RAM : ANTI-TRICHE (-30%), DIFFICULTÉ CROISSANTE & NON-RÉPÉTITION
 // ==========================================
-// ⚙️ Modifiable facilement pour tester (ex: 15 * 60 * 1000 = 15 min, ou 20 * 1000 = 20s)
 const RAM_QUIZ_PENALTY_DURATION_MS = 15 * 60 * 1000;
 const RAM_WRONG_ANSWER_PENALTY = 0.10; // -10% en cas de mauvaise réponse
 const RAM_CHEAT_PENALTY = 0.30;        // -30% en cas de sortie d'onglet / triche
@@ -918,28 +926,6 @@ app.post('/api/ram/quiz-cheat', (req, res) => {
     });
 });
 
-app.post('/api/ram/quiz-quit', (req, res) => {
-    const { username } = req.body;
-    const users = getUsers();
-    const user = users.find(u => u.username.toLowerCase() === (username || '').toLowerCase());
-
-    if (!user) {
-        return res.status(404).json({ success: false, error: 'Utilisateur introuvable.' });
-    }
-
-    const currentStreak = user.quizStreak || 0;
-    const bestStreak = Math.max(user.bestQuizStreak || 0, currentStreak);
-
-    // Aucune perte de RAM ni de streak, mais la série en cours ne pourra plus être continuée
-    user.bestQuizStreak = bestStreak;
-    user.quizSessionEnded = true;
-    saveUsers(users);
-
-    res.json({
-        success: true,
-        ram: getUserRam(user),
-        streak: currentStreak,
-        bestStreak: user.bestQuizStreak,
-        dropPenalty: getActiveDropPenalty(user)
-    });
+app.listen(PORT, () => {
+    console.log(`Serveur TCG démarré sur http://localhost:${PORT}`);
 });

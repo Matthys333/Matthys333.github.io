@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Dashboard</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
   <link rel="stylesheet" href="css/dashboard.css">
-  <link rel="stylesheet" href="css/quizz.css"
+  <link rel="stylesheet" href="css/quizz.css">
   <link rel="stylesheet" href="css/cards.css">
   
   <!-- Script de vérification de session -->
@@ -50,10 +51,10 @@
       </div>
       <div class="sub-nav-right" style="display: flex; align-items: center; gap: 10px;">
         <button type="button" id="btn-open-ram-quiz" class="btn-open-booster" style="padding: 6px 14px; font-size: 0.75rem;">
-          🧠 GAGNER DE LA RAM
+          🪙 GAGNER DE LA RAM
         </button>
         <div class="currency-badge">
-          <span class="currency-icon">🧠</span>
+          <span class="currency-icon">🪙</span>
           <span id="ram-display">60</span> RAM
         </div>
       </div>
@@ -303,7 +304,7 @@
         <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
         <div class="card-stats">
           <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
-          <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+          <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
         </div>
       `;
       return cardEl;
@@ -993,10 +994,10 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
-      const initialRam = localStorage.getItem('ram') || localStorage.getItem('ects') || '60';
+      const initialRam = localStorage.getItem('ram') || localStorage.getItem('ram') || '60';
       document.getElementById('ram-display').textContent = initialRam;
-      if (document.getElementById('ects-display')) {
-        document.getElementById('ects-display').textContent = initialRam;
+      if (document.getElementById('ram-display')) {
+        document.getElementById('ram-display').textContent = initialRam;
       }
 
       calculateOfflineProgress();
@@ -1017,7 +1018,7 @@
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('username');
-        localStorage.removeItem('ects');
+        localStorage.removeItem('ram');
         localStorage.removeItem('ram');
         window.location.href = 'login.html';
       });

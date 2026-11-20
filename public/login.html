@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TCG L2 - Authentification</title>
+    <link rel="icon" type="image/png" href="logo_carte.png">
     <link rel="stylesheet" href="css/auth.css">
 </head>
 <body>
@@ -100,7 +101,7 @@
                 // Sauvegarde des clés de session attendues par index.html
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', data.username);
-                localStorage.setItem('ects', '60'); // Valeur par défaut pour l'affichage
+                localStorage.setItem('ram', '60'); // Valeur par défaut pour l'affichage
 
                 // Redirection vers le tableau de bord
                 setTimeout(() => window.location.href = '/index.html', 1500);

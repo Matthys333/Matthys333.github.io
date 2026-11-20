@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L2 Info TCG - Collection</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
   <link rel="stylesheet" href="css/dashboard.css">
   <link rel="stylesheet" href="css/cards.css">
   
@@ -44,15 +45,15 @@
         <a href="index.html" class="sub-item">ACCUEIL</a>
         <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
         <a href="collection.html" class="sub-item active"><span class="dot"></span> 📑 COLLECTION</a>
-        <a href="codex.html" class="sub-item">📖 CODEX</a>
         <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
         <a href="market.html" class="sub-item">📈 MARCHÉ</a>
         <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
       </div>
       <div class="sub-nav-right">
         <div class="currency-badge">
           <span class="currency-icon">🪙</span>
-          <span id="ects-display">60</span> ECTS
+          <span id="ram-display">60</span> RAM
         </div>
       </div>
     </div>
@@ -88,7 +89,7 @@
     document.addEventListener('DOMContentLoaded', async () => {
       const username = localStorage.getItem('username');
       document.getElementById('username-display').textContent = username || 'Étudiant';
-      document.getElementById('ects-display').textContent = localStorage.getItem('ects') || '60';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
 
       try {
         // Récupération simultanée du catalogue global (cards.json) et de l'inventaire sous forme d'objet { cardId: count }
@@ -140,7 +141,7 @@
             </div>
             <div class="card-stats">
               <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
-              <span class="stat-ects">📜 ${card.stats?.ects || 0} ECTS</span>
+              <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
             </div>
             <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
           `;
@@ -156,7 +157,7 @@
       document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('username');
-        localStorage.removeItem('ects');
+        localStorage.removeItem('ram');
         window.location.href = 'login.html';
       });
     });
