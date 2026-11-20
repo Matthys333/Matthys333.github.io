@@ -1,9 +1,9 @@
 [
     {
-        "id": "card_1794919917157_905",
+        "id": "card_1795043489335_471",
         "nom": "ADHD",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "mythicus",
         "rangApparition": 1,
         "image": "/Image_TCG/cards/ADHD.jpeg",
         "stats": {
@@ -13,11 +13,24 @@
         "description": ""
     },
     {
-        "id": "card_1794919917168_808",
+        "id": "card_1795043490815_843",
+        "nom": "Christian",
+        "role": "",
+        "rarete": "arcanus",
+        "rangApparition": 2,
+        "image": "/Image_TCG/cards/Christian.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1795043493092_915",
         "nom": "team_pied",
         "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 2,
+        "rarete": "legendarius",
+        "rangApparition": 3,
         "image": "/Image_TCG/cards/team_pied.jpeg",
         "stats": {
             "cafe": 0,
@@ -26,12 +39,12 @@
         "description": ""
     },
     {
-        "id": "card_1794926463717_407",
-        "nom": "Christian",
+        "id": "card_1795053383665_177",
+        "nom": "Daniel",
         "role": "",
         "rarete": "vulgaris",
-        "rangApparition": 3,
-        "image": "/Image_TCG/cards/Christian.png",
+        "rangApparition": 4,
+        "image": "/Image_TCG/cards/Daniel.jpeg",
         "stats": {
             "cafe": 0,
             "ects": 0
