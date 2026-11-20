@@ -1,37 +1,11 @@
 [
     {
-        "id": "card_1795043489335_471",
-        "nom": "ADHD",
-        "role": "",
-        "rarete": "mythicus",
-        "rangApparition": 1,
-        "image": "/Image_TCG/cards/ADHD.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
         "id": "card_1795043490815_843",
         "nom": "Christian",
         "role": "",
-        "rarete": "arcanus",
+        "rarete": "mythicus",
         "rangApparition": 2,
         "image": "/Image_TCG/cards/Christian.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795043493092_915",
-        "nom": "team_pied",
-        "role": "",
-        "rarete": "legendarius",
-        "rangApparition": 3,
-        "image": "/Image_TCG/cards/team_pied.jpeg",
         "stats": {
             "cafe": 0,
             "ram": 0
@@ -53,102 +27,11 @@
     },
     {
         "id": "card_1795180910957_212",
-        "nom": "Phileas_10",
+        "nom": "Jesus",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "arcanus",
         "rangApparition": 5,
-        "image": "/Image_TCG/cards/Phileas_10.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910957_103",
-        "nom": "Phileas_11",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 6,
-        "image": "/Image_TCG/cards/Phileas_11.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910957_199",
-        "nom": "Phileas_12",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 7,
-        "image": "/Image_TCG/cards/Phileas_12.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910957_356",
-        "nom": "Phileas_2",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 8,
-        "image": "/Image_TCG/cards/Phileas_2.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910957_348",
-        "nom": "Phileas_3",
-        "role": "",
-        "rarete": "rarus",
-        "rangApparition": 9,
-        "image": "/Image_TCG/cards/Phileas_3.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910957_225",
-        "nom": "Phileas_4",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 10,
-        "image": "/Image_TCG/cards/Phileas_4.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910957_56",
-        "nom": "Phileas_5",
-        "role": "",
-        "rarete": "rarus",
-        "rangApparition": 11,
-        "image": "/Image_TCG/cards/Phileas_5.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910958_399",
-        "nom": "Phileas_6",
-        "role": "",
-        "rarete": "eximius",
-        "rangApparition": 12,
-        "image": "/Image_TCG/cards/Phileas_6.png",
+        "image": "/Image_TCG/cards/Jesus.png",
         "stats": {
             "cafe": 0,
             "ram": 0
@@ -157,7 +40,7 @@
     },
     {
         "id": "card_1795180910958_31",
-        "nom": "Phileas_7",
+        "nom": "Pou",
         "role": "",
         "rarete": "vulgaris",
         "rangApparition": 13,
@@ -169,36 +52,10 @@
         "description": ""
     },
     {
-        "id": "card_1795180910958_515",
-        "nom": "Phileas_8",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 14,
-        "image": "/Image_TCG/cards/Phileas_8.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180910958_338",
-        "nom": "Soul Master Disappointment",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 15,
-        "image": "/Image_TCG/cards/Soul Master Disappointment.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
         "id": "card_1795180910958_763",
-        "nom": "Victor_1",
+        "nom": "Victor",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "eximius",
         "rangApparition": 16,
         "image": "/Image_TCG/cards/Victor_1.png",
         "stats": {
@@ -224,7 +81,7 @@
         "id": "card_1795180910958_12",
         "nom": "Victor_3",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "insolitus",
         "rangApparition": 18,
         "image": "/Image_TCG/cards/Victor_3.png",
         "stats": {
@@ -237,7 +94,7 @@
         "id": "card_1795180913829_458",
         "nom": "Daniel_1",
         "role": "",
-        "rarete": "eximius",
+        "rarete": "rarus",
         "rangApparition": 19,
         "image": "/Image_TCG/cards/Daniel_1.jpeg",
         "stats": {
@@ -250,7 +107,7 @@
         "id": "card_1795180913830_616",
         "nom": "Dyclane",
         "role": "",
-        "rarete": "rarus",
+        "rarete": "mythicus",
         "rangApparition": 20,
         "image": "/Image_TCG/cards/Dyclane.png",
         "stats": {
@@ -276,7 +133,7 @@
         "id": "card_1795180913830_143",
         "nom": "Gabryel",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "legendarius",
         "rangApparition": 22,
         "image": "/Image_TCG/cards/Gabryel.png",
         "stats": {
@@ -289,7 +146,7 @@
         "id": "card_1795180913830_719",
         "nom": "Jean-Luc",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "rarus",
         "rangApparition": 23,
         "image": "/Image_TCG/cards/Jean-Luc.png",
         "stats": {
@@ -302,7 +159,7 @@
         "id": "card_1795180913830_890",
         "nom": "Jeremie",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "insolitus",
         "rangApparition": 24,
         "image": "/Image_TCG/cards/Jeremie.png",
         "stats": {
@@ -315,7 +172,7 @@
         "id": "card_1795180913830_532",
         "nom": "Jorlui",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "mythicus",
         "rangApparition": 25,
         "image": "/Image_TCG/cards/Jorlui.jpeg",
         "stats": {
@@ -341,7 +198,7 @@
         "id": "card_1795180913830_522",
         "nom": "Matthys",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "insolitus",
         "rangApparition": 27,
         "image": "/Image_TCG/cards/Matthys.png",
         "stats": {
@@ -354,7 +211,7 @@
         "id": "card_1795180913830_314",
         "nom": "Meïla qui aura farm",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "arcanus",
         "rangApparition": 28,
         "image": "/Image_TCG/cards/Meïla qui aura farm.png",
         "stats": {
@@ -380,7 +237,7 @@
         "id": "card_1795180913830_595",
         "nom": "Olivio",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "insolitus",
         "rangApparition": 30,
         "image": "/Image_TCG/cards/Olivio.jpeg",
         "stats": {
@@ -393,22 +250,9 @@
         "id": "card_1795180913830_736",
         "nom": "Phileas",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "legendarius",
         "rangApparition": 31,
         "image": "/Image_TCG/cards/Phileas.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
-    },
-    {
-        "id": "card_1795180913830_360",
-        "nom": "Phileas_1",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 32,
-        "image": "/Image_TCG/cards/Phileas_1.png",
         "stats": {
             "cafe": 0,
             "ram": 0
@@ -419,12 +263,51 @@
         "id": "card_1795199118785_513",
         "nom": "Steddy",
         "role": "",
-        "rarete": "vulgaris",
+        "rarete": "rarus",
         "rangApparition": 33,
         "image": "/Image_TCG/cards/Steddy.jpeg",
         "stats": {
             "cafe": 0,
             "ram": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1795206600723_344",
+        "nom": "Noisette(Phileas)",
+        "role": "",
+        "rarete": "eximius",
+        "rangApparition": 25,
+        "image": "/Image_TCG/cards/Noisette(Phileas).png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": ""
+    },
+    {
+        "id": "card_1795206904662_408",
+        "nom": "Un beau couple",
+        "role": "",
+        "rarete": "insolitus",
+        "rangApparition": 24,
+        "image": "/Image_TCG/cards/Un beau couple.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
+        },
+        "description": "Il ne savait pas encore..."
+    },
+    {
+        "id": "card_1795207103407_441",
+        "nom": "Toujours_plus",
+        "role": "",
+        "rarete": "vulgaris",
+        "rangApparition": 24,
+        "image": "/Image_TCG/cards/Toujours_plus.png",
+        "stats": {
+            "cafe": 0,
+            "ects": 0
         },
         "description": ""
     }
