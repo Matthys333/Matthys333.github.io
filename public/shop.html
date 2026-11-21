@@ -59,7 +59,7 @@
     <!-- Contenu Principal -->
     <main class="main-content" style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 100%; max-width: 1400px; margin: 0 auto; padding: 40px;">
       <div>
-        <h1 style="font-family: 'Fira Code', monospace;">// BOUTIQUE OFFICIELLE DU CAMPUS</h1>
+        <h1 style="font-family: 'Fira Code', monospace;">BOUTIQUE OFFICIELLE DU CAMPUS</h1>
         <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">
           Dépensez vos crédits RAM pour acquérir de nouveaux boosters ou compléter votre Codex à l'unité.
         </p>
@@ -143,7 +143,7 @@
         <div class="shop-section-header">
           <h2>⭐ SÉLECTION HAUTE DISTINCTION (EXIMIUS+)</h2>
           <span id="refresh-timer-badge" style="font-size: 0.8rem; color: var(--accent-cyan); font-family: 'Fira Code', monospace; background: rgba(88, 166, 255, 0.1); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(88, 166, 255, 0.3);">
-            REFRESH DANS : 02:00
+            REFRESH DANS : 01:00:00
           </span>
         </div>
 
@@ -165,20 +165,22 @@
 
   <script>
     // ==========================================
-    // CONFIGURATION DU TEMPS DE RAFRAÎCHISSEMENT
+    // CONFIGURATION DU TEMPS DE RAFRAÎCHISSEMENT (1H PERSISTANT)
     // ==========================================
-    // Modifie cette valeur pour changer le délai (en secondes).
-    // Exemple : 120 secondes = 2 minutes | 300 secondes = 5 minutes | 60 secondes = 1 minute.
-    const REFRESH_INTERVAL_SECONDS = 1; 
-    let remainingTime = REFRESH_INTERVAL_SECONDS;
-    let countdownTimer = null;
+    const REFRESH_INTERVAL_SECONDS = 3600; // 1 heure
+    const SHOP_REFRESH_AT_KEY = 'shopNextRefreshAt';
+    const SHOP_SHOWCASE_IDS_KEY = 'shopShowcaseCardIds';
 
     const RARITY_PRICES = {
-      eximius: 140,
-      legendarius: 160,
-      mythicus: 180,
-      arcanus: 200
+      eximius: 250,
+      legendarius: 500,
+      mythicus: 1000,
+      arcanus: 1500
     };
+
+    let countdownTimer = null;
+    let allCardsCache = [];
+    let userInventoryCache = {};
 
     function getRarityConfig(rarete) {
       const r = (rarete || 'vulgaris').toLowerCase();
@@ -194,16 +196,14 @@
       return configs[r] || configs.vulgaris;
     }
 
-    let allCardsCache = [];
-    let userInventoryCache = {};
-
-    function updateEctsDisplay(newEcts) {
-      localStorage.setItem('ram', newEcts);
-      document.getElementById('ram-display').textContent = newEcts;
+    function updateRamDisplay(newRam) {
+      localStorage.setItem('ram', newRam);
+      document.getElementById('ram-display').textContent = newRam;
     }
 
     function renderCardHtml(card, badgeHtml = '') {
       const style = getRarityConfig(card.rarete);
+      const ectsOrRamStat = card.stats?.ects ?? card.stats?.ram ?? 0;
       return `
         <div class="tcg-card" style="border-color: ${style.border};">
           <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
@@ -216,7 +216,7 @@
           </div>
           <div class="card-stats">
             <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
-            <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
+            <span class="stat-ram">📜 ${ectsOrRamStat} ECTS</span>
           </div>
           <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
         </div>
@@ -229,12 +229,11 @@
         return ['eximius', 'legendarius', 'mythicus', 'arcanus'].includes(r);
       });
 
-      if (highTierCards.length === 0) return cardsList[Math.floor(Math.random() * cardsList.length)];
-
+      const poolSource = highTierCards.length > 0 ? highTierCards : cardsList;
       const weights = { eximius: 55, legendarius: 30, mythicus: 12, arcanus: 3 };
-      
-      let weightedPool = [];
-      highTierCards.forEach(card => {
+
+      const weightedPool = [];
+      poolSource.forEach(card => {
         const r = (card.rarete || 'eximius').toLowerCase();
         const weight = weights[r] || 10;
         for (let i = 0; i < weight; i++) {
@@ -245,42 +244,66 @@
       return weightedPool[Math.floor(Math.random() * weightedPool.length)];
     }
 
-    async function loadShop(isRefresh = false) {
-      const username = localStorage.getItem('username');
-      document.getElementById('username-display').textContent = username || 'Étudiant';
-      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
+    function getOrCreateNextRefreshAt(forceReset = false) {
+      const now = Date.now();
+      const stored = parseInt(localStorage.getItem(SHOP_REFRESH_AT_KEY) || '0', 10);
 
-      try {
-        const [cardsRes, invRes] = await Promise.all([
-          fetch('/api/cards'),
-          fetch(`/api/collection/${encodeURIComponent(username)}`)
-        ]);
-
-        allCardsCache = await cardsRes.json();
-        userInventoryCache = await invRes.json();
-
-        refreshDailyShowcase();
-
-        // Réinitialise le timer de rafraîchissement automatique
-        resetRefreshTimer();
-
-      } catch (err) {
-        console.error("Erreur chargement boutique :", err);
+      if (forceReset || !stored || Number.isNaN(stored) || stored <= now) {
+        const nextRefreshAt = now + REFRESH_INTERVAL_SECONDS * 1000;
+        localStorage.setItem(SHOP_REFRESH_AT_KEY, String(nextRefreshAt));
+        return nextRefreshAt;
       }
+
+      return stored;
     }
 
-    function refreshDailyShowcase() {
-      const grid = document.getElementById('daily-cards-grid');
-      grid.innerHTML = '';
+    function getRemainingSeconds() {
+      const nextRefreshAt = getOrCreateNextRefreshAt(false);
+      return Math.max(0, Math.ceil((nextRefreshAt - Date.now()) / 1000));
+    }
 
+    function pickShowcaseCards() {
       const showcaseCards = [];
       let safetyCounter = 0;
+
       while (showcaseCards.length < 5 && safetyCounter < 100) {
         const candidate = getRandomHighTierCard(allCardsCache);
         if (candidate && !showcaseCards.some(c => (c.id || c.nom) === (candidate.id || candidate.nom))) {
           showcaseCards.push(candidate);
         }
         safetyCounter++;
+      }
+
+      localStorage.setItem(
+        SHOP_SHOWCASE_IDS_KEY,
+        JSON.stringify(showcaseCards.map(c => c.id || c.nom))
+      );
+
+      return showcaseCards;
+    }
+
+    function renderDailyShowcase(generateNew = false) {
+      const grid = document.getElementById('daily-cards-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      let showcaseCards = [];
+
+      if (!generateNew) {
+        try {
+          const savedIds = JSON.parse(localStorage.getItem(SHOP_SHOWCASE_IDS_KEY) || '[]');
+          if (Array.isArray(savedIds) && savedIds.length > 0) {
+            showcaseCards = savedIds
+              .map(id => allCardsCache.find(c => (c.id || c.nom) === id))
+              .filter(Boolean);
+          }
+        } catch (e) {
+          showcaseCards = [];
+        }
+      }
+
+      if (showcaseCards.length === 0) {
+        showcaseCards = pickShowcaseCards();
       }
 
       showcaseCards.forEach(card => {
@@ -306,39 +329,87 @@
       });
     }
 
-    // Gestion du compte à rebours visuel
-    function resetRefreshTimer() {
+    function startRefreshCountdown() {
       if (countdownTimer) clearInterval(countdownTimer);
-      remainingTime = REFRESH_INTERVAL_SECONDS;
+      getOrCreateNextRefreshAt(false);
       updateTimerDisplay();
 
       countdownTimer = setInterval(() => {
-        remainingTime--;
-        updateTimerDisplay();
+        const remaining = getRemainingSeconds();
+        updateTimerDisplay(remaining);
 
-        if (remainingTime <= 0) {
-          clearInterval(countdownTimer);
-          refreshDailyShowcase(); // Change les 5 cartes
-          resetRefreshTimer();     // Relance le timer
+        if (remaining <= 0) {
+          getOrCreateNextRefreshAt(true);
+          renderDailyShowcase(true);
+          updateTimerDisplay(getRemainingSeconds());
         }
       }, 1000);
     }
 
-    function updateTimerDisplay() {
-      const minutes = Math.floor(remainingTime / 60).toString().padStart(2, '0');
-      const seconds = (remainingTime % 60).toString().padStart(2, '0');
+    function updateTimerDisplay(remainingSec = getRemainingSeconds()) {
+      const hours = Math.floor(remainingSec / 3600).toString().padStart(2, '0');
+      const minutes = Math.floor((remainingSec % 3600) / 60).toString().padStart(2, '0');
+      const seconds = (remainingSec % 60).toString().padStart(2, '0');
       const badge = document.getElementById('refresh-timer-badge');
+
       if (badge) {
-        badge.textContent = `REFRESH DANS : ${minutes}:${seconds}`;
+        badge.textContent = `REFRESH DANS : ${hours}:${minutes}:${seconds}`;
+      }
+    }
+
+    async function loadShop() {
+      const grid = document.getElementById('daily-cards-grid');
+      const username = localStorage.getItem('username');
+      document.getElementById('username-display').textContent = username || 'Étudiant';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
+
+      if (!username) {
+        if (grid) grid.innerHTML = '<p style="color: #f85149;">Session invalide : identifiant manquant.</p>';
+        return;
+      }
+
+      try {
+        const [cardsRes, invRes] = await Promise.all([
+          fetch('/api/cards'),
+          fetch(`/api/collection/${encodeURIComponent(username)}`)
+        ]);
+
+        if (!cardsRes.ok) {
+          throw new Error(`Erreur /api/cards (${cardsRes.status})`);
+        }
+
+        const cardsData = await cardsRes.json();
+        allCardsCache = Array.isArray(cardsData) ? cardsData : [];
+
+        if (invRes.ok) {
+          const invData = await invRes.json();
+          userInventoryCache = (invData && typeof invData === 'object' && !Array.isArray(invData)) ? invData : {};
+        } else {
+          userInventoryCache = {};
+        }
+
+        if (allCardsCache.length === 0) {
+          if (grid) grid.innerHTML = '<p style="color: var(--text-muted);">Aucune carte disponible dans le catalogue.</p>';
+          return;
+        }
+
+        const hasSavedShowcase = Boolean(localStorage.getItem(SHOP_SHOWCASE_IDS_KEY));
+        renderDailyShowcase(!hasSavedShowcase);
+        startRefreshCountdown();
+      } catch (err) {
+        console.error("Erreur chargement boutique :", err);
+        if (grid) {
+          grid.innerHTML = `<p style="color: #f85149;">Impossible de charger la boutique (${err.message}).</p>`;
+        }
       }
     }
 
     // Achat d'un booster
     async function buyPack(tier, cost) {
       const username = localStorage.getItem('username');
-      let currentEcts = parseInt(localStorage.getItem('ram') || '0', 10);
+      const currentRam = parseInt(localStorage.getItem('ram') || '0', 10);
 
-      if (currentEcts < cost) {
+      if (currentRam < cost) {
         alert("Crédits RAM insuffisants pour acheter ce booster !");
         return;
       }
@@ -367,9 +438,10 @@
 
         const data = await res.json();
         if (data.success) {
-          updateEctsDisplay(data.ram);
+          updateRamDisplay(data.ram);
+          userInventoryCache = data.collection || userInventoryCache;
           showPackModal(drawnCards);
-          loadShop();
+          renderDailyShowcase(false);
         } else {
           alert(data.error || "Erreur lors de l'achat du booster.");
         }
@@ -382,9 +454,9 @@
     // Achat d'une carte à l'unité
     async function buySingleCard(cardId, cost) {
       const username = localStorage.getItem('username');
-      let currentEcts = parseInt(localStorage.getItem('ram') || '0', 10);
+      const currentRam = parseInt(localStorage.getItem('ram') || '0', 10);
 
-      if (currentEcts < cost) {
+      if (currentRam < cost) {
         alert("Crédits RAM insuffisants !");
         return;
       }
@@ -402,10 +474,11 @@
 
         const data = await res.json();
         if (data.success) {
-          updateEctsDisplay(data.ram);
+          updateRamDisplay(data.ram);
+          userInventoryCache = data.collection || userInventoryCache;
           const boughtCard = allCardsCache.find(c => (c.id || c.nom) === cardId);
           if (boughtCard) showPackModal([boughtCard]);
-          loadShop();
+          renderDailyShowcase(false);
         } else {
           alert(data.error || "Erreur lors de l'achat.");
         }

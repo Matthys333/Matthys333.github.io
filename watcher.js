@@ -1,90 +1,164 @@
 const fs = require('fs');
 const path = require('path');
 
-const CARDS_DIR = path.join(__dirname, 'Image_TCG', 'cards');
-const CARDS_JSON_PATH = path.join(__dirname, 'data', 'cards.json');
+const ROOT_DIR = __dirname;
+const BASE_IMAGE_DIR = path.join(ROOT_DIR, 'Image_TCG');
+const WATCH_DIR = path.join(BASE_IMAGE_DIR, 'cards');
+const CARDS_FILE = path.join(ROOT_DIR, 'data', 'cards.json');
 
-if (!fs.existsSync(CARDS_DIR)) {
-    fs.mkdirSync(CARDS_DIR, { recursive: true });
+const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.gif']);
+
+// ==========================================
+// TAUX DE DROP POUR L'ATTRIBUTION DES RARETÉS
+// ==========================================
+const DROP_RATES = [
+  { rarete: 'Arcanus',     chance: 0.2 },   // 0.2%
+  { rarete: 'Mythicus',    chance: 0.8 },   // 0.8%
+  { rarete: 'Legendarius', chance: 3.0 },   // 3.0%
+  { rarete: 'Eximius',     chance: 7.0 },   // 7.0%
+  { rarete: 'Rarus',       chance: 14.0 },  // 14.0%
+  { rarete: 'Insolitus',   chance: 25.0 },  // 25.0%
+  { rarete: 'Vulgaris',    chance: 50.0 }   // 50.0%
+];
+
+// Plages de statistiques générées selon la rareté tirée
+const RARITY_BASE_STATS = {
+  vulgaris:    { min: 1,  max: 3 },
+  insolitus:   { min: 2,  max: 5 },
+  rarus:       { min: 4,  max: 8 },
+  eximius:     { min: 7,  max: 12 },
+  legendarius: { min: 11, max: 18 },
+  mythicus:    { min: 16, max: 25 },
+  arcanus:     { min: 22, max: 35 }
+};
+
+function rollRarityFromDropRates() {
+  const totalWeight = DROP_RATES.reduce((sum, item) => sum + item.chance, 0);
+  let roll = Math.random() * totalWeight;
+
+  for (const entry of DROP_RATES) {
+    if (roll < entry.chance) {
+      return entry.rarete;
+    }
+    roll -= entry.chance;
+  }
+
+  return 'Vulgaris';
 }
 
-function syncImagesToCards() {
-    let cards = [];
-    if (fs.existsSync(CARDS_JSON_PATH)) {
-        try {
-            const data = fs.readFileSync(CARDS_JSON_PATH, 'utf-8');
-            cards = JSON.parse(data || '[]');
-        } catch (e) {
-            cards = [];
-        }
-    }
+function generateStatsForRarity(rarete) {
+  const key = (rarete || 'vulgaris').toLowerCase();
+  const range = RARITY_BASE_STATS[key] || RARITY_BASE_STATS.vulgaris;
+  const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-    const files = fs.readdirSync(CARDS_DIR);
-    const imageExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif'];
-    const imageFiles = files.filter(file => imageExtensions.includes(path.extname(file).toLowerCase()));
-
-    let modified = false;
-
-    // 1. Supprimer les cartes dont l'image n'existe plus sur le disque
-    const initialLength = cards.length;
-    cards = cards.filter(card => {
-        if (!card.image) return false;
-        const fileName = path.basename(card.image);
-        const existsOnDisk = imageFiles.includes(fileName);
-        if (!existsOnDisk) {
-            console.log(`[SYNC] Image supprimée du dossier, suppression de la carte : ${card.nom || fileName}`);
-        }
-        return existsOnDisk;
-    });
-
-    if (cards.length !== initialLength) {
-        modified = true;
-    }
-
-    // 2. Ajouter les nouvelles images détectées
-    imageFiles.forEach(imgFile => {
-        const imagePathRoute = `/Image_TCG/cards/${imgFile}`;
-        const existsInCards = cards.some(card => card.image === imagePathRoute || (card.image && card.image.endsWith(imgFile)));
-
-        if (!existsInCards) {
-            const baseName = path.basename(imgFile, path.extname(imgFile));
-
-            const newCard = {
-                id: `card_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
-                nom: baseName,
-                role: "",
-                rarete: "vulgaris",
-                rangApparition: cards.length + 1,
-                image: imagePathRoute,
-                stats: {
-                    cafe: 0,
-                    ram: 0
-                },
-                description: ""
-            };
-
-            cards.push(newCard);
-            modified = true;
-            console.log(`[SYNC] Nouvelle carte créée pour l'image : ${imgFile}`);
-        }
-    });
-
-    if (modified) {
-        fs.writeFileSync(CARDS_JSON_PATH, JSON.stringify(cards, null, 4), 'utf-8');
-        console.log('[SYNC] Fichier cards.json mis à jour.');
-    }
+  return {
+    cafe: randInt(range.min, range.max),
+    ects: randInt(range.min, range.max)
+  };
 }
 
-// Lancement initial
-syncImagesToCards();
+function formatCardNameFromFilename(filePath) {
+  const base = path.basename(filePath, path.extname(filePath));
+  return base
+    .replace(/[-_]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, char => char.toUpperCase());
+}
 
-// Surveillance avec debounce pour éviter les déclenchements multiples
-let watchTimeout = null;
-fs.watch(CARDS_DIR, (eventType, filename) => {
-    if (watchTimeout) clearTimeout(watchTimeout);
-    watchTimeout = setTimeout(() => {
-        syncImagesToCards();
-    }, 100);
-});
+function toPublicImagePath(fullFilePath) {
+  const rel = path.relative(BASE_IMAGE_DIR, fullFilePath).split(path.sep).join('/');
+  return `/Image_TCG/${rel}`;
+}
 
-console.log(`[WATCHER] Surveillance active sur le dossier : ${CARDS_DIR}`);
+function readCards() {
+  if (!fs.existsSync(CARDS_FILE)) {
+    fs.mkdirSync(path.dirname(CARDS_FILE), { recursive: true });
+    fs.writeFileSync(CARDS_FILE, JSON.stringify([], null, 2));
+    return [];
+  }
+  const raw = fs.readFileSync(CARDS_FILE, 'utf-8');
+  return JSON.parse(raw || '[]');
+}
+
+function writeCards(cards) {
+  fs.writeFileSync(CARDS_FILE, JSON.stringify(cards, null, 2));
+}
+
+function registerNewImageCard(fullFilePath) {
+  const ext = path.extname(fullFilePath).toLowerCase();
+  if (!IMAGE_EXTENSIONS.has(ext)) return;
+  if (!fs.existsSync(fullFilePath)) return;
+
+  const publicPath = toPublicImagePath(fullFilePath);
+  const cards = readCards();
+
+  const alreadyExists = cards.some(c => c.image === publicPath);
+  if (alreadyExists) return;
+
+  const rarete = rollRarityFromDropRates();
+  const cardName = formatCardNameFromFilename(fullFilePath);
+  const slugBase = cardName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '') || 'carte';
+
+  const newCard = {
+    id: `${slugBase}_${Date.now().toString(36)}`,
+    nom: cardName,
+    rarete,
+    image: publicPath,
+    description: `Carte L2 Info : ${cardName}.`,
+    stats: generateStatsForRarity(rarete)
+  };
+
+  cards.push(newCard);
+  writeCards(cards);
+  console.log(`[WATCHER] Nouvelle carte ajoutée : "${newCard.nom}" [${newCard.rarete}] -> ${newCard.image}`);
+}
+
+function scanExistingFiles(dir) {
+  if (!fs.existsSync(dir)) return;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      scanExistingFiles(fullPath);
+    } else if (entry.isFile()) {
+      registerNewImageCard(fullPath);
+    }
+  }
+}
+
+function startWatcher() {
+  if (!fs.existsSync(WATCH_DIR)) {
+    fs.mkdirSync(WATCH_DIR, { recursive: true });
+  }
+
+  console.log(`[WATCHER] Surveillance active sur : ${WATCH_DIR}`);
+  scanExistingFiles(WATCH_DIR);
+
+  const pendingTimers = new Map();
+
+  fs.watch(WATCH_DIR, { recursive: true }, (eventType, filename) => {
+    if (!filename) return;
+    const fullPath = path.join(WATCH_DIR, filename);
+
+    // Debounce de 250 ms pour attendre la fin de l'écriture du fichier sur le disque
+    if (pendingTimers.has(fullPath)) {
+      clearTimeout(pendingTimers.get(fullPath));
+    }
+
+    const timer = setTimeout(() => {
+      pendingTimers.delete(fullPath);
+      if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
+        registerNewImageCard(fullPath);
+      }
+    }, 250);
+
+    pendingTimers.set(fullPath, timer);
+  });
+}
+
+startWatcher();

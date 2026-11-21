@@ -1,314 +1,787 @@
 [
-    {
-        "id": "card_1795043490815_843",
-        "nom": "Christian",
-        "role": "",
-        "rarete": "mythicus",
-        "rangApparition": 2,
-        "image": "/Image_TCG/cards/Christian.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+  {
+    "id": "card_1795208467635_643",
+    "nom": "Christian",
+    "role": "",
+    "rarete": "mythicus",
+    "rangApparition": 1,
+    "image": "/Image_TCG/cards/Christian.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795053383665_177",
-        "nom": "Daniel",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 4,
-        "image": "/Image_TCG/cards/Daniel.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Un dictateur refoulé"
+  },
+  {
+    "id": "card_1795208467646_33",
+    "nom": "Daniel",
+    "role": "",
+    "rarete": "legendarius",
+    "rangApparition": 2,
+    "image": "/Image_TCG/cards/Daniel.jpeg",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180910957_212",
-        "nom": "Jesus",
-        "role": "",
-        "rarete": "arcanus",
-        "rangApparition": 5,
-        "image": "/Image_TCG/cards/Jesus.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Un fantôme comme on en voit peu"
+  },
+  {
+    "id": "card_1795208467646_230",
+    "nom": "Dyclane",
+    "role": "",
+    "rarete": "mythicus",
+    "rangApparition": 3,
+    "image": "/Image_TCG/cards/Dyclane.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180910958_31",
-        "nom": "Pou",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 13,
-        "image": "/Image_TCG/cards/Phileas_7.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "14h de Genshin d'affilée"
+  },
+  {
+    "id": "card_1795208467646_176",
+    "nom": "Emilton",
+    "role": "",
+    "rarete": "Insolitus",
+    "rangApparition": 4,
+    "image": "/Image_TCG/cards/Emilton.jpeg",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180910958_763",
-        "nom": "Victor",
-        "role": "",
-        "rarete": "eximius",
-        "rangApparition": 16,
-        "image": "/Image_TCG/cards/Victor_1.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Le doyen d'Antimatter Dimension"
+  },
+  {
+    "id": "card_1795208467646_662",
+    "nom": "Gabryel",
+    "role": "",
+    "rarete": "legendarius",
+    "rangApparition": 5,
+    "image": "/Image_TCG/cards/Gabryel.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180910958_862",
-        "nom": "Victor_2",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 17,
-        "image": "/Image_TCG/cards/Victor_2.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Utilise un clavier 60% acheté sur AliExpress"
+  },
+  {
+    "id": "card_1795208467646_732",
+    "nom": "Jean-Luc",
+    "role": "",
+    "rarete": "rarus",
+    "rangApparition": 6,
+    "image": "/Image_TCG/cards/Jean-Luc.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180910958_12",
-        "nom": "Victor_3",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 18,
-        "image": "/Image_TCG/cards/Victor_3.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Plus besoin de le présenter"
+  },
+  {
+    "id": "card_1795208467646_156",
+    "nom": "Jeremie",
+    "role": "",
+    "rarete": "rarus",
+    "rangApparition": 7,
+    "image": "/Image_TCG/cards/Jeremie.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913829_458",
-        "nom": "Daniel_1",
-        "role": "",
-        "rarete": "rarus",
-        "rangApparition": 19,
-        "image": "/Image_TCG/cards/Daniel_1.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Traître au jeu de la confiance"
+  },
+  {
+    "id": "card_1795208467646_20",
+    "nom": "Jesus(Phileas)",
+    "role": "",
+    "rarete": "arcanus",
+    "rangApparition": 8,
+    "image": "/Image_TCG/cards/Jesus(Phileas).png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_616",
-        "nom": "Dyclane",
-        "role": "",
-        "rarete": "mythicus",
-        "rangApparition": 20,
-        "image": "/Image_TCG/cards/Dyclane.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Un fils à papa"
+  },
+  {
+    "id": "card_1795208467646_863",
+    "nom": "Jorlui",
+    "role": "",
+    "rarete": "mythicus",
+    "rangApparition": 9,
+    "image": "/Image_TCG/cards/Jorlui.jpeg",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_188",
-        "nom": "Emilton",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 21,
-        "image": "/Image_TCG/cards/Emilton.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "2500h sur Honkai Star rail"
+  },
+  {
+    "id": "card_1795208467646_159",
+    "nom": "Karl Marx",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 10,
+    "image": "/Image_TCG/cards/Karl Marx.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_143",
-        "nom": "Gabryel",
-        "role": "",
-        "rarete": "legendarius",
-        "rangApparition": 22,
-        "image": "/Image_TCG/cards/Gabryel.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Un génie incompris"
+  },
+  {
+    "id": "card_1795208467646_513",
+    "nom": "Matthys",
+    "role": "",
+    "rarete": "Insolitus",
+    "rangApparition": 11,
+    "image": "/Image_TCG/cards/Matthys.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_719",
-        "nom": "Jean-Luc",
-        "role": "",
-        "rarete": "rarus",
-        "rangApparition": 23,
-        "image": "/Image_TCG/cards/Jean-Luc.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Ne sait pas faire de tractions"
+  },
+  {
+    "id": "card_1795208467646_103",
+    "nom": "Meïla qui aura farm",
+    "role": "",
+    "rarete": "arcanus",
+    "rangApparition": 12,
+    "image": "/Image_TCG/cards/Meïla qui aura farm.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_890",
-        "nom": "Jeremie",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 24,
-        "image": "/Image_TCG/cards/Jeremie.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Que dire de plus..."
+  },
+  {
+    "id": "card_1795208467646_203",
+    "nom": "Meïla",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 13,
+    "image": "/Image_TCG/cards/Meïla.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_532",
-        "nom": "Jorlui",
-        "role": "",
-        "rarete": "mythicus",
-        "rangApparition": 25,
-        "image": "/Image_TCG/cards/Jorlui.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Akuna matataKae"
+  },
+  {
+    "id": "card_1795208467646_823",
+    "nom": "Naruto(Daniel)",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 14,
+    "image": "/Image_TCG/cards/Naruto(Daniel).jpeg",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_280",
-        "nom": "Karl Marx",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 26,
-        "image": "/Image_TCG/cards/Karl Marx.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Pas assez fluo"
+  },
+  {
+    "id": "card_1795208467646_643",
+    "nom": "Noisette(Phileas)",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 15,
+    "image": "/Image_TCG/cards/Noisette(Phileas).png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_522",
-        "nom": "Matthys",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 27,
-        "image": "/Image_TCG/cards/Matthys.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Frère arrête avec ton chat"
+  },
+  {
+    "id": "card_1795208467647_244",
+    "nom": "Olivio",
+    "role": "",
+    "rarete": "eximius",
+    "rangApparition": 16,
+    "image": "/Image_TCG/cards/Olivio.jpeg",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_314",
-        "nom": "Meïla qui aura farm",
-        "role": "",
-        "rarete": "arcanus",
-        "rangApparition": 28,
-        "image": "/Image_TCG/cards/Meïla qui aura farm.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "65€ pour jouer à Wakfu"
+  },
+  {
+    "id": "card_1795208467647_878",
+    "nom": "Phileas",
+    "role": "",
+    "rarete": "rarus",
+    "rangApparition": 17,
+    "image": "/Image_TCG/cards/Phileas.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_327",
-        "nom": "Meïla",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 29,
-        "image": "/Image_TCG/cards/Meïla.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Un Cat-pla... Ok je sors"
+  },
+  {
+    "id": "card_1795208467647_800",
+    "nom": "Pou",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 18,
+    "image": "/Image_TCG/cards/Pou.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_595",
-        "nom": "Olivio",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 30,
-        "image": "/Image_TCG/cards/Olivio.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Vous l'avez tué"
+  },
+  {
+    "id": "card_1795208467647_220",
+    "nom": "Steddy",
+    "role": "",
+    "rarete": "eximius",
+    "rangApparition": 19,
+    "image": "/Image_TCG/cards/Steddy.jpeg",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795180913830_736",
-        "nom": "Phileas",
-        "role": "",
-        "rarete": "legendarius",
-        "rangApparition": 31,
-        "image": "/Image_TCG/cards/Phileas.png",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "Pub pour Flexcible"
+  },
+  {
+    "id": "card_1795208467647_708",
+    "nom": "Toujours_plus",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 20,
+    "image": "/Image_TCG/cards/Toujours_plus.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795199118785_513",
-        "nom": "Steddy",
-        "role": "",
-        "rarete": "rarus",
-        "rangApparition": 33,
-        "image": "/Image_TCG/cards/Steddy.jpeg",
-        "stats": {
-            "cafe": 0,
-            "ram": 0
-        },
-        "description": ""
+    "description": "T'abuses avec ton chat là !"
+  },
+  {
+    "id": "card_1795208467647_144",
+    "nom": "Un beau couple",
+    "role": "",
+    "rarete": "Insolitus",
+    "rangApparition": 21,
+    "image": "/Image_TCG/cards/Un beau couple.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795206600723_344",
-        "nom": "Noisette(Phileas)",
-        "role": "",
-        "rarete": "eximius",
-        "rangApparition": 25,
-        "image": "/Image_TCG/cards/Noisette(Phileas).png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
+    "description": "Il ne savait pas encore..."
+  },
+  {
+    "id": "card_1795208467647_553",
+    "nom": "Victor",
+    "role": "",
+    "rarete": "rarus",
+    "rangApparition": 22,
+    "image": "/Image_TCG/cards/Victor.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795206904662_408",
-        "nom": "Un beau couple",
-        "role": "",
-        "rarete": "insolitus",
-        "rangApparition": 24,
-        "image": "/Image_TCG/cards/Un beau couple.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": "Il ne savait pas encore..."
+    "description": "Toujours pas mort de crise cardiaque"
+  },
+  {
+    "id": "card_1795208467647_733",
+    "nom": "Victor_2",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 23,
+    "image": "/Image_TCG/cards/Victor_2.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
     },
-    {
-        "id": "card_1795207103407_441",
-        "nom": "Toujours_plus",
-        "role": "",
-        "rarete": "vulgaris",
-        "rangApparition": 24,
-        "image": "/Image_TCG/cards/Toujours_plus.png",
-        "stats": {
-            "cafe": 0,
-            "ects": 0
-        },
-        "description": ""
+    "description": "Tu veux que je te dises quoi ?"
+  },
+  {
+    "id": "card_1795208467647_24",
+    "nom": "Victor_3",
+    "role": "",
+    "rarete": "vulgaris",
+    "rangApparition": 24,
+    "image": "/Image_TCG/cards/Victor_3.png",
+    "stats": {
+      "cafe": 0,
+      "ram": 0
+    },
+    "description": "Eh vsy tjrs dans l'abus"
+  },
+  {
+    "id": "beato_mwq62ux3",
+    "nom": "Beato",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/Beato.jpeg",
+    "description": "Elle est pas commode",
+    "stats": {
+      "cafe": 7,
+      "ects": 7
     }
+  },
+  {
+    "id": "dalleux_mwq6jko5",
+    "nom": "Dalleux",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Dalleux.jpeg",
+    "description": "Le Loli-mancer",
+    "stats": {
+      "cafe": 2,
+      "ects": 4
+    }
+  },
+  {
+    "id": "dieu_mwq6jko6",
+    "nom": "Dieu",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Dieu.jpeg",
+    "description": "Distingue le sucre du sel",
+    "stats": {
+      "cafe": 2,
+      "ects": 1
+    }
+  },
+  {
+    "id": "drama_queen_mwq6jko9",
+    "nom": "Drama Queen",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Drama_queen.jpeg",
+    "description": "Triste vien en vrai",
+    "stats": {
+      "cafe": 1,
+      "ects": 3
+    }
+  },
+  {
+    "id": "ei_mwq6jkoa",
+    "nom": "Ei",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Ei.jpeg",
+    "description": "Ne sait pas faire à manger",
+    "stats": {
+      "cafe": 2,
+      "ects": 3
+    }
+  },
+  {
+    "id": "inutile_mwq6jkoa",
+    "nom": "Inutile",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Inutile.jpeg",
+    "description": "Un potentiel raté",
+    "stats": {
+      "cafe": 1,
+      "ects": 1
+    }
+  },
+  {
+    "id": "la_goat_mwq6jkob",
+    "nom": "La Goat",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/La_Goat.jpeg",
+    "description": "Rem Supremacy",
+    "stats": {
+      "cafe": 6,
+      "ects": 7
+    }
+  },
+  {
+    "id": "loli_oubliable_mwq6jkob",
+    "nom": "Loli Oubliable",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Loli_oubliable.jpeg",
+    "description": "Maîtrise les feuillages et... c'est tout",
+    "stats": {
+      "cafe": 1,
+      "ects": 2
+    }
+  },
+  {
+    "id": "mavuika_la_blanche_mwq6jkoc",
+    "nom": "Mavuika La Blanche",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/Mavuika_la_blanche.jpeg",
+    "description": "Pour une déesse Egyptienne... Elle est bien blanche",
+    "stats": {
+      "cafe": 5,
+      "ects": 8
+    }
+  },
+  {
+    "id": "twink_boy_mwq6jkoe",
+    "nom": "Twink Boy",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Twink_boy.jpeg",
+    "description": "Homme ou femme, à vous de choisir",
+    "stats": {
+      "cafe": 2,
+      "ects": 1
+    }
+  },
+  {
+    "id": "zhongli_mwq6jkoe",
+    "nom": "Zhongli",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Zhongli.jpeg",
+    "description": "Carte L2 Info : Zhongli.",
+    "stats": {
+      "cafe": 1,
+      "ects": 1
+    }
+  },
+  {
+    "id": "rem_est_meilleure_mwq7ry5a",
+    "nom": "Rem Est Meilleure",
+    "rarete": "Eximius",
+    "image": "/Image_TCG/cards/Rem_est_meilleure.jpeg",
+    "description": "En 2 saisons, elle n'a rien fait",
+    "stats": {
+      "cafe": 12,
+      "ects": 8
+    }
+  },
+  {
+    "id": "epstein_mwqw8nx3",
+    "nom": "Epstein",
+    "rarete": "Mythicus",
+    "image": "/Image_TCG/cards/Epstein.jpeg",
+    "description": "Il appréciait la pizza",
+    "stats": {
+      "cafe": 24,
+      "ects": 22
+    }
+  },
+  {
+    "id": "liborius_mwqw8nx5",
+    "nom": "Liborius",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Liborius.jpeg",
+    "description": "Que dire, que faire",
+    "stats": {
+      "cafe": 4,
+      "ects": 2
+    }
+  },
+  {
+    "id": "manipulation_mwqwf74u",
+    "nom": "Manipulation",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Manipulation.jpg",
+    "description": "Carte L2 Info : Manipulation.",
+    "stats": {
+      "cafe": 3,
+      "ects": 3
+    }
+  },
+  {
+    "id": "aion_aha_mwqyhja9",
+    "nom": "Aion Aha",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Aion Aha.jpeg",
+    "description": "Carte L2 Info : Aion Aha.",
+    "stats": {
+      "cafe": 1,
+      "ects": 2
+    }
+  },
+  {
+    "id": "aion_aha_reine_du_rire_mwqyhjaa",
+    "nom": "Aion Aha (Reine Du Rire)",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/Aion Aha (Reine du Rire).jpeg",
+    "description": "Carte L2 Info : Aion Aha (Reine Du Rire).",
+    "stats": {
+      "cafe": 6,
+      "ects": 6
+    }
+  },
+  {
+    "id": "benimaru_g_nerale_espion_mwqyhjaa",
+    "nom": "Benimaru(GéNerale Espion)",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Benimaru(Génerale Espion).jpeg",
+    "description": "Carte L2 Info : Benimaru(GéNerale Espion).",
+    "stats": {
+      "cafe": 3,
+      "ects": 3
+    }
+  },
+  {
+    "id": "castorice_mwqyhjac",
+    "nom": "Castorice",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Castorice.jpeg",
+    "description": "Carte L2 Info : Castorice.",
+    "stats": {
+      "cafe": 2,
+      "ects": 3
+    }
+  },
+  {
+    "id": "celdra_dragon_mythique_mwqyhjad",
+    "nom": "Celdra(Dragon Mythique)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Celdra(Dragon Mythique).jpeg",
+    "description": "Carte L2 Info : Celdra(Dragon Mythique).",
+    "stats": {
+      "cafe": 3,
+      "ects": 3
+    }
+  },
+  {
+    "id": "diablo_incarnation_des_enfer_mwqyhjae",
+    "nom": "Diablo(Incarnation Des Enfer)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Diablo(incarnation  Des Enfer).jpeg",
+    "description": "Carte L2 Info : Diablo(Incarnation Des Enfer).",
+    "stats": {
+      "cafe": 3,
+      "ects": 2
+    }
+  },
+  {
+    "id": "hakuro_oni_maitre_epeiste_mwqyhjaf",
+    "nom": "Hakuro(Oni Maitre Epeiste)",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Hakuro(Oni Maitre Epeiste).jpeg",
+    "description": "Carte L2 Info : Hakuro(Oni Maitre Epeiste).",
+    "stats": {
+      "cafe": 4,
+      "ects": 4
+    }
+  },
+  {
+    "id": "blanc_reine_du_bal_mwqyhjaf",
+    "nom": "Blanc(Reine Du Bal)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Blanc(Reine du Bal).jpeg",
+    "description": "Carte L2 Info : Blanc(Reine Du Bal).",
+    "stats": {
+      "cafe": 3,
+      "ects": 3
+    }
+  },
+  {
+    "id": "himeko_nova_mwqyhjag",
+    "nom": "Himeko Nova",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Himeko Nova.jpeg",
+    "description": "Carte L2 Info : Himeko Nova.",
+    "stats": {
+      "cafe": 4,
+      "ects": 3
+    }
+  },
+  {
+    "id": "hinata_sakaguchi_epeiste_fatale_mwqyhjag",
+    "nom": "Hinata Sakaguchi (Epeiste Fatale)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Hinata  Sakaguchi (Epeiste Fatale).jpeg",
+    "description": "Carte L2 Info : Hinata Sakaguchi (Epeiste Fatale).",
+    "stats": {
+      "cafe": 2,
+      "ects": 3
+    }
+  },
+  {
+    "id": "hinata_sakaguchi_revetement_sacr_mwqyhjah",
+    "nom": "Hinata Sakaguchi (Revetement Sacré)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Hinata Sakaguchi (Revetement Sacré).jpeg",
+    "description": "Carte L2 Info : Hinata Sakaguchi (Revetement Sacré).",
+    "stats": {
+      "cafe": 2,
+      "ects": 2
+    }
+  },
+  {
+    "id": "jaune_esprit_demoniaque_mwqyhjah",
+    "nom": "Jaune(Esprit Demoniaque)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Jaune(Esprit Demoniaque).jpeg",
+    "description": "Carte L2 Info : Jaune(Esprit Demoniaque).",
+    "stats": {
+      "cafe": 2,
+      "ects": 2
+    }
+  },
+  {
+    "id": "leon_cromwell_sabre_de_platine_mwqyhjai",
+    "nom": "Leon Cromwell(Sabre De Platine)",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Leon Cromwell(Sabre de Platine).jpeg",
+    "description": "Carte L2 Info : Leon Cromwell(Sabre De Platine).",
+    "stats": {
+      "cafe": 5,
+      "ects": 3
+    }
+  },
+  {
+    "id": "limule_tempest_chevalier_jumeaux_malefique_mwqyhjai",
+    "nom": "Limule Tempest(Chevalier Jumeaux Malefique)",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Limule Tempest(Chevalier Jumeaux Malefique).jpeg",
+    "description": "Carte L2 Info : Limule Tempest(Chevalier Jumeaux Malefique).",
+    "stats": {
+      "cafe": 2,
+      "ects": 2
+    }
+  },
+  {
+    "id": "limule_tempest_chevalier_jumeaux_mwqyhjaj",
+    "nom": "Limule Tempest(Chevalier Jumeaux)",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/Limule Tempest(Chevalier Jumeaux).jpeg",
+    "description": "Carte L2 Info : Limule Tempest(Chevalier Jumeaux).",
+    "stats": {
+      "cafe": 5,
+      "ects": 5
+    }
+  },
+  {
+    "id": "limule_tempeste_veritable_roi_demon_mwqyhjaj",
+    "nom": "Limule Tempeste(Veritable Roi Demon)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Limule Tempeste(Veritable Roi Demon).jpeg",
+    "description": "Carte L2 Info : Limule Tempeste(Veritable Roi Demon).",
+    "stats": {
+      "cafe": 3,
+      "ects": 1
+    }
+  },
+  {
+    "id": "luciole_mwqyhjaj",
+    "nom": "Luciole",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Luciole.jpeg",
+    "description": "Carte L2 Info : Luciole.",
+    "stats": {
+      "cafe": 3,
+      "ects": 1
+    }
+  },
+  {
+    "id": "march_mwqyhjak",
+    "nom": "March",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/March.jpeg",
+    "description": "Carte L2 Info : March.",
+    "stats": {
+      "cafe": 2,
+      "ects": 2
+    }
+  },
+  {
+    "id": "millim_nava_princesse_puissante_mwqyhjak",
+    "nom": "Millim Nava(Princesse Puissante)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Millim Nava(Princesse Puissante).jpeg",
+    "description": "Carte L2 Info : Millim Nava(Princesse Puissante).",
+    "stats": {
+      "cafe": 2,
+      "ects": 1
+    }
+  },
+  {
+    "id": "phainon_mwqyhjal",
+    "nom": "Phainon",
+    "rarete": "Mythicus",
+    "image": "/Image_TCG/cards/Phainon.jpeg",
+    "description": "Carte L2 Info : Phainon.",
+    "stats": {
+      "cafe": 19,
+      "ects": 22
+    }
+  },
+  {
+    "id": "ruan_mei_mwqyhjal",
+    "nom": "Ruan Mei",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Ruan Mei.jpeg",
+    "description": "Carte L2 Info : Ruan Mei.",
+    "stats": {
+      "cafe": 3,
+      "ects": 1
+    }
+  },
+  {
+    "id": "shion_ogre_de_l_t_mwqyhjam",
+    "nom": "Shion(Ogre De L'éTé)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Shion(Ogre de l'été).jpeg",
+    "description": "Carte L2 Info : Shion(Ogre De L'éTé).",
+    "stats": {
+      "cafe": 3,
+      "ects": 1
+    }
+  },
+  {
+    "id": "shizue_izawa_cadeau_de_noel_mwqyhjam",
+    "nom": "Shizue Izawa(Cadeau De Noel)",
+    "rarete": "Insolitus",
+    "image": "/Image_TCG/cards/Shizue Izawa(Cadeau de Noel).jpeg",
+    "description": "Carte L2 Info : Shizue Izawa(Cadeau De Noel).",
+    "stats": {
+      "cafe": 4,
+      "ects": 2
+    }
+  },
+  {
+    "id": "shizue_izawa_incarnation_flamboyante_mwqyhjan",
+    "nom": "Shizue Izawa(Incarnation Flamboyante)",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/Shizue Izawa(Incarnation Flamboyante).jpeg",
+    "description": "Carte L2 Info : Shizue Izawa(Incarnation Flamboyante).",
+    "stats": {
+      "cafe": 8,
+      "ects": 5
+    }
+  },
+  {
+    "id": "shuna_ogre_rose_celeste_mwqyhjan",
+    "nom": "Shuna(Ogre Rose Celeste)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Shuna(Ogre Rose Celeste).jpeg",
+    "description": "Carte L2 Info : Shuna(Ogre Rose Celeste).",
+    "stats": {
+      "cafe": 3,
+      "ects": 1
+    }
+  },
+  {
+    "id": "silver_wolf_mwqyhjan",
+    "nom": "Silver Wolf",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Silver Wolf.jpeg",
+    "description": "Carte L2 Info : Silver Wolf.",
+    "stats": {
+      "cafe": 3,
+      "ects": 1
+    }
+  },
+  {
+    "id": "s_ei_oni_ombre_v_loce_mwqyhjan",
+    "nom": "SôEi(Oni Ombre VéLoce)",
+    "rarete": "Vulgaris",
+    "image": "/Image_TCG/cards/Sôei(Oni ombre Véloce).jpeg",
+    "description": "Carte L2 Info : SôEi(Oni Ombre VéLoce).",
+    "stats": {
+      "cafe": 2,
+      "ects": 1
+    }
+  },
+  {
+    "id": "yomu_mwqyhjao",
+    "nom": "Yomu",
+    "rarete": "Rarus",
+    "image": "/Image_TCG/cards/Yomu.jpeg",
+    "description": "Carte L2 Info : Yomu.",
+    "stats": {
+      "cafe": 7,
+      "ects": 6
+    }
+  }
 ]
