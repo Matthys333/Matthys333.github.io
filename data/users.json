@@ -1,0 +1,86 @@
+[
+  {
+    "username": "Matthys",
+    "password": "SIRANGON",
+    "created_at": "2026-11-09T14:46:09.916Z",
+    "collection": {
+      "card_1795208467646_156": 2,
+      "card_1795208467647_733": 1,
+      "manipulation_mwqwf74u": 2,
+      "rem_est_meilleure_mwq7ry5a": 1,
+      "card_1795208467647_144": 3,
+      "card_1795208467647_220": 2,
+      "dalleux_mwq6jko5": 3,
+      "card_1795208467646_823": 1,
+      "card_1795208467647_553": 1,
+      "drama_queen_mwq6jko9": 2,
+      "zhongli_mwq6jkoe": 1,
+      "card_1795208467646_513": 2,
+      "card_1795208467646_176": 2,
+      "la_goat_mwq6jkob": 1,
+      "card_1795208467647_24": 1,
+      "ei_mwq6jkoa": 2,
+      "card_1795208467646_159": 1,
+      "card_1795208467647_878": 1,
+      "liborius_mwqw8nx5": 1
+    },
+    "ram": 130,
+    "quizStreak": 0,
+    "bestQuizStreak": 15,
+    "quizSessionEnded": true,
+    "rareDropPenaltyUntil": 1795203716623,
+    "quizActiveSession": null
+  },
+  {
+    "username": "Dyclane",
+    "password": "Noobie0@",
+    "created_at": "2026-11-11T15:49:45.833Z",
+    "collection": {
+      "card_1795208467647_733": 1,
+      "liborius_mwqw8nx5": 2,
+      "rem_est_meilleure_mwq7ry5a": 1,
+      "card_1795208467647_24": 2,
+      "card_1795208467646_176": 4,
+      "dalleux_mwq6jko5": 2,
+      "card_1795208467646_159": 2,
+      "card_1795208467646_156": 1,
+      "manipulation_mwqwf74u": 2,
+      "twink_boy_mwq6jkoe": 1,
+      "card_1795208467646_513": 2,
+      "inutile_mwq6jkoa": 1,
+      "card_1795208467647_800": 2,
+      "card_1795208467647_878": 1,
+      "zhongli_mwq6jkoe": 1
+    },
+    "quizActiveSession": null,
+    "bestQuizStreak": 3,
+    "quizSessionEnded": true,
+    "ram": 20,
+    "quizStreak": 0,
+    "rareDropPenaltyUntil": 1795299065268,
+    "rareDropPenaltyReduction": 0.1,
+    "rareDropPenaltyReason": "wrong_answer"
+  },
+  {
+    "username": "Gabryel",
+    "password": "24102007",
+    "created_at": "2026-11-12T16:53:15.989Z"
+  },
+  {
+    "username": "Le goat(Phileas)",
+    "password": "123456",
+    "created_at": "2026-11-13T15:34:19.601Z",
+    "collection": {}
+  },
+  {
+    "username": "Esteban ",
+    "password": "squalala",
+    "created_at": "2026-11-13T15:37:57.053Z"
+  },
+  {
+    "username": "JORSTARS",
+    "password": "Gesterovise-impacte456",
+    "collection": {},
+    "created_at": "2026-11-17T13:38:13.415Z"
+  }
+]
