@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const USERS_FILE = path.join(__dirname, 'data', 'users.json');
 const CARDS_FILE = path.join(__dirname, 'data', 'cards.json');
 const TRADES_FILE = path.join(__dirname, 'data', 'trades.json');
