@@ -136,11 +136,11 @@ app.post('/api/open-stored-booster', (req, res) => {
         let targetRarity = 'Vulgaris';
 
         if (rand < 0.01) targetRarity = 'Arcanus';
-        else if (rand < 0.5) targetRarity = 'Mythicus';
-        else if (rand < 2.0) targetRarity = 'Legendarius';
-        else if (rand < 10.0) targetRarity = 'Eximius';
-        else if (rand < 25.0) targetRarity = 'Rarus';
-        else if (rand < 62.49) targetRarity = 'Insolitus';
+        else if (rand < 0.09) targetRarity = 'Mythicus';
+        else if (rand < 0.4) targetRarity = 'Legendarius';
+        else if (rand < 1.0) targetRarity = 'Eximius';
+        else if (rand < 3.5) targetRarity = 'Rarus';
+        else if (rand < 15.0) targetRarity = 'Insolitus';
         else targetRarity = 'Vulgaris';
 
         let filteredCards = cardsData.filter(c => c.rarete && c.rarete.toLowerCase() === targetRarity.toLowerCase());
