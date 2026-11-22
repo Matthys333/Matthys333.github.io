@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/api.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Boutique</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/cards.css">
+
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html" class="active">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+          <a href="codex.html">CODEX</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item">ACCUEIL</a>
+        <a href="shop.html" class="sub-item active"><span class="dot"></span> 🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item">📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ram-display">60</span> RAM
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content" style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 100%; max-width: 1400px; margin: 0 auto; padding: 40px;">
+      <div>
+        <h1 style="font-family: 'Fira Code', monospace;">BOUTIQUE OFFICIELLE DU CAMPUS</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">
+          Dépensez vos crédits RAM pour acquérir de nouveaux boosters ou compléter votre Codex à l'unité.
+        </p>
+      </div>
+
+      <!-- SECTION 1 : BOOSTERS -->
+      <section class="shop-section">
+        <div class="shop-section-header">
+          <h2>📦 PACKS & BOOSTERS</h2>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-family: 'Fira Code', monospace;">3 CARTES PAR BOOSTER</span>
+        </div>
+
+        <div class="boosters-shop-grid">
+          <!-- Booster 1 : Standard -->
+          <div class="shop-pack-card">
+            <div class="pack-visual pack-standard">
+              <span style="font-size: 0.65rem; letter-spacing: 2px; color: #c9d1d9;">SERIE L2</span>
+              <strong style="font-size: 1.1rem; color: #ffffff;">PACK<br>TD / TP</strong>
+              <span style="font-size: 0.65rem; color: #58a6ff;">3 CARTES</span>
+            </div>
+            <h3 style="margin-bottom: 8px; font-family: 'Fira Code', monospace;">Booster Standard</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">
+              Idéal pour démarrer sa collection et accumuler des cartes communes et insolites.
+            </p>
+            <div class="pack-odds">
+              <span>• Vulgaris / Insolitus : 80%</span>
+              <span>• Rarus / Eximius : 18%</span>
+              <span>• Legendarius+ : 2%</span>
+            </div>
+            <button class="btn-buy-pack" onclick="buyPack('standard', 15)">
+              ACHETER • 🪙 15 RAM
+            </button>
+          </div>
+
+          <!-- Booster 2 : Avancé -->
+          <div class="shop-pack-card" style="border-color: rgba(188, 140, 255, 0.4);">
+            <div class="pack-visual pack-pro">
+              <span style="font-size: 0.65rem; letter-spacing: 2px; color: #e0aaff;">EDITION PRO</span>
+              <strong style="font-size: 1.1rem; color: #ffffff;">PACK<br>PARTIELS</strong>
+              <span style="font-size: 0.65rem; color: #bc8cff;">3 CARTES</span>
+            </div>
+            <h3 style="margin-bottom: 8px; font-family: 'Fira Code', monospace; color: #bc8cff;">Booster Partiels</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">
+              Garantit au moins une carte Rarus ou supérieure pour renforcer votre deck.
+            </p>
+            <div class="pack-odds">
+              <span>• Rarus / Eximius : 75%</span>
+              <span>• Legendarius : 20%</span>
+              <span>• Mythicus / Arcanus : 5%</span>
+            </div>
+            <button class="btn-buy-pack" style="background-color: #8957e5;" onclick="buyPack('pro', 35)">
+              ACHETER • 🪙 35 RAM
+            </button>
+          </div>
+
+          <!-- Booster 3 : Élite -->
+          <div class="shop-pack-card" style="border-color: rgba(227, 179, 65, 0.4);">
+            <div class="pack-visual pack-legend">
+              <span style="font-size: 0.65rem; letter-spacing: 2px; color: #ffea00;">MAJORS</span>
+              <strong style="font-size: 1.1rem; color: #ffffff;">PACK<br>MENTION TB</strong>
+              <span style="font-size: 0.65rem; color: #e3b341;">3 CARTES</span>
+            </div>
+            <h3 style="margin-bottom: 8px; font-family: 'Fira Code', monospace; color: #e3b341;">Booster Élite</h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">
+              Taux de drop massivement augmentés pour les cartes légendaires et mythiques.
+            </p>
+            <div class="pack-odds">
+              <span>• Eximius / Legendarius : 75%</span>
+              <span>• Mythicus : 20%</span>
+              <span>• Arcanus : 5%</span>
+            </div>
+            <button class="btn-buy-pack" style="background-color: #b08800;" onclick="buyPack('elite', 60)">
+              ACHETER • 🪙 60 RAM
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2 : CARTES À L'UNITÉ (HAUTE DISTINCTION) -->
+      <section class="shop-section">
+        <div class="shop-section-header">
+          <h2>⭐ SÉLECTION HAUTE DISTINCTION (EXIMIUS+)</h2>
+          <span id="refresh-timer-badge" style="font-size: 0.8rem; color: var(--accent-cyan); font-family: 'Fira Code', monospace; background: rgba(88, 166, 255, 0.1); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(88, 166, 255, 0.3);">
+            REFRESH DANS : 01:00:00
+          </span>
+        </div>
+
+        <div id="daily-cards-grid" class="cards-grid">
+          <p style="color: var(--text-muted);">Chargement du catalogue...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODALE D'OUVERTURE DE BOOSTER -->
+  <div id="pack-modal" class="pack-modal-overlay">
+    <h2 style="font-family: 'Fira Code', monospace; color: var(--accent-cyan); font-size: 1.5rem;">
+      ✨ CARTES OBTENUES ✨
+    </h2>
+    <div id="revealed-cards-container" class="revealed-cards-row"></div>
+    <button class="btn-open-booster" onclick="closePackModal()">AJOUTER À MA COLLECTION</button>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION DU TEMPS DE RAFRAÎCHISSEMENT (1H PERSISTANT)
+    // ==========================================
+    const REFRESH_INTERVAL_SECONDS = 3600; // 1 heure
+    const SHOP_REFRESH_AT_KEY = 'shopNextRefreshAt';
+    const SHOP_SHOWCASE_IDS_KEY = 'shopShowcaseCardIds';
+
+    const RARITY_PRICES = {
+      eximius: 250,
+      legendarius: 500,
+      mythicus: 1000,
+      arcanus: 1500
+    };
+
+    let countdownTimer = null;
+    let allCardsCache = [];
+    let userInventoryCache = {};
+
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
+    function updateRamDisplay(newRam) {
+      localStorage.setItem('ram', newRam);
+      document.getElementById('ram-display').textContent = newRam;
+    }
+
+    function renderCardHtml(card, badgeHtml = '') {
+      const style = getRarityConfig(card.rarete);
+      const ectsOrRamStat = card.stats?.ects ?? card.stats?.ram ?? 0;
+      return `
+        <div class="tcg-card" style="border-color: ${style.border};">
+          <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+          ${badgeHtml}
+          <div class="card-header-info">
+            <span class="card-name">${card.nom}</span>
+            <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
+              ${style.abbr}
+            </span>
+          </div>
+          <div class="card-stats">
+            <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+            <span class="stat-ram">📜 ${ectsOrRamStat} ECTS</span>
+          </div>
+          <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+        </div>
+      `;
+    }
+
+    function getRandomHighTierCard(cardsList) {
+      const highTierCards = cardsList.filter(c => {
+        const r = (c.rarete || '').toLowerCase();
+        return ['eximius', 'legendarius', 'mythicus', 'arcanus'].includes(r);
+      });
+
+      const poolSource = highTierCards.length > 0 ? highTierCards : cardsList;
+      const weights = { eximius: 55, legendarius: 30, mythicus: 12, arcanus: 3 };
+
+      const weightedPool = [];
+      poolSource.forEach(card => {
+        const r = (card.rarete || 'eximius').toLowerCase();
+        const weight = weights[r] || 10;
+        for (let i = 0; i < weight; i++) {
+          weightedPool.push(card);
+        }
+      });
+
+      return weightedPool[Math.floor(Math.random() * weightedPool.length)];
+    }
+
+    function getOrCreateNextRefreshAt(forceReset = false) {
+      const now = Date.now();
+      const stored = parseInt(localStorage.getItem(SHOP_REFRESH_AT_KEY) || '0', 10);
+
+      if (forceReset || !stored || Number.isNaN(stored) || stored <= now) {
+        const nextRefreshAt = now + REFRESH_INTERVAL_SECONDS * 1000;
+        localStorage.setItem(SHOP_REFRESH_AT_KEY, String(nextRefreshAt));
+        return nextRefreshAt;
+      }
+
+      return stored;
+    }
+
+    function getRemainingSeconds() {
+      const nextRefreshAt = getOrCreateNextRefreshAt(false);
+      return Math.max(0, Math.ceil((nextRefreshAt - Date.now()) / 1000));
+    }
+
+    function pickShowcaseCards() {
+      const showcaseCards = [];
+      let safetyCounter = 0;
+
+      while (showcaseCards.length < 5 && safetyCounter < 100) {
+        const candidate = getRandomHighTierCard(allCardsCache);
+        if (candidate && !showcaseCards.some(c => (c.id || c.nom) === (candidate.id || candidate.nom))) {
+          showcaseCards.push(candidate);
+        }
+        safetyCounter++;
+      }
+
+      localStorage.setItem(
+        SHOP_SHOWCASE_IDS_KEY,
+        JSON.stringify(showcaseCards.map(c => c.id || c.nom))
+      );
+
+      return showcaseCards;
+    }
+
+    function renderDailyShowcase(generateNew = false) {
+      const grid = document.getElementById('daily-cards-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      let showcaseCards = [];
+
+      if (!generateNew) {
+        try {
+          const savedIds = JSON.parse(localStorage.getItem(SHOP_SHOWCASE_IDS_KEY) || '[]');
+          if (Array.isArray(savedIds) && savedIds.length > 0) {
+            showcaseCards = savedIds
+              .map(id => allCardsCache.find(c => (c.id || c.nom) === id))
+              .filter(Boolean);
+          }
+        } catch (e) {
+          showcaseCards = [];
+        }
+      }
+
+      if (showcaseCards.length === 0) {
+        showcaseCards = pickShowcaseCards();
+      }
+
+      showcaseCards.forEach(card => {
+        const cardId = card.id || card.nom;
+        const rKey = (card.rarete || 'eximius').toLowerCase();
+        const price = RARITY_PRICES[rKey] || 140;
+        const ownedCount = userInventoryCache[cardId] || 0;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'daily-card-wrapper';
+
+        const badge = ownedCount > 0
+          ? `<div class="card-quantity-badge">Possédée : x${ownedCount}</div>`
+          : `<div class="card-quantity-badge" style="color: #3fb950; border-color: #3fb950;">NOUVEAU</div>`;
+
+        wrapper.innerHTML = `
+          ${renderCardHtml(card, badge)}
+          <button class="btn-buy-pack" onclick="buySingleCard('${cardId}', ${price})">
+            ACHETER • 🪙 ${price} RAM
+          </button>
+        `;
+        grid.appendChild(wrapper);
+      });
+    }
+
+    function startRefreshCountdown() {
+      if (countdownTimer) clearInterval(countdownTimer);
+      getOrCreateNextRefreshAt(false);
+      updateTimerDisplay();
+
+      countdownTimer = setInterval(() => {
+        const remaining = getRemainingSeconds();
+        updateTimerDisplay(remaining);
+
+        if (remaining <= 0) {
+          getOrCreateNextRefreshAt(true);
+          renderDailyShowcase(true);
+          updateTimerDisplay(getRemainingSeconds());
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay(remainingSec = getRemainingSeconds()) {
+      const hours = Math.floor(remainingSec / 3600).toString().padStart(2, '0');
+      const minutes = Math.floor((remainingSec % 3600) / 60).toString().padStart(2, '0');
+      const seconds = (remainingSec % 60).toString().padStart(2, '0');
+      const badge = document.getElementById('refresh-timer-badge');
+
+      if (badge) {
+        badge.textContent = `REFRESH DANS : ${hours}:${minutes}:${seconds}`;
+      }
+    }
+
+    async function loadShop() {
+      const grid = document.getElementById('daily-cards-grid');
+      const username = localStorage.getItem('username');
+      document.getElementById('username-display').textContent = username || 'Étudiant';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
+
+      if (!username) {
+        if (grid) grid.innerHTML = '<p style="color: #f85149;">Session invalide : identifiant manquant.</p>';
+        return;
+      }
+
+      try {
+        const [cardsRes, invRes] = await Promise.all([
+          fetch('/api/cards'),
+          fetch(`/api/collection/${encodeURIComponent(username)}`)
+        ]);
+
+        if (!cardsRes.ok) {
+          throw new Error(`Erreur /api/cards (${cardsRes.status})`);
+        }
+
+        const cardsData = await cardsRes.json();
+        allCardsCache = Array.isArray(cardsData) ? cardsData : [];
+
+        if (invRes.ok) {
+          const invData = await invRes.json();
+          userInventoryCache = (invData && typeof invData === 'object' && !Array.isArray(invData)) ? invData : {};
+        } else {
+          userInventoryCache = {};
+        }
+
+        if (allCardsCache.length === 0) {
+          if (grid) grid.innerHTML = '<p style="color: var(--text-muted);">Aucune carte disponible dans le catalogue.</p>';
+          return;
+        }
+
+        const hasSavedShowcase = Boolean(localStorage.getItem(SHOP_SHOWCASE_IDS_KEY));
+        renderDailyShowcase(!hasSavedShowcase);
+        startRefreshCountdown();
+      } catch (err) {
+        console.error("Erreur chargement boutique :", err);
+        if (grid) {
+          grid.innerHTML = `<p style="color: #f85149;">Impossible de charger la boutique (${err.message}).</p>`;
+        }
+      }
+    }
+
+    // Achat d'un booster
+    async function buyPack(tier, cost) {
+      const username = localStorage.getItem('username');
+      const currentRam = parseInt(localStorage.getItem('ram') || '0', 10);
+
+      if (currentRam < cost) {
+        alert("Crédits RAM insuffisants pour acheter ce booster !");
+        return;
+      }
+
+      if (!allCardsCache || allCardsCache.length === 0) {
+        alert("Aucune carte disponible dans le catalogue.");
+        return;
+      }
+
+      const drawnCards = [];
+      for (let i = 0; i < 3; i++) {
+        const randomCard = allCardsCache[Math.floor(Math.random() * allCardsCache.length)];
+        drawnCards.push(randomCard);
+      }
+
+      try {
+        const res = await fetch('/api/shop/buy-pack', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username,
+            cost,
+            cardIds: drawnCards.map(c => c.id || c.nom)
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          updateRamDisplay(data.ram);
+          userInventoryCache = data.collection || userInventoryCache;
+          showPackModal(drawnCards);
+          renderDailyShowcase(false);
+        } else {
+          alert(data.error || "Erreur lors de l'achat du booster.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erreur réseau lors de l'achat.");
+      }
+    }
+
+    // Achat d'une carte à l'unité
+    async function buySingleCard(cardId, cost) {
+      const username = localStorage.getItem('username');
+      const currentRam = parseInt(localStorage.getItem('ram') || '0', 10);
+
+      if (currentRam < cost) {
+        alert("Crédits RAM insuffisants !");
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/shop/buy-pack', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username,
+            cost,
+            cardIds: [cardId]
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          updateRamDisplay(data.ram);
+          userInventoryCache = data.collection || userInventoryCache;
+          const boughtCard = allCardsCache.find(c => (c.id || c.nom) === cardId);
+          if (boughtCard) showPackModal([boughtCard]);
+          renderDailyShowcase(false);
+        } else {
+          alert(data.error || "Erreur lors de l'achat.");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function showPackModal(cards) {
+      const container = document.getElementById('revealed-cards-container');
+      container.innerHTML = cards.map(c => renderCardHtml(c)).join('');
+      document.getElementById('pack-modal').classList.add('active');
+    }
+
+    function closePackModal() {
+      document.getElementById('pack-modal').classList.remove('active');
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('username');
+      localStorage.removeItem('ram');
+      window.location.href = 'login.html';
+    });
+
+    document.addEventListener('DOMContentLoaded', () => loadShop());
+  </script>
+</body>
+</html>

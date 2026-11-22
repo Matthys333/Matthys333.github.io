@@ -39,24 +39,39 @@
         - Mauvaise réponse (-10 %) : plus aucune carte Rarus ou plus rare dans les boosters ouverts
         - Triche, sortie d'onglet (-30 %) : uniquement des cartes Vulgaris
 
+# Version statique (GitHub Pages)
+    Le site n'a plus besoin de serveur Node/Express : tout tourne dans le navigateur.
+    - js/api.js remplace server.js : il intercepte les appels fetch('/api/...') et exécute la même logique
+      (boosters, boutique, marché, échanges, quiz, classement...) en local.
+    - Les comptes, collections, marché et échanges sont stockés dans le localStorage du navigateur.
+    - Les mots de passe sont hachés (SHA-256) avant d'être stockés.
+    - Les cartes viennent de data/cards.json et les images de Image_TCG/cards/.
+    - Sauvegarde / restauration (console du navigateur) :
+        TCG.exportSave()     -> télécharge tcg-sauvegarde.json
+        TCG.importSave(file) -> restaure une sauvegarde
+        TCG.reset()          -> efface toutes les données locales
+    - Limite : les données sont propres à chaque navigateur. Le marché, les échanges et le classement
+      ne regroupent donc que les comptes créés sur le même navigateur.
+
 # Comment lancer le projet :
-    - Installer les dépendances :
-        npm install
-    - Lancer le serveur :
-        npm start
-    - Aller sur http://localhost:3000
-    - (Optionnel) Lancer le watcher dans un autre terminal :
+    - En ligne : https://matthys333.github.io (GitHub Pages, branche main, dossier / racine)
+    - En local : servir le dossier avec n'importe quel serveur statique, par exemple
+        python3 -m http.server 3000
+      puis aller sur http://localhost:3000
+      (ne pas ouvrir les fichiers en double-clic : les fetch vers data/cards.json exigent http)
+    - (Optionnel) Ajouter des cartes automatiquement, avec Node installé :
         node watcher.js
         - Il surveille le dossier Image_TCG/cards
         - Chaque nouvelle image ajoutée devient automatiquement une carte dans data/cards.json
           avec une rareté et des stats tirées au hasard (taux différents de ceux des boosters)
+        - Puis commit + push : le site se met à jour tout seul
 
 # Comment est organisé le projet :
-    - data/ : les données (cards.json, users.json, market.json, trades.json)
+    - index.html, login.html, shop.html, ... : les pages du site, css/ : leurs styles
+    - js/api.js : l'API émulée dans le navigateur (remplace server.js)
+    - data/cards.json : la liste des cartes
     - Image_TCG/cards/ : les images des cartes
-    - public/ : les pages du site (HTML) et leurs styles (css/)
-    - server.js : le serveur Express et toute l'API
-    - watcher.js : l'ajout automatique des nouvelles cartes
+    - watcher.js : l'ajout automatique des nouvelles cartes (outil local, facultatif)
     - Cartes_description.txt : ce qui définit une carte
         - Une rareté (qui évoluera par la suite)
         - Un rang d'apparition

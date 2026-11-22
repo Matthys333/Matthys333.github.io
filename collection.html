@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/api.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Collection</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/cards.css">
+  
+
+  <!-- Vérification de session -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html" class="active">COLLECTION</a>
+          <a href="codex.html">CODEX</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item">ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item active"><span class="dot"></span> 📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ram-display">60</span> RAM
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content" style="flex-direction: column; align-items: flex-start; padding: 40px; justify-content: flex-start;">
+      <h1>TA COLLECTION</h1>
+      <p style="color: #8b949e; font-size: 0.85rem; margin-top: 5px;">Consultez vos cartes obtenues.</p>
+
+      <!-- Grille dynamique -->
+      <div id="cards-grid" class="cards-grid">
+        <p style="color: #8b949e;">Chargement de la collection...</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Script de chargement de la collection -->
+  <script>
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const username = localStorage.getItem('username');
+      document.getElementById('username-display').textContent = username || 'Étudiant';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
+
+      try {
+        // Récupération simultanée du catalogue global (cards.json) et de l'inventaire sous forme d'objet { cardId: count }
+        const [cardsRes, collectionRes] = await Promise.all([
+          fetch('/api/cards'),
+          fetch(`/api/collection/${encodeURIComponent(username)}`)
+        ]);
+
+        const allCards = await cardsRes.json();
+        const userInventory = await collectionRes.json();
+
+        const grid = document.getElementById('cards-grid');
+        grid.innerHTML = '';
+
+        // Filtrer pour ne garder que les cartes possédées (count > 0)
+        const ownedCards = allCards.filter(card => {
+          const cardId = card.id || card.nom;
+          const count = userInventory[cardId] || userInventory[card.nom] || 0;
+          return count > 0;
+        });
+
+        if (ownedCards.length === 0) {
+          grid.innerHTML = '<p style="color: #8b949e;">Ta collection est vide. Ouvre des boosters sur l\'accueil ou consulte le Codex !</p>';
+          return;
+        }
+
+        // Affichage des cartes possédées avec leur badge de quantité
+        ownedCards.forEach(card => {
+          const style = getRarityConfig(card.rarete);
+          const cardId = card.id || card.nom;
+          const count = userInventory[cardId] || userInventory[card.nom] || 1;
+
+          const cardEl = document.createElement('div');
+          cardEl.className = 'tcg-card';
+          cardEl.style.borderColor = style.border;
+
+          const quantityBadge = count > 1 
+            ? `<div class="card-quantity-badge">x${count}</div>` 
+            : '';
+
+          cardEl.innerHTML = `
+            <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+            ${quantityBadge}
+            <div class="card-header-info">
+              <span class="card-name">${card.nom}</span>
+              <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
+                ${style.abbr}
+              </span>
+            </div>
+            <div class="card-stats">
+              <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+              <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
+            </div>
+            <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+          `;
+          grid.appendChild(cardEl);
+        });
+
+      } catch (error) {
+        console.error('Erreur lors du chargement de la collection:', error);
+        document.getElementById('cards-grid').innerHTML = '<p style="color: #f85149;">Erreur lors de la récupération de ta collection.</p>';
+      }
+
+      // Gestion de la déconnexion
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('username');
+        localStorage.removeItem('ram');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>

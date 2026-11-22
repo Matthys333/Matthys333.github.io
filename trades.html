@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/api.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Échanges</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/cards.css">
+
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+          <a href="codex.html">CODEX</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item">ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item">📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item active"><span class="dot"></span> 🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ram-display">60</span> RAM
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content" style="flex-direction: column; align-items: stretch; justify-content: flex-start; width: 100%; max-width: 1400px; margin: 0 auto; padding: 40px;">
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+        <div>
+          <h1 style="font-family: 'Fira Code', monospace;">TERMINAL D'ÉCHANGES P2P</h1>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">
+            Échangez vos cartes directement avec les autres étudiants du réseau.
+          </p>
+        </div>
+        <div id="trades-counter" style="font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--accent-cyan); background: rgba(88, 166, 255, 0.1); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(88, 166, 255, 0.3);">
+          0 OFFRE(S) ACTIVE(S)
+        </div>
+      </div>
+
+      <div class="trades-layout">
+        <!-- Panneau de gauche : Création + Prévisualisation -->
+        <section class="trade-panel">
+          <div class="panel-header">
+            <h2>+ NOUVELLE PROPOSITION</h2>
+          </div>
+
+          <!-- Aperçu visuel dynamique -->
+          <div class="trade-preview-stage">
+            <div class="preview-slot" id="preview-offered">
+              <span style="font-size: 1.5rem; opacity: 0.4;">📤</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;">Carte cédée</span>
+            </div>
+
+            <div class="preview-arrow">⇄</div>
+
+            <div class="preview-slot" id="preview-wanted">
+              <span style="font-size: 1.5rem; opacity: 0.4;">📥</span>
+              <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;">Carte désirée</span>
+            </div>
+          </div>
+
+          <form id="create-trade-form">
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="offered-card-select" style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; font-family: 'Fira Code', monospace;">1. CARTE À DONNER (VOTRE INVENTAIRE)</label>
+              <select id="offered-card-select" class="modern-select" required>
+                <option value="">Chargement...</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="wanted-card-select" style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; font-family: 'Fira Code', monospace;">2. CARTE RECHERCHÉE (CODEX)</label>
+              <select id="wanted-card-select" class="modern-select" required>
+                <option value="">Chargement...</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-publish">PUBLIER L'ÉCHANGE SUR LE RÉSEAU</button>
+          </form>
+        </section>
+
+        <!-- Panneau de droite : Flux des offres actives -->
+        <section class="trade-panel">
+          <div class="panel-header">
+            <h2>📡 OFFRES EN DIRECT</h2>
+          </div>
+
+          <div id="trades-list" class="active-trades-grid">
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Synchronisation avec le serveur...</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const username = localStorage.getItem('username');
+      document.getElementById('username-display').textContent = username || 'Étudiant';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
+
+      let cardMap = new Map();
+      let userInventory = {};
+
+      function updatePreviewSlot(slotId, cardId, placeholderIcon, placeholderText) {
+        const slot = document.getElementById(slotId);
+        const card = cardMap.get(cardId);
+
+        if (!card) {
+          slot.style.borderColor = 'var(--border-color)';
+          slot.innerHTML = `
+            <span style="font-size: 1.5rem; opacity: 0.4;">${placeholderIcon}</span>
+            <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 6px;">${placeholderText}</span>
+          `;
+          return;
+        }
+
+        const style = getRarityConfig(card.rarete);
+        slot.style.borderColor = style.border;
+        slot.innerHTML = `
+          <img src="${card.image}" alt="${card.nom}" style="border-color: ${style.border};">
+          <span class="slot-name">${card.nom}</span>
+          <span class="slot-rarity" style="background: ${style.bg}; color: ${style.color}; border: 1px solid ${style.border};">
+            ${style.abbr}
+          </span>
+        `;
+      }
+
+      document.getElementById('offered-card-select').addEventListener('change', (e) => {
+        updatePreviewSlot('preview-offered', e.target.value, '📤', 'Carte cédée');
+      });
+
+      document.getElementById('wanted-card-select').addEventListener('change', (e) => {
+        updatePreviewSlot('preview-wanted', e.target.value, '📥', 'Carte désirée');
+      });
+
+      async function loadTradeData() {
+        try {
+          const [cardsRes, invRes, tradesRes] = await Promise.all([
+            fetch('/api/cards'),
+            fetch(`/api/collection/${encodeURIComponent(username)}`),
+            fetch('/api/trades')
+          ]);
+
+          const allCards = await cardsRes.json();
+          userInventory = await invRes.json();
+          const trades = await tradesRes.json();
+
+          cardMap.clear();
+          allCards.forEach(c => cardMap.set(c.id || c.nom, c));
+
+          const offeredSelect = document.getElementById('offered-card-select');
+          offeredSelect.innerHTML = '<option value="">-- Choisir une carte à céder --</option>';
+
+          Object.entries(userInventory).forEach(([cardId, count]) => {
+            if (count > 0) {
+              const cardInfo = cardMap.get(cardId);
+              if (cardInfo) {
+                const opt = document.createElement('option');
+                opt.value = cardId;
+                const tag = count === 1 ? '⚠ Dernier exemplaire' : `Stock : x${count}`;
+                opt.textContent = `${cardInfo.nom} [${cardInfo.rarete.toUpperCase()}] • ${tag}`;
+                offeredSelect.appendChild(opt);
+              }
+            }
+          });
+
+          const wantedSelect = document.getElementById('wanted-card-select');
+          wantedSelect.innerHTML = '<option value="">-- Choisir la carte souhaitée --</option>';
+          allCards.forEach(card => {
+            const cardId = card.id || card.nom;
+            const opt = document.createElement('option');
+            opt.value = cardId;
+            opt.textContent = `${card.nom} [${card.rarete.toUpperCase()}]`;
+            wantedSelect.appendChild(opt);
+          });
+
+          const tradesList = document.getElementById('trades-list');
+          const counterBadge = document.getElementById('trades-counter');
+          counterBadge.textContent = `${trades.length} OFFRE(S) ACTIVE(S)`;
+          tradesList.innerHTML = '';
+
+          if (!trades || trades.length === 0) {
+            tradesList.innerHTML = `
+              <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-muted); border: 1px dashed var(--border-color); border-radius: 10px;">
+                Aucune proposition d'échange sur le réseau pour le moment.<br>
+                <span style="font-size: 0.8rem;">Soyez le premier à publier une offre à gauche !</span>
+              </div>
+            `;
+            return;
+          }
+
+          trades.forEach(trade => {
+            const offeredCard = cardMap.get(trade.offeredCardId);
+            const wantedCard = cardMap.get(trade.wantedCardId);
+            if (!offeredCard || !wantedCard) return;
+
+            const offeredStyle = getRarityConfig(offeredCard.rarete);
+            const wantedStyle = getRarityConfig(wantedCard.rarete);
+            const isOwnTrade = trade.username.toLowerCase() === username.toLowerCase();
+            const hasWantedCard = (userInventory[trade.wantedCardId] || 0) > 0;
+
+            const cardBox = document.createElement('div');
+            cardBox.className = 'trade-offer-card';
+
+            let statusBadge = '';
+            if (isOwnTrade) {
+              statusBadge = `<span class="offer-badge-status" style="background: rgba(88, 166, 255, 0.15); color: #58a6ff; border: 1px solid rgba(88, 166, 255, 0.4);">VOTRE OFFRE</span>`;
+            } else if (hasWantedCard) {
+              statusBadge = `<span class="offer-badge-status status-ready">✔ ÉCHANGE POSSIBLE</span>`;
+            } else {
+              statusBadge = `<span class="offer-badge-status status-missing">✖ CARTE MANQUANTE</span>`;
+            }
+
+            let actionHtml = '';
+            if (isOwnTrade) {
+              actionHtml = `<button class="btn-cancel-trade" onclick="cancelTrade('${trade.id}')">ANNULER MA PROPOSITION</button>`;
+            } else {
+              actionHtml = `
+                <button class="btn-accept-trade" ${hasWantedCard ? '' : 'disabled'} onclick="acceptTrade('${trade.id}')">
+                  ${hasWantedCard ? 'ACCEPTER L\'ÉCHANGE' : `VOUS N'AVEZ PAS "${wantedCard.nom.toUpperCase()}"`}
+                </button>
+              `;
+            }
+
+            cardBox.innerHTML = `
+              <div class="offer-top-bar">
+                <div class="offer-author">
+                  <span>👤</span>
+                  <span>${trade.username}</span>
+                </div>
+                ${statusBadge}
+              </div>
+
+              <div class="offer-exchange-visual">
+                <div class="mini-card">
+                  <img src="${offeredCard.image}" alt="${offeredCard.nom}" style="border-color: ${offeredStyle.border};">
+                  <div class="mini-card-info">
+                    <span class="mini-card-label">IL DONNE</span>
+                    <span class="mini-card-title" title="${offeredCard.nom}">${offeredCard.nom}</span>
+                    <span class="mini-card-rarity" style="color: ${offeredStyle.color};">${offeredStyle.abbr}</span>
+                  </div>
+                </div>
+
+                <div style="color: var(--text-muted); font-weight: bold; font-size: 1.1rem;">⇄</div>
+
+                <div class="mini-card" style="justify-content: flex-end; text-align: right;">
+                  <div class="mini-card-info">
+                    <span class="mini-card-label">IL VEUT</span>
+                    <span class="mini-card-title" title="${wantedCard.nom}">${wantedCard.nom}</span>
+                    <span class="mini-card-rarity" style="color: ${wantedStyle.color};">${wantedStyle.abbr}</span>
+                  </div>
+                  <img src="${wantedCard.image}" alt="${wantedCard.nom}" style="border-color: ${wantedStyle.border};">
+                </div>
+              </div>
+
+              <div class="offer-actions">
+                ${actionHtml}
+              </div>
+            `;
+
+            tradesList.appendChild(cardBox);
+          });
+
+        } catch (err) {
+          console.error("Erreur lors du chargement des échanges :", err);
+        }
+      }
+
+      document.getElementById('create-trade-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const offeredCardId = document.getElementById('offered-card-select').value;
+        const wantedCardId = document.getElementById('wanted-card-select').value;
+
+        if (!offeredCardId || !wantedCardId) {
+          alert("Veuillez sélectionner les deux cartes.");
+          return;
+        }
+
+        if (offeredCardId === wantedCardId) {
+          alert("Vous ne pouvez pas échanger une carte contre elle-même !");
+          return;
+        }
+
+        const res = await fetch('/api/trades/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, offeredCardId, wantedCardId })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('create-trade-form').reset();
+          updatePreviewSlot('preview-offered', null, '📤', 'Carte cédée');
+          updatePreviewSlot('preview-wanted', null, '📥', 'Carte désirée');
+          loadTradeData();
+        } else {
+          alert(data.error || "Erreur lors de la création de l'offre.");
+        }
+      });
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('username');
+        localStorage.removeItem('ram');
+        window.location.href = 'login.html';
+      });
+
+      loadTradeData();
+    });
+
+    async function acceptTrade(tradeId) {
+      const username = localStorage.getItem('username');
+      const res = await fetch('/api/trades/accept', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, tradeId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.reload();
+      } else {
+        alert(data.error || "Impossible d'effectuer l'échange.");
+      }
+    }
+
+    async function cancelTrade(tradeId) {
+      const username = localStorage.getItem('username');
+      const res = await fetch('/api/trades/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, tradeId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        location.reload();
+      } else {
+        alert(data.error || "Impossible d'annuler l'offre.");
+      }
+    }
+  </script>
+</body>
+</html>

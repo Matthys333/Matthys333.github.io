@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/api.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Marché & Enchères</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/cards.css">
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item">ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item">📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item active"><span class="dot"></span> 📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
+      </div>
+      <div class="sub-nav-right">
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ram-display">60</span> RAM
+        </div>
+      </div>
+    </div>
+
+    <main class="market-page-wrapper">
+      <!-- En-tête du marché -->
+      <section class="market-hero">
+        <div>
+          <h1 class="market-hero-title">LE MARCHÉ</h1>
+          <p class="market-hero-desc">
+            Achète les cartes qui te manquent, à prix fixe ou aux enchères, et vends tes doublons en RAM. Si personne n'achète ou n'enchérit avant la fin du décompte, la carte revient au vendeur.
+          </p>
+        </div>
+        <button id="btn-open-sell-modal" class="btn-sell-card-hero">
+          <span>🏷️</span> VENDRE UNE CARTE
+        </button>
+      </section>
+
+      <!-- Modes d'affichage -->
+      <div class="market-mode-bar">
+        <button class="mode-pill-btn active" data-mode="all">🏷️ À VENDRE</button>
+        <button class="mode-pill-btn" data-mode="auction">🔨 ENCHÈRES</button>
+        <button class="mode-pill-btn" data-mode="my-sales">📦 MES VENTES</button>
+        <button class="mode-pill-btn" data-mode="my-bids">⚡ MES OFFRES</button>
+      </div>
+
+      <!-- Tri & recherche -->
+      <div class="market-toolbar">
+        <div class="market-sort-group">
+          <button class="sort-pill-btn active" data-sort="recent">RÉCENTES</button>
+          <button class="sort-pill-btn" data-sort="price-asc">LES MOINS CHÈRES</button>
+          <button class="sort-pill-btn" data-sort="price-desc">LES PLUS CHÈRES</button>
+          <button class="sort-pill-btn" data-sort="rarity-desc">LES PLUS RARES</button>
+        </div>
+
+        <div class="market-search-box">
+          <span class="market-search-icon">🔍</span>
+          <input
+            type="text"
+            id="market-search-input"
+            class="market-search-input"
+            placeholder="Une carte, un vendeur..."
+          >
+        </div>
+      </div>
+
+      <!-- Filtres de rareté -->
+      <div class="market-subfilters" id="rarity-filters">
+        <button class="rarity-chip-btn active" data-rarity="all">TOUTES</button>
+        <button class="rarity-chip-btn" data-rarity="vulgaris">VULGARIS</button>
+        <button class="rarity-chip-btn" data-rarity="insolitus">INSOLITUS</button>
+        <button class="rarity-chip-btn" data-rarity="rarus">RARUS</button>
+        <button class="rarity-chip-btn" data-rarity="eximius">EXIMIUS</button>
+        <button class="rarity-chip-btn" data-rarity="legendarius">LEGENDARIUS</button>
+        <button class="rarity-chip-btn" data-rarity="mythicus">MYTHICUS</button>
+        <button class="rarity-chip-btn" data-rarity="arcanus">ARCANUS</button>
+      </div>
+
+      <!-- Cartes en vente en bas de page -->
+      <section>
+        <div id="market-count-label" class="market-cards-section-title" style="margin-bottom: 14px;">
+          ANNONCES ACTIVES (0)
+        </div>
+        <div id="market-listings-grid" class="market-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODALE : METTRE UNE CARTE EN VENTE OU AUX ENCHÈRES -->
+  <div id="sell-card-modal" class="market-modal-backdrop">
+    <div class="market-modal-box">
+      <div class="market-modal-header">
+        <h2>📤 METTRE SUR LE MARCHÉ</h2>
+        <button type="button" id="btn-close-sell-modal" class="btn-close-modal">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label>CARTE À VENDRE (VOTRE COLLECTION)</label>
+        <select id="sell-card-select" class="modern-select">
+          <option value="">Chargement...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>MODE DE VENTE</label>
+        <select id="sell-type-select" class="modern-select">
+          <option value="fixed">💰 Achat immédiat (Prix fixe)</option>
+          <option value="auction">🔨 Enchères (Plus offrant à la fin)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="price-label">PRIX DE VENTE (RAM)</label>
+        <input type="number" id="sell-price-input" class="modern-select" min="1" value="15">
+      </div>
+
+      <div class="form-group">
+        <label>DURÉE DE DISPONIBILITÉ</label>
+        <select id="sell-duration-select" class="modern-select">
+          <option value="1">⏱️ 1 minute (Test rapide)</option>
+          <option value="5" selected>⏱️ 5 minutes</option>
+          <option value="15">⏱️ 15 minutes</option>
+          <option value="60">⏱️ 1 heure</option>
+          <option value="1440">⏱️ 24 heures</option>
+        </select>
+      </div>
+
+      <button id="btn-create-listing" class="btn-publish">PUBLIER L'ANNONCE</button>
+    </div>
+  </div>
+
+  <script>
+    const currentUser = localStorage.getItem('username');
+    let allCardsCatalog = {};
+    let activeListings = [];
+    let currentMode = 'all';
+    let currentSort = 'recent';
+    let currentRarity = 'all';
+    let currentSearch = '';
+
+    const RARITY_RANK = {
+      vulgaris: 1,
+      insolitus: 2,
+      rarus: 3,
+      eximius: 4,
+      legendarius: 5,
+      mythicus: 6,
+      arcanus: 7
+    };
+
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
+    function createCardElement(card) {
+      const style = getRarityConfig(card.rarete);
+      const cardEl = document.createElement('div');
+      cardEl.className = 'tcg-card';
+      cardEl.style.borderColor = style.border;
+      cardEl.innerHTML = `
+        <div class="card-header-info">
+          <span class="card-name">${card.nom}</span>
+          <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
+            ${style.abbr}
+          </span>
+        </div>
+        <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+        <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+        <div class="card-stats">
+          <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+          <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
+        </div>
+      `;
+      return cardEl;
+    }
+
+    function formatCountdown(ms) {
+      if (ms <= 0) return 'TERMINÉ';
+      const totalSec = Math.ceil(ms / 1000);
+      const min = Math.floor(totalSec / 60);
+      const sec = totalSec % 60;
+      return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    }
+
+    async function loadUserAndCards() {
+      const [cardsRes, userRes] = await Promise.all([
+        fetch('/api/cards'),
+        fetch(`/api/user/${encodeURIComponent(currentUser)}`)
+      ]);
+
+      const cardsData = await cardsRes.json();
+      const userData = await userRes.json();
+
+      const cardsArray = Array.isArray(cardsData) ? cardsData : (cardsData.cards || []);
+      cardsArray.forEach(c => {
+        const key = c.id || c.nom;
+        allCardsCatalog[key] = c;
+      });
+
+      if (userData && typeof userData.ram === 'number') {
+        localStorage.setItem('ram', userData.ram);
+        document.getElementById('ram-display').textContent = userData.ram;
+      }
+
+      const select = document.getElementById('sell-card-select');
+      select.innerHTML = '';
+      const col = userData.collection || {};
+      const ownedIds = Object.keys(col).filter(id => col[id] > 0);
+
+      if (ownedIds.length === 0) {
+        select.innerHTML = '<option value="">Aucune carte disponible</option>';
+      } else {
+        ownedIds.forEach(id => {
+          const card = allCardsCatalog[id];
+          if (card) {
+            const opt = document.createElement('option');
+            opt.value = id;
+            opt.textContent = `${card.nom} [${card.rarete.toUpperCase()}] (x${col[id]})`;
+            select.appendChild(opt);
+          }
+        });
+      }
+    }
+
+    async function fetchMarketListings() {
+      try {
+        const res = await fetch('/api/market');
+        if (!res.ok) return;
+        const data = await res.json();
+        activeListings = Array.isArray(data) ? data : (data.listings || []);
+        renderMarketGrid();
+      } catch (err) {
+        console.error('Erreur chargement marché:', err);
+      }
+    }
+
+    function getFilteredAndSortedListings() {
+      const lowerUser = (currentUser || '').toLowerCase();
+      const lowerQuery = currentSearch.trim().toLowerCase();
+
+      const list = activeListings.filter(item => {
+        const card = allCardsCatalog[item.cardId];
+        if (!card) return false;
+
+        if (currentMode === 'auction' && item.type !== 'auction') return false;
+        if (currentMode === 'my-sales' && item.seller.toLowerCase() !== lowerUser) return false;
+        if (currentMode === 'my-bids' && (!item.highestBidder || item.highestBidder.toLowerCase() !== lowerUser)) return false;
+
+        if (currentRarity !== 'all' && (card.rarete || '').toLowerCase() !== currentRarity) return false;
+
+        if (lowerQuery) {
+          const matchName = (card.nom || '').toLowerCase().includes(lowerQuery);
+          const matchSeller = (item.seller || '').toLowerCase().includes(lowerQuery);
+          if (!matchName && !matchSeller) return false;
+        }
+
+        return true;
+      });
+
+      list.sort((a, b) => {
+        if (currentSort === 'price-asc') return a.currentPrice - b.currentPrice;
+        if (currentSort === 'price-desc') return b.currentPrice - a.currentPrice;
+        if (currentSort === 'rarity-desc') {
+          const rankA = RARITY_RANK[(allCardsCatalog[a.cardId]?.rarete || 'vulgaris').toLowerCase()] || 0;
+          const rankB = RARITY_RANK[(allCardsCatalog[b.cardId]?.rarete || 'vulgaris').toLowerCase()] || 0;
+          return rankB - rankA;
+        }
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
+
+      return list;
+    }
+
+    function renderMarketGrid() {
+      const grid = document.getElementById('market-listings-grid');
+      const countLabel = document.getElementById('market-count-label');
+      grid.innerHTML = '';
+
+      const filtered = getFilteredAndSortedListings();
+      countLabel.textContent = `// ANNONCES ACTIVES (${filtered.length})`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="market-empty-state">Aucune carte ne correspond à ces critères pour le moment.</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = allCardsCatalog[item.cardId];
+        if (!card) return;
+
+        const remaining = item.endTime - Date.now();
+        const isOwn = item.seller.toLowerCase() === (currentUser || '').toLowerCase();
+        const isAuction = item.type === 'auction';
+
+        const box = document.createElement('div');
+        box.className = 'market-item-card';
+
+        box.innerHTML = `
+          <div class="market-item-header">
+            <span class="${isAuction ? 'badge-type-auction' : 'badge-type-fixed'}">
+              ${isAuction ? '🔨 ENCHÈRE' : '💰 PRIX FIXE'}
+            </span>
+            <span class="market-timer ${remaining < 30000 ? 'urgent' : ''}" data-endtime="${item.endTime}">
+              ⏱️ ${formatCountdown(remaining)}
+            </span>
+          </div>
+          <div class="market-card-mount"></div>
+          <div class="market-item-meta">
+            <div>Vendeur : <strong>${item.seller}</strong></div>
+            <div>${isAuction ? 'Offre actuelle' : 'Prix'} : <strong style="color: var(--accent-cyan);">${item.currentPrice} RAM</strong></div>
+            ${isAuction ? `<div>Meilleur enchérisseur : <strong style="color: #e3b341;">${item.highestBidder || 'Aucun'}</strong></div>` : ''}
+          </div>
+          <div class="market-action-zone"></div>
+        `;
+
+        box.querySelector('.market-card-mount').appendChild(createCardElement(card));
+
+        const actionZone = box.querySelector('.market-action-zone');
+        if (isOwn) {
+          actionZone.innerHTML = `<button class="btn-accept-trade" disabled>VOTRE ANNONCE</button>`;
+        } else if (!isAuction) {
+          const buyBtn = document.createElement('button');
+          buyBtn.className = 'btn-accept-trade';
+          buyBtn.textContent = `ACHETER (${item.currentPrice} RAM)`;
+          buyBtn.onclick = () => buyFixedCard(item.id);
+          actionZone.appendChild(buyBtn);
+        } else {
+          const minBid = item.highestBidder ? item.currentPrice + 1 : item.startingPrice;
+          actionZone.innerHTML = `
+            <div class="bid-input-row">
+              <input type="number" class="bid-input" min="${minBid}" value="${minBid}">
+              <button class="btn-accept-trade">ENCHÉRIR</button>
+            </div>
+          `;
+          const input = actionZone.querySelector('input');
+          actionZone.querySelector('button').onclick = () => placeBid(item.id, input.value);
+        }
+
+        grid.appendChild(box);
+      });
+    }
+
+    async function buyFixedCard(listingId) {
+      const res = await fetch('/api/market/buy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: currentUser, listingId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadUserAndCards();
+        await fetchMarketListings();
+      } else {
+        alert(data.error);
+      }
+    }
+
+    async function placeBid(listingId, bidAmount) {
+      const res = await fetch('/api/market/bid', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: currentUser, listingId, bidAmount })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await loadUserAndCards();
+        await fetchMarketListings();
+      } else {
+        alert(data.error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('username-display').textContent = currentUser || 'Étudiant';
+      document.getElementById('ram-display').textContent = localStorage.getItem('ram') || '60';
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        ['isLoggedIn','username','ram'].forEach(k => localStorage.removeItem(k));
+        window.location.href = 'login.html';
+      });
+
+      const sellModal = document.getElementById('sell-card-modal');
+      document.getElementById('btn-open-sell-modal').addEventListener('click', () => {
+        sellModal.classList.add('active');
+      });
+      document.getElementById('btn-close-sell-modal').addEventListener('click', () => {
+        sellModal.classList.remove('active');
+      });
+      sellModal.addEventListener('click', (e) => {
+        if (e.target === sellModal) sellModal.classList.remove('active');
+      });
+
+      document.getElementById('sell-type-select').addEventListener('change', (e) => {
+        document.getElementById('price-label').textContent =
+          e.target.value === 'auction' ? 'PRIX DE DÉPART ENCHÈRE (RAM)' : 'PRIX DE VENTE (RAM)';
+      });
+
+      document.querySelectorAll('.mode-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.mode-pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentMode = btn.dataset.mode;
+          renderMarketGrid();
+        });
+      });
+
+      document.querySelectorAll('.sort-pill-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.sort-pill-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentSort = btn.dataset.sort;
+          renderMarketGrid();
+        });
+      });
+
+      document.querySelectorAll('.rarity-chip-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.rarity-chip-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentRarity = btn.dataset.rarity;
+          renderMarketGrid();
+        });
+      });
+
+      document.getElementById('market-search-input').addEventListener('input', (e) => {
+        currentSearch = e.target.value;
+        renderMarketGrid();
+      });
+
+      document.getElementById('btn-create-listing').addEventListener('click', async () => {
+        const cardId = document.getElementById('sell-card-select').value;
+        const type = document.getElementById('sell-type-select').value;
+        const price = document.getElementById('sell-price-input').value;
+        const durationMinutes = document.getElementById('sell-duration-select').value;
+
+        if (!cardId) return alert('Sélectionnez une carte.');
+
+        const res = await fetch('/api/market/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: currentUser, cardId, type, price, durationMinutes })
+        });
+        const data = await res.json();
+        if (data.success) {
+          sellModal.classList.remove('active');
+          await loadUserAndCards();
+          await fetchMarketListings();
+        } else {
+          alert(data.error);
+        }
+      });
+
+      await loadUserAndCards();
+      await fetchMarketListings();
+
+      setInterval(() => {
+        let needsRefresh = false;
+        document.querySelectorAll('.market-timer').forEach(el => {
+          const end = parseInt(el.dataset.endtime, 10);
+          const rem = end - Date.now();
+          if (rem <= 0) {
+            needsRefresh = true;
+            el.textContent = '⏱️ TERMINÉ';
+          } else {
+            el.textContent = `⏱️ ${formatCountdown(rem)}`;
+            if (rem < 30000) el.classList.add('urgent');
+          }
+        });
+        if (needsRefresh) {
+          loadUserAndCards();
+          fetchMarketListings();
+        }
+      }, 1000);
+
+      setInterval(fetchMarketListings, 4000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="js/api.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L2 Info TCG - Dashboard</title>
+  <link rel="icon" type="image/png" href="logo_carte.png">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/quizz.css">
+  <link rel="stylesheet" href="css/cards.css">
+  
+  <!-- Script de vérification de session -->
+  <script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+      window.location.replace('login.html');
+    }
+  </script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Barre de navigation supérieure -->
+    <header class="top-nav">
+      <div class="nav-left">
+        <div class="brand-logo">⚡ L2_TCG</div>
+        <nav class="main-menu">
+          <a href="index.html" class="active">ACCUEIL</a>
+          <a href="shop.html">BOUTIQUE</a>
+          <a href="collection.html">COLLECTION</a>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <div class="user-profile">
+          <span id="username-display">Étudiant</span>
+          <div class="avatar-circle">💻</div>
+        </div>
+        <button id="logout-btn" title="Se déconnecter" class="btn-logout">LOGOUT</button>
+      </div>
+    </header>
+
+    <!-- Sous-barre de navigation secondaire -->
+    <div class="sub-nav">
+      <div class="sub-menu-items">
+        <a href="index.html" class="sub-item active"><span class="dot"></span> ACCUEIL</a>
+        <a href="shop.html" class="sub-item">🛒 BOUTIQUE</a>
+        <a href="collection.html" class="sub-item">📑 COLLECTION</a>
+        <a href="trades.html" class="sub-item">🔄 ÉCHANGES</a>
+        <a href="market.html" class="sub-item">📈 MARCHÉ</a>
+        <a href="ranking.html" class="sub-item">🏆 CLASSEMENT</a>
+        <a href="codex.html" class="sub-item">📖 CODEX</a>
+      </div>
+      <div class="sub-nav-right" style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="btn-open-ram-quiz" class="btn-open-booster" style="padding: 6px 14px; font-size: 0.75rem;">
+          🪙 GAGNER DE LA RAM
+        </button>
+        <div class="currency-badge">
+          <span class="currency-icon">🪙</span>
+          <span id="ram-display">60</span> RAM
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenu Principal -->
+    <main class="main-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
+      <section class="booster-hero" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+        <div class="hero-header">
+          <span class="subtitle" id="timer-status">PROCHAIN BOOSTER DANS : 10:00</span>
+          <h1 class="title-glow" id="booster-title-count">0 À OUVRIR</h1>
+        </div>
+        
+        <!-- Visuel des boosters bien centré -->
+        <div class="booster-display-area" style="display: flex; justify-content: center; margin: 20px 0;">
+          <div class="booster-stack">
+            <div class="booster-card layer-3"></div>
+            <div class="booster-card layer-2"></div>
+            <div class="booster-card layer-1">
+              <div class="booster-badge" id="booster-badge-count">x0</div>
+              <div class="booster-brand">L2 INFO TCG</div>
+              <div class="booster-title">BOOSTER GRATUIT</div>
+              <div class="booster-info">5 CARTES • RARE GARANTIE</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boutons d'ouverture bleus -->
+        <div class="action-container" style="display: flex; gap: 15px; justify-content: center;">
+          <button id="btn-open-one" class="btn-open-booster">OUVRIR 1 BOOSTER</button>
+          <button id="btn-open-all" class="btn-open-booster btn-secondary-action">TOUT OUVRIR</button>
+        </div>
+      </section>
+
+      <!-- Zone d'affichage centrée pour les cartes tirées (ouverture groupée) -->
+      <div id="stored-pull-results" style="display: flex; gap: 20px; margin-top: 35px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1300px;"></div>
+    </main>
+  </div>
+
+  <!-- OVERLAY PLEIN ÉCRAN : QUIZ INFORMATIQUE POUR GAGNER DE LA RAM -->
+  <div id="ram-quiz-modal" class="pack-modal-overlay">
+    <div class="ram-quiz-box">
+      <div class="ram-quiz-header">
+        <span id="ram-gain-indicator" style="color: var(--accent-cyan); font-weight: 700;">
+          RÉCOMPENSE : +5 RAM / RÉPONSE
+        </span>
+        <span id="ram-streak-badge" class="ram-streak-badge">
+          🔥 STREAK : <span id="ram-streak-count">0</span>
+        </span>
+      </div>
+
+      <div id="ram-penalty-banner" class="ram-penalty-alert"></div>
+      <div id="ram-quiz-feedback" class="ram-quiz-feedback"></div>
+
+      <div>
+        <p id="ram-quiz-question" class="ram-quiz-question">Chargement de la question...</p>
+        <div id="ram-quiz-options" class="ram-quiz-options" style="margin-top: 16px;"></div>
+      </div>
+
+      <div class="ram-quiz-footer">
+        <span id="ram-best-streak-label">MEILLEURE STREAK : 0</span>
+        <button type="button" id="btn-quit-ram-quiz" class="btn-logout">
+          QUITTER LE QUIZ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE DE RÉVÉLATION 1 PAR 1 AU CLIC + RÉCAPITULATIF FINAL -->
+  <div id="pack-modal" class="pack-modal-overlay">
+    <div id="reveal-progress" class="reveal-progress-bar">CARTE 1 / 5</div>
+
+    <div id="single-reveal-stage" class="single-card-stage" onclick="nextCardReveal()">
+      <div id="current-revealed-card"></div>
+      <div class="click-hint">[ CLIQUEZ SUR LA CARTE POUR CONTINUER ➔ ]</div>
+    </div>
+
+    <div id="recap-stage" style="display: none; flex-direction: column; align-items: center; width: 100%;">
+      <h2 style="font-family: 'Fira Code', monospace; color: var(--accent-cyan); font-size: 1.4rem; letter-spacing: 1px;">
+        ✨ RÉCAPITULATIF DU TIRAGE ✨
+      </h2>
+      <div id="revealed-cards-container" class="revealed-cards-row"></div>
+      <button class="btn-open-booster" onclick="closePackModal()">AJOUTER À MA COLLECTION</button>
+    </div>
+  </div>
+
+  <!-- MODALE PLEIN ÉCRAN POUR LE "TOUT OUVRIR" -->
+  <div id="all-packs-modal" class="pack-modal-overlay">
+    <div class="all-cards-modal-content">
+      <h2 id="all-packs-modal-title" style="font-family: 'Fira Code', monospace; color: var(--accent-cyan); font-size: 1.4rem; letter-spacing: 1px;">
+        ⚡ OUVERTURE GROUPÉE ⚡
+      </h2>
+      <div id="all-cards-flip-grid" class="all-cards-grid"></div>
+      <button class="btn-open-booster" onclick="closeAllPacksModal()">AJOUTER À MA COLLECTION</button>
+    </div>
+  </div>
+
+  <!-- Script global de gestion -->
+  <script>
+    const BOOSTER_COOLDOWN_SECONDS = 600;
+    const MAX_BOOSTERS = 6;
+
+    const TIMER_DURATION = BOOSTER_COOLDOWN_SECONDS * 1000;
+
+    const savedDuration = localStorage.getItem('boosterDurationConfig');
+    if (savedDuration !== BOOSTER_COOLDOWN_SECONDS.toString()) {
+      localStorage.setItem('boosterDurationConfig', BOOSTER_COOLDOWN_SECONDS.toString());
+      localStorage.setItem('lastTimestamp', Date.now().toString());
+    }
+
+    if (localStorage.getItem('boosterCount') === null) {
+      localStorage.setItem('boosterCount', '4');
+    }
+    if (localStorage.getItem('lastTimestamp') === null) {
+      localStorage.setItem('lastTimestamp', Date.now().toString());
+    }
+
+    function calculateOfflineProgress() {
+      let count = parseInt(localStorage.getItem('boosterCount'), 10);
+      let lastTimestamp = parseInt(localStorage.getItem('lastTimestamp'), 10);
+      const now = Date.now();
+
+      if (isNaN(count)) count = 0;
+      if (isNaN(lastTimestamp) || lastTimestamp > now) {
+        lastTimestamp = now;
+        localStorage.setItem('lastTimestamp', now.toString());
+      }
+
+      if (count >= MAX_BOOSTERS) return;
+
+      const elapsed = now - lastTimestamp;
+      if (elapsed >= TIMER_DURATION) {
+        const boostersGained = Math.floor(elapsed / TIMER_DURATION);
+        count = Math.min(MAX_BOOSTERS, count + boostersGained);
+
+        if (count >= MAX_BOOSTERS) {
+          localStorage.setItem('lastTimestamp', now.toString());
+        } else {
+          const newTimestamp = lastTimestamp + (boostersGained * TIMER_DURATION);
+          localStorage.setItem('lastTimestamp', newTimestamp.toString());
+        }
+
+        localStorage.setItem('boosterCount', count.toString());
+      }
+    }
+
+    function updateUI() {
+      const count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
+      document.getElementById('booster-title-count').textContent = `${count} À OUVRIR`;
+      document.getElementById('booster-badge-count').textContent = `x${count}`;
+
+      const btnOne = document.getElementById('btn-open-one');
+      const btnAll = document.getElementById('btn-open-all');
+      
+      if (btnOne && btnAll) {
+        btnOne.disabled = count === 0;
+        btnAll.disabled = count === 0;
+        btnOne.style.opacity = count === 0 ? '0.5' : '1';
+        btnAll.style.opacity = count === 0 ? '0.5' : '1';
+      }
+    }
+
+    function formatRemainingTime(ms) {
+      const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (hours > 0) {
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function tick() {
+      const count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
+      const lastTimestamp = parseInt(localStorage.getItem('lastTimestamp'), 10);
+      const now = Date.now();
+
+      if (count >= MAX_BOOSTERS) {
+        document.getElementById('timer-status').textContent = `STOCK MAX ATTEINT (${MAX_BOOSTERS}/${MAX_BOOSTERS})`;
+        return;
+      }
+
+      const elapsed = now - lastTimestamp;
+      const remaining = TIMER_DURATION - elapsed;
+
+      if (remaining <= 0) {
+        calculateOfflineProgress();
+        updateUI();
+      } else {
+        document.getElementById('timer-status').textContent = 
+          `PROCHAIN BOOSTER DANS : ${formatRemainingTime(remaining)}`;
+      }
+    }
+
+    function getRarityConfig(rarete) {
+      const r = (rarete || 'vulgaris').toLowerCase();
+      const configs = {
+        vulgaris:    { abbr: 'VUL', color: '#8b949e', bg: 'rgba(139, 148, 158, 0.2)', border: '#8b949e' },
+        insolitus:   { abbr: 'INS', color: '#3fb950', bg: 'rgba(63, 185, 80, 0.2)',   border: '#3fb950' },
+        rarus:       { abbr: 'RAR', color: '#58a6ff', bg: 'rgba(88, 166, 255, 0.2)',  border: '#58a6ff' },
+        eximius:     { abbr: 'EXI', color: '#bc8cff', bg: 'rgba(188, 140, 255, 0.2)', border: '#bc8cff' },
+        legendarius: { abbr: 'LEG', color: '#e3b341', bg: 'rgba(227, 179, 65, 0.2)',  border: '#e3b341' },
+        mythicus:    { abbr: 'MYT', color: '#f85149', bg: 'rgba(248, 81, 73, 0.2)',   border: '#f85149' },
+        arcanus:     { abbr: 'ARC', color: '#ffffff', bg: 'linear-gradient(45deg, #ff595e, #ffca3a, #8ac926, #1982c4, #6a4c93)', border: '#ffffff' }
+      };
+      return configs[r] || configs.vulgaris;
+    }
+
+    const RARITY_RANK = {
+      vulgaris: 1,
+      insolitus: 2,
+      rarus: 3,
+      eximius: 4,
+      legendarius: 5,
+      mythicus: 6,
+      arcanus: 7
+    };
+
+    function sortCardsByRarityAsc(cards) {
+      if (!Array.isArray(cards)) return [];
+      return [...cards].sort((a, b) => {
+        const rankA = RARITY_RANK[(a?.rarete || 'vulgaris').toLowerCase()] ?? 0;
+        const rankB = RARITY_RANK[(b?.rarete || 'vulgaris').toLowerCase()] ?? 0;
+        if (rankA !== rankB) {
+          return rankA - rankB;
+        }
+        return Math.random() - 0.5;
+      });
+    }
+
+    function createCardElement(card) {
+      const style = getRarityConfig(card.rarete);
+      const cardEl = document.createElement('div');
+      cardEl.className = 'tcg-card';
+      cardEl.style.borderColor = style.border;
+    
+      cardEl.innerHTML = `
+        <div class="card-header-info">
+          <span class="card-name">${card.nom}</span>
+          <span class="card-rarity" style="background: ${style.bg}; color: ${style.color}; border-color: ${style.border};">
+            ${style.abbr}
+          </span>
+        </div>
+        <img src="${card.image}" alt="${card.nom}" class="card-bg-image">
+        <p class="card-desc">// ${card.description || 'Pas de description.'}</p>
+        <div class="card-stats">
+          <span class="stat-cafe">☕ ${card.stats?.cafe || 0} Café</span>
+          <span class="stat-ram">📜 ${card.stats?.ram || 0} RAM</span>
+        </div>
+      `;
+      return cardEl;
+    }
+
+    const RARITY_PRISMATIC_COLORS = {
+      eximius:     ["#A855F7", "#7C3AED", "#6366F1"],
+      legendarius: ["#FACC15", "#EAB308", "#F59E0B"],
+      mythicus:    ["#F87171", "#EF4444", "#DC2626"],
+      arcanus:     ["#FF595E", "#FFCA3A", "#8AC926", "#1982C4", "#6A4C93"]
+    };
+
+    const activeBurstCleanups = [];
+
+    function clearActiveBursts() {
+      while (activeBurstCleanups.length > 0) {
+        const cleanup = activeBurstCleanups.pop();
+        if (typeof cleanup === 'function') cleanup();
+      }
+    }
+
+    function hexToRgb(hex) {
+      const clean = (hex || '#A855F7').replace('#', '');
+      const num = parseInt(clean, 16);
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    function mountPrismaticBurst(containerEl, rarete, options = {}) {
+      const r = (rarete || '').toLowerCase();
+      const colors = RARITY_PRISMATIC_COLORS[r];
+      if (!colors || !containerEl) return;
+
+      const config = {
+        colors,
+        intensity: options.intensity ?? 2,
+        speed: options.speed ?? 0.5,
+        zoom: options.zoom ?? 1,
+        rayWidth: options.rayWidth ?? 1,
+        twist: options.twist ?? 0,
+        rayCount: options.rayCount ?? 0,
+        centerFade: options.centerFade ?? 1,
+        grain: options.grain ?? 0.8
+      };
+
+      const layer = document.createElement('div');
+      layer.className = 'prismatic-burst-layer';
+      const canvas = document.createElement('canvas');
+      const size = 520;
+      canvas.width = size;
+      canvas.height = size;
+      layer.appendChild(canvas);
+      containerEl.insertBefore(layer, containerEl.firstChild);
+
+      const ctx = canvas.getContext('2d');
+      const cx = size / 2;
+      const cy = size / 2;
+      const maxRadius = (size / 2) * config.zoom;
+      const numRays = config.rayCount > 0 ? config.rayCount : 18;
+      const rgbPalette = config.colors.map(hexToRgb);
+
+      const grainCanvas = document.createElement('canvas');
+      grainCanvas.width = 128;
+      grainCanvas.height = 128;
+      const gCtx = grainCanvas.getContext('2d');
+      const gImg = gCtx.createImageData(128, 128);
+      for (let i = 0; i < gImg.data.length; i += 4) {
+        const v = Math.floor(Math.random() * 255);
+        gImg.data[i] = v;
+        gImg.data[i + 1] = v;
+        gImg.data[i + 2] = v;
+        gImg.data[i + 3] = Math.floor(28 * config.grain);
+      }
+      gCtx.putImageData(gImg, 0, 0);
+      const grainPattern = ctx.createPattern(grainCanvas, 'repeat');
+
+      const startTime = performance.now();
+      let animId = null;
+      let burstBoost = 0;
+
+      const onPointerDown = () => {
+        burstBoost = 1.4;
+      };
+      containerEl.addEventListener('pointerdown', onPointerDown);
+
+      function render(now) {
+        const elapsed = ((now - startTime) / 1000) * config.speed;
+        burstBoost = Math.max(0, burstBoost - 0.04);
+
+        ctx.clearRect(0, 0, size, size);
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        const tiltX = 0.72 + Math.sin(elapsed * 0.9) * 0.25;
+        const rotZ = elapsed * 0.85;
+        ctx.scale(1, tiltX);
+        ctx.rotate(rotZ);
+
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (let i = 0; i < numRays; i++) {
+          const baseAngle = (i / numRays) * Math.PI * 2;
+          const colorRgb = rgbPalette[i % rgbPalette.length];
+          const raySpread = ((Math.PI * 2) / numRays) * 0.45 * config.rayWidth;
+          const angleOffset = Math.sin(elapsed * 1.4 + i) * 0.08 + config.twist * 0.2;
+
+          const grad = ctx.createRadialGradient(0, 0, size * 0.06 * config.centerFade, 0, 0, maxRadius);
+          const alphaPeak = Math.min(0.85, (0.22 * config.intensity) + burstBoost * 0.25);
+          grad.addColorStop(0, `rgba(${colorRgb.r}, ${colorRgb.g}, ${colorRgb.b}, 0)`);
+          grad.addColorStop(0.28, `rgba(${colorRgb.r}, ${colorRgb.g}, ${colorRgb.b}, ${alphaPeak * 0.65})`);
+          grad.addColorStop(0.65, `rgba(${colorRgb.r}, ${colorRgb.g}, ${colorRgb.b}, ${alphaPeak})`);
+          grad.addColorStop(1, `rgba(${colorRgb.r}, ${colorRgb.g}, ${colorRgb.b}, 0)`);
+
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.arc(0, 0, maxRadius, baseAngle + angleOffset - raySpread, baseAngle + angleOffset + raySpread);
+          ctx.closePath();
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
+
+        if (config.centerFade > 0) {
+          ctx.globalCompositeOperation = 'destination-out';
+          const holeGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 115 * config.centerFade);
+          holeGrad.addColorStop(0, `rgba(0, 0, 0, ${0.85 * config.centerFade})`);
+          holeGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = holeGrad;
+          ctx.beginPath();
+          ctx.arc(0, 0, 115 * config.centerFade, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+
+        if (config.grain > 0 && grainPattern) {
+          ctx.save();
+          ctx.globalCompositeOperation = 'overlay';
+          ctx.fillStyle = grainPattern;
+          ctx.fillRect(0, 0, size, size);
+          ctx.restore();
+        }
+
+        animId = requestAnimationFrame(render);
+      }
+
+      animId = requestAnimationFrame(render);
+
+      activeBurstCleanups.push(() => {
+        if (animId) cancelAnimationFrame(animId);
+        containerEl.removeEventListener('pointerdown', onPointerDown);
+        if (layer.parentNode) layer.parentNode.removeChild(layer);
+      });
+    }
+
+    let currentDrawList = [];
+    let currentRevealIndex = 0;
+
+    function renderCurrentSingleCard() {
+      clearActiveBursts();
+      const card = currentDrawList[currentRevealIndex];
+
+      document.getElementById('reveal-progress').textContent =
+        `CARTE ${currentRevealIndex + 1} / ${currentDrawList.length}`;
+
+      const container = document.getElementById('current-revealed-card');
+      container.innerHTML = '';
+      void container.offsetWidth;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'prismatic-card-wrapper';
+      wrapper.appendChild(createCardElement(card));
+      container.appendChild(wrapper);
+
+      mountPrismaticBurst(wrapper, card.rarete, {
+        intensity: 2,
+        speed: 0.5,
+        zoom: 1,
+        rayWidth: 1,
+        twist: 0,
+        centerFade: 1,
+        grain: 0.8
+      });
+    }
+
+    function renderRecapCards(cards) {
+      clearActiveBursts();
+      const container = document.getElementById('revealed-cards-container');
+      container.innerHTML = '';
+
+      cards.forEach(card => {
+        const slot = document.createElement('div');
+        slot.className = 'recap-card-slot prismatic-card-wrapper';
+        slot.appendChild(createCardElement(card));
+        container.appendChild(slot);
+
+        mountPrismaticBurst(slot, card.rarete, {
+          intensity: 1.8,
+          speed: 0.5,
+          zoom: 0.9,
+          rayWidth: 1,
+          twist: 0,
+          centerFade: 1,
+          grain: 0.8
+        });
+      });
+    }
+
+    function closePackModal() {
+      clearActiveBursts();
+      document.getElementById('pack-modal').classList.remove('active');
+    }
+
+    function nextCardReveal() {
+      currentRevealIndex++;
+      if (currentRevealIndex < currentDrawList.length) {
+        renderCurrentSingleCard();
+      } else {
+        document.getElementById('reveal-progress').style.display = 'none';
+        document.getElementById('single-reveal-stage').style.display = 'none';
+        document.getElementById('recap-stage').style.display = 'flex';
+        renderRecapCards(currentDrawList);
+      }
+    }
+
+    function displayPulledCards(cards) {
+      currentDrawList = sortCardsByRarityAsc(cards);
+      currentRevealIndex = 0;
+
+      const modal = document.getElementById('pack-modal');
+      const progressBar = document.getElementById('reveal-progress');
+      const singleStage = document.getElementById('single-reveal-stage');
+      const recapStage = document.getElementById('recap-stage');
+
+      progressBar.style.display = 'block';
+      singleStage.style.display = 'flex';
+      recapStage.style.display = 'none';
+
+      renderCurrentSingleCard();
+      modal.classList.add('active');
+    }
+
+    function getBlurHaloClass(rarete) {
+      const r = (rarete || '').toLowerCase();
+      if (r === 'eximius') return 'halo-eximius';
+      if (r === 'legendarius') return 'halo-legendarius';
+      if (r === 'mythicus') return 'halo-mythicus';
+      if (r === 'arcanus') return 'halo-arcanus';
+      return '';
+    }
+
+    const SHAKE_DURATIONS_MS = {
+      legendarius: 700,
+      mythicus:    1350,
+      arcanus:     2100
+    };
+
+    function getShakeDuration(rarete) {
+      const r = (rarete || '').toLowerCase();
+      return SHAKE_DURATIONS_MS[r] || 0;
+    }
+
+    function revealSingleGridCard(container, card) {
+      if (container.dataset.revealing === 'true' || container.classList.contains('is-flipped')) {
+        return;
+      }
+      container.dataset.revealing = 'true';
+
+      const r = (card.rarete || '').toLowerCase();
+      const shakeDuration = getShakeDuration(r);
+
+      if (shakeDuration > 0) {
+        container.style.setProperty('--shake-duration', `${shakeDuration}ms`);
+        container.classList.add('is-shaking', `shake-${r}`);
+
+        setTimeout(() => {
+          container.classList.remove('is-shaking', `shake-${r}`);
+          container.classList.add('is-flipped');
+        }, shakeDuration);
+      } else {
+        container.classList.add('is-flipped');
+      }
+    }
+
+    function closeAllPacksModal() {
+      document.getElementById('all-packs-modal').classList.remove('active');
+    }
+
+    // ==========================================
+    // QUIZ RAM : 24 QUESTIONS, MODE HARDCORE >= 11 & ANTI-TRICHE -30%
+    // ==========================================
+    const QUIZ_STANDARD_QUESTIONS = [
+      { id: 'std_1', q: "En C, quelle fonction alloue dynamiquement de la mémoire sur le tas ?", options: ["malloc()", "sizeof()", "strcpy()"], answer: 0 },
+      { id: 'std_2', q: "Quelle structure de données suit le principe FIFO (First In, First Out) ?", options: ["La pile (Stack)", "La file (Queue)", "L'arbre couvrant"], answer: 1 },
+      { id: 'std_3', q: "Quelle est la complexité moyenne d'accès par clé dans une table de hachage ?", options: ["O(1)", "O(log n)", "O(n)"], answer: 0 },
+      { id: 'std_4', q: "Quel code HTTP correspond à une ressource interdite d'accès ?", options: ["201 Created", "403 Forbidden", "404 Not Found"], answer: 1 },
+      { id: 'std_5', q: "En SQL, quelle clause permet d'effectuer une jointure entre deux tables ?", options: ["JOIN", "MERGE", "BIND"], answer: 0 },
+      { id: 'std_6', q: "Quelle commande Git permet de créer une nouvelle branche et de se placer dessus ?", options: ["git checkout -b nom_branche", "git stash pop", "git fetch --all"], answer: 0 },
+      { id: 'std_7', q: "Dans un arbre binaire de recherche équilibré de n nœuds, quelle est la hauteur approximative ?", options: ["log2(n)", "n²", "n / 2"], answer: 0 },
+      { id: 'std_8', q: "Quel protocole réseau résout une adresse IP à partir d'une adresse MAC sur un réseau local ?", options: ["ARP", "SMTP", "FTP"], answer: 0 },
+      { id: 'std_9', q: "En langage C, quel opérateur permet d'obtenir l'adresse mémoire d'une variable ?", options: ["&", "*", "->"], answer: 0 },
+      { id: 'std_10', q: "Quelle commande Linux permet d'afficher les permissions et détails des fichiers d'un dossier ?", options: ["ls -la", "pwd -f", "cat -z"], answer: 0 },
+      { id: 'std_11', q: "Quelle structure est la plus adaptée pour implémenter un parcours en largeur (BFS) d'un graphe ?", options: ["Une file (Queue)", "Une pile (Stack)", "Un tas binaire"], answer: 0 },
+      { id: 'std_12', q: "Quel port TCP est utilisé par défaut pour le protocole SSH ?", options: ["22", "80", "443"], answer: 0 }
+    ];
+
+    const QUIZ_HARDCORE_QUESTIONS = [
+      {
+        id: 'hrd_1',
+        q: "[HARDCORE] En C (LP64), que vaut sizeof(void*) et que provoque le déréférencement d'un pointeur libéré (dangling pointer) ?",
+        options: [
+          "8 octets ; un comportement indéfini (Undefined Behavior)",
+          "4 octets ; une exception garantie à la compilation",
+          "8 octets ; un retour automatique à NULL"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_2',
+        q: "[HARDCORE] Quelle condition est indispensable (avec exclusion mutuelle, rétention/attente et non-préemption) pour qu'un interblocage (deadlock) apparaisse ?",
+        options: [
+          "Attente circulaire (circular wait) dans le graphe d'allocation",
+          "Ordonnancement Round-Robin avec quantum inférieur à 5 ms",
+          "Pagination à deux niveaux activée sur le noyau"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_3',
+        q: "[HARDCORE] Dans un tas binaire (min-heap) stocké dans un tableau indexé à 0, à quel indice se trouve le fils droit du nœud i ?",
+        options: ["2 * i + 2", "2 * i + 1", "(i - 1) / 2"],
+        answer: 0
+      },
+      {
+        id: 'hrd_4',
+        q: "[HARDCORE] En TCP, quel mécanisme permet de détecter la perte d'un segment avant l'expiration du RTO (Retransmission Timeout) ?",
+        options: [
+          "Les 3 Duplicate ACKs (Fast Retransmit)",
+          "Le drapeau FIN envoyé par le routeur intermédiaire",
+          "L'incrément du champ TTL à chaque saut"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_5',
+        q: "[HARDCORE] En SQL (ACID), quel niveau d'isolation autorise les lectures non reproductibles (non-repeatable reads) mais interdit les lectures sales (dirty reads) ?",
+        options: ["READ COMMITTED", "READ UNCOMMITTED", "SERIALIZABLE"],
+        answer: 0
+      },
+      {
+        id: 'hrd_6',
+        q: "[HARDCORE] Pourquoi un arbre AVL ou Rouge-Noir garantit-il O(log n) en recherche là où un ABR simple peut dégénérer en O(n) ?",
+        options: [
+          "Il maintient une contrainte d'équilibre limitant la hauteur à O(log n)",
+          "Il stocke tous les éléments dans un tableau contigu trié",
+          "Il supprime automatiquement les doublons à chaque insertion"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_7',
+        q: "[HARDCORE] En C, quelle est la différence fondamentale entre 'const int *p' et 'int * const p' ?",
+        options: [
+          "Le 1er interdit de modifier la valeur pointée ; le 2nd interdit de modifier l'adresse dans p",
+          "Ils sont strictement équivalents selon le standard ISO C11",
+          "Le 1er alloue sur la pile ; le 2nd alloue sur le tas"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_8',
+        q: "[HARDCORE] Quelle est la complexité temporelle d'un tri fusion (Merge Sort) dans le pire des cas et son empreinte mémoire auxiliaire ?",
+        options: [
+          "O(n log n) en temps et O(n) en espace auxiliaire",
+          "O(n²) en temps et O(1) en espace auxiliaire",
+          "O(n log n) en temps et O(1) en espace auxiliaire"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_9',
+        q: "[HARDCORE] Dans un système de fichiers Unix/Linux, que contient l'inode d'un fichier ?",
+        options: [
+          "Les métadonnées (droits, taille, propriétaire, pointeurs vers blocs) mais pas le nom du fichier",
+          "Le nom du fichier et le chemin absolu complet depuis '/'",
+          "Uniquement l'adresse physique du premier secteur disque"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_10',
+        q: "[HARDCORE] Lorsqu'un processus appelle fork() sous Linux avec Copy-On-Write (COW), quand la copie physique d'une page mémoire a-t-elle lieu ?",
+        options: [
+          "Uniquement lorsqu'un des processus tente d'écrire sur cette page",
+          "Dès l'appel système fork() pour toutes les pages du père",
+          "Uniquement lors de l'appel à exit()"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_11',
+        q: "[HARDCORE] En algèbre relationnelle / SQL, qu'est-ce qu'une dépendance fonctionnelle transitive (X -> Y et Y -> Z) empêche en 3NF ?",
+        options: [
+          "La dépendance d'un attribut non-clé vis-à-vis d'une clé via un autre attribut non-clé",
+          "L'utilisation de clés étrangères référençant une clé primaire composite",
+          "La création d'index composites sur deux colonnes"
+        ],
+        answer: 0
+      },
+      {
+        id: 'hrd_12',
+        q: "[HARDCORE] Dans l'algorithme de Dijkstra avec un graphe à poids positifs et une file de priorité binaire, quelle est sa complexité ?",
+        options: [
+          "O((V + E) log V)",
+          "O(V * E) dans tous les cas",
+          "O(V + E) sans tri ni tas"
+        ],
+        answer: 0
+      }
+    ];
+
+    let quizStreak = 0;
+    let quizBestStreak = 0;
+    let quizPenaltyRemainingMs = 0;
+    let quizPenaltyPercent = 0;
+    let quizQuestionsAnswered = 0;
+    let quizAskedIds = new Set();
+    let currentQuizQuestion = null;
+    let quizLocked = false;
+    let quizSessionRunning = false;
+
+    function isQuizModalOpen() {
+      const modal = document.getElementById('ram-quiz-modal');
+      return Boolean(modal && modal.classList.contains('active') && quizSessionRunning);
+    }
+
+    function updateRamCounter(val) {
+      localStorage.setItem('ram', val);
+      const ramEl = document.getElementById('ram-display');
+      if (ramEl) ramEl.textContent = val;
+    }
+
+    function renderQuizStatusUI() {
+      const streakBadge = document.getElementById('ram-streak-badge');
+      const streakCount = document.getElementById('ram-streak-count');
+      const gainIndicator = document.getElementById('ram-gain-indicator');
+      const bestLabel = document.getElementById('ram-best-streak-label');
+      const penaltyBanner = document.getElementById('ram-penalty-banner');
+
+      streakCount.textContent = quizStreak;
+      if (quizStreak >= 10) {
+        streakBadge.classList.add('visible');
+        gainIndicator.textContent = 'RÉCOMPENSE : +10 RAM / RÉPONSE (STREAK ≥ 10)';
+      } else {
+        streakBadge.classList.remove('visible');
+        gainIndicator.textContent = 'RÉCOMPENSE : +5 RAM / RÉPONSE';
+      }
+
+      const modeTag = quizQuestionsAnswered >= 10 ? 'HARDCORE (Q11+)' : `STANDARD (Q${quizQuestionsAnswered + 1}/10)`;
+      bestLabel.textContent = `MODE : ${modeTag} • MEILLEURE STREAK : ${quizBestStreak}`;
+
+      if (quizPenaltyRemainingMs > 0) {
+        const pctLabel = Math.round((quizPenaltyPercent || 0.10) * 100);
+        penaltyBanner.classList.add('active');
+        penaltyBanner.textContent = `⚠️ MALUS ACTIF : -${pctLabel}% sur les cartes de haute rareté pendant encore ${formatRemainingTime(quizPenaltyRemainingMs)}.`;
+      } else {
+        penaltyBanner.classList.remove('active');
+        penaltyBanner.textContent = '';
+      }
+    }
+
+    function showQuizFeedback(type, message) {
+      const fb = document.getElementById('ram-quiz-feedback');
+      fb.className = `ram-quiz-feedback ${type}`;
+      fb.textContent = message;
+    }
+
+    function pickNextQuizQuestion() {
+      const isHardcorePhase = quizQuestionsAnswered >= 10;
+      const primaryPool = isHardcorePhase ? QUIZ_HARDCORE_QUESTIONS : QUIZ_STANDARD_QUESTIONS;
+      const fallbackPool = isHardcorePhase ? QUIZ_STANDARD_QUESTIONS : QUIZ_HARDCORE_QUESTIONS;
+
+      let available = primaryPool.filter(q => !quizAskedIds.has(q.id));
+      if (available.length === 0) {
+        available = fallbackPool.filter(q => !quizAskedIds.has(q.id));
+      }
+      if (available.length === 0) {
+        quizAskedIds.clear();
+        available = primaryPool;
+      }
+
+      const baseQuestion = available[Math.floor(Math.random() * available.length)];
+
+      // Mélange l'ordre des options à chaque affichage tout en gardant la bonne réponse
+      const indexedOptions = baseQuestion.options.map((text, idx) => ({
+        text,
+        isRight: idx === baseQuestion.answer
+      }));
+      for (let i = indexedOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indexedOptions[i], indexedOptions[j]] = [indexedOptions[j], indexedOptions[i]];
+      }
+
+      currentQuizQuestion = {
+        id: baseQuestion.id,
+        q: baseQuestion.q,
+        shuffledOptions: indexedOptions
+      };
+
+      document.getElementById('ram-quiz-question').textContent = currentQuizQuestion.q;
+      const optsContainer = document.getElementById('ram-quiz-options');
+      optsContainer.innerHTML = '';
+
+      currentQuizQuestion.shuffledOptions.forEach((optObj) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'ram-quiz-option-btn';
+        btn.textContent = optObj.text;
+        btn.onclick = () => submitQuizAnswer(optObj.isRight, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      renderQuizStatusUI();
+    }
+
+    async function submitQuizAnswer(isCorrect, clickedBtn) {
+      if (quizLocked || !quizSessionRunning) return;
+      quizLocked = true;
+
+      document.querySelectorAll('.ram-quiz-option-btn').forEach(b => { b.disabled = true; });
+      if (clickedBtn) {
+        clickedBtn.style.borderColor = isCorrect ? '#3fb950' : '#f85149';
+      }
+
+      try {
+        const username = localStorage.getItem('username');
+        const res = await fetch('/api/ram/quiz-answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username,
+            isCorrect,
+            questionId: currentQuizQuestion?.id
+          })
+        });
+        const data = await res.json();
+
+        if (typeof data.ram === 'number') {
+          updateRamCounter(data.ram);
+        }
+        quizStreak = data.streak || 0;
+        quizBestStreak = Math.max(quizBestStreak, data.bestStreak || 0);
+        quizQuestionsAnswered = data.questionsAnswered ?? (quizQuestionsAnswered + 1);
+        if (Array.isArray(data.askedQuestionIds)) {
+          quizAskedIds = new Set(data.askedQuestionIds);
+        } else if (currentQuizQuestion?.id) {
+          quizAskedIds.add(currentQuizQuestion.id);
+        }
+
+        quizPenaltyRemainingMs = data.dropPenalty?.remainingMs || 0;
+        quizPenaltyPercent = data.dropPenalty?.reduction || 0;
+        renderQuizStatusUI();
+
+        if (data.correct) {
+          showQuizFeedback('ok', `✅ Bonne réponse ! +${data.reward} RAM gagnés.`);
+          setTimeout(() => {
+            if (!quizSessionRunning) return;
+            quizLocked = false;
+            pickNextQuizQuestion();
+          }, 500);
+        } else {
+          quizSessionRunning = false;
+          showQuizFeedback(
+            'err',
+            '❌ Mauvaise réponse ! Streak perdue et -10% sur les cartes rares pendant 15 minutes.'
+          );
+          setTimeout(() => {
+            document.getElementById('ram-quiz-modal').classList.remove('active');
+            quizLocked = false;
+          }, 1200);
+        }
+      } catch (err) {
+        console.error(err);
+        quizLocked = false;
+        document.querySelectorAll('.ram-quiz-option-btn').forEach(b => { b.disabled = false; });
+      }
+    }
+
+    async function openRamQuizModal() {
+      const username = localStorage.getItem('username');
+      const modal = document.getElementById('ram-quiz-modal');
+      document.getElementById('ram-quiz-feedback').className = 'ram-quiz-feedback';
+      document.getElementById('ram-quiz-feedback').textContent = '';
+
+      quizAskedIds = new Set();
+      quizQuestionsAnswered = 0;
+      quizSessionRunning = true;
+
+      try {
+        const res = await fetch('/api/ram/quiz-start', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (typeof data.ram === 'number') updateRamCounter(data.ram);
+          quizStreak = data.streak || 0;
+          quizBestStreak = data.bestStreak || 0;
+          quizQuestionsAnswered = data.questionsAnswered || 0;
+          quizAskedIds = new Set(data.askedQuestionIds || []);
+          quizPenaltyRemainingMs = data.dropPenalty?.remainingMs || 0;
+          quizPenaltyPercent = data.dropPenalty?.reduction || 0;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      pickNextQuizQuestion();
+      quizLocked = false;
+      modal.classList.add('active');
+    }
+
+    async function quitRamQuizModal() {
+      if (!quizSessionRunning) return;
+      quizSessionRunning = false;
+      const username = localStorage.getItem('username');
+      try {
+        const res = await fetch('/api/ram/quiz-quit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (typeof data.ram === 'number') updateRamCounter(data.ram);
+          quizBestStreak = data.bestStreak || quizBestStreak;
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      document.getElementById('ram-quiz-modal').classList.remove('active');
+    }
+
+    async function triggerAntiCheatPenalty() {
+      if (!isQuizModalOpen()) return;
+      quizSessionRunning = false;
+      quizLocked = true;
+      document.getElementById('ram-quiz-modal').classList.remove('active');
+
+      const username = localStorage.getItem('username');
+      try {
+        const res = await fetch('/api/ram/quiz-cheat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (typeof data.ram === 'number') updateRamCounter(data.ram);
+          quizStreak = 0;
+          quizPenaltyRemainingMs = data.dropPenalty?.remainingMs || (15 * 60 * 1000);
+          quizPenaltyPercent = data.dropPenalty?.reduction || 0.30;
+          renderQuizStatusUI();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      alert('🚨 TRICHE DÉTECTÉE : Tu as quitté le quiz en cours de partie ! Le quiz est arrêté, ta streak est perdue et tu reçois un malus de -30% sur les cartes rares pendant 15 minutes.');
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && isQuizModalOpen()) {
+        triggerAntiCheatPenalty();
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      if (isQuizModalOpen()) {
+        triggerAntiCheatPenalty();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('username-display').textContent = localStorage.getItem('username') || 'Étudiant';
+      const initialRam = localStorage.getItem('ram') || localStorage.getItem('ram') || '60';
+      document.getElementById('ram-display').textContent = initialRam;
+      if (document.getElementById('ram-display')) {
+        document.getElementById('ram-display').textContent = initialRam;
+      }
+
+      calculateOfflineProgress();
+      updateUI();
+      tick();
+      setInterval(tick, 1000);
+
+      setInterval(() => {
+        if (quizPenaltyRemainingMs > 0) {
+          quizPenaltyRemainingMs = Math.max(0, quizPenaltyRemainingMs - 1000);
+          renderQuizStatusUI();
+        }
+      }, 1000);
+
+      document.getElementById('btn-open-ram-quiz').addEventListener('click', openRamQuizModal);
+      document.getElementById('btn-quit-ram-quiz').addEventListener('click', quitRamQuizModal);
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('username');
+        localStorage.removeItem('ram');
+        localStorage.removeItem('ram');
+        window.location.href = 'login.html';
+      });
+
+      document.getElementById('btn-open-one').addEventListener('click', async () => {
+        let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
+        if (count > 0) {
+          try {
+            const response = await fetch('/api/open-stored-booster', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: localStorage.getItem('username') })
+            });
+            const data = await response.json();
+
+            if (data.success) {
+              if (count >= MAX_BOOSTERS) {
+                localStorage.setItem('lastTimestamp', Date.now().toString());
+              }
+              count--;
+              localStorage.setItem('boosterCount', count.toString());
+              updateUI();
+              tick();
+              displayPulledCards(data.cards);
+            } else {
+              alert(data.error);
+            }
+          } catch (e) {
+            console.error(e);
+            alert("Erreur serveur.");
+          }
+        }
+      });
+
+      document.getElementById('btn-open-all').addEventListener('click', async () => {
+        let count = parseInt(localStorage.getItem('boosterCount'), 10) || 0;
+        if (count > 0) {
+          const totalBoostersToOpen = count;
+          let allPulledCards = [];
+
+          try {
+            for (let i = 0; i < totalBoostersToOpen; i++) {
+              const response = await fetch('/api/open-stored-booster', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: localStorage.getItem('username') })
+              });
+              const data = await response.json();
+              if (data.success && data.cards) {
+                allPulledCards = allPulledCards.concat(data.cards);
+              }
+            }
+
+            allPulledCards = sortCardsByRarityAsc(allPulledCards);
+
+            localStorage.setItem('boosterCount', '0');
+            localStorage.setItem('lastTimestamp', Date.now().toString());
+            updateUI();
+            tick();
+
+            const modal = document.getElementById('all-packs-modal');
+            const title = document.getElementById('all-packs-modal-title');
+            const grid = document.getElementById('all-cards-flip-grid');
+
+            title.textContent = `⚡ ${allPulledCards.length} CARTES OBTENUES (${totalBoostersToOpen} BOOSTERS OUVERTS) ⚡`;
+            grid.innerHTML = '';
+            modal.classList.add('active');
+
+            const cardSlots = allPulledCards.map((card) => {
+              const container = document.createElement('div');
+              container.className = 'flip-card-container';
+
+              const inner = document.createElement('div');
+              inner.className = 'flip-card-inner';
+
+              const back = document.createElement('div');
+              back.className = 'flip-card-back';
+              back.innerHTML = `
+                <span class="card-back-header">SYS // L2_INFO</span>
+                <div class="card-back-emblem">
+                  <span>⚡</span>
+                  <strong>L2_TCG</strong>
+                </div>
+                <span class="card-back-footer">ENCRYPTED PACK</span>
+              `;
+
+              const front = document.createElement('div');
+              const blurClass = getBlurHaloClass(card.rarete);
+              front.className = `flip-card-front ${blurClass}`;
+              front.appendChild(createCardElement(card));
+
+              inner.appendChild(back);
+              inner.appendChild(front);
+              container.appendChild(inner);
+              grid.appendChild(container);
+
+              container.addEventListener('click', () => {
+                revealSingleGridCard(container, card);
+              });
+
+              return { container, card };
+            });
+
+            const FLIP_STEP_DELAY_MS = 280;
+            cardSlots.forEach((slot, index) => {
+              setTimeout(() => {
+                revealSingleGridCard(slot.container, slot.card);
+              }, 450 + index * FLIP_STEP_DELAY_MS);
+            });
+
+          } catch (e) {
+            console.error(e);
+            alert("Erreur lors de l'ouverture groupée.");
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
