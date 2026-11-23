@@ -234,13 +234,13 @@
     function pullCardByRarity() {
       const rand = Math.random() * 100 + penaltyPointsShift;
       let targetRarity;
-      if (rand < 0.01) targetRarity = 'Arcanus';
-      else if (rand < 0.09) targetRarity = 'Mythicus';
-      else if (rand < 0.4) targetRarity = 'Legendarius';
-      else if (rand < 1.0) targetRarity = 'Eximius';
-      else if (rand < 3.5) targetRarity = 'Rarus';
-      else if (rand < 15.0) targetRarity = 'Insolitus';
-      else targetRarity = 'Vulgaris';
+      if (rand < 0.01) targetRarity = 'Arcanus'; //0.01%
+      else if (rand < 0.09) targetRarity = 'Mythicus'; //0.08%
+      else if (rand < 0.4) targetRarity = 'Legendarius'; // 0.31%
+      else if (rand < 1.0) targetRarity = 'Eximius'; // 0.6%
+      else if (rand < 3.5) targetRarity = 'Rarus'; // 2.5%
+      else if (rand < 15.0) targetRarity = 'Insolitus'; // 11.5%
+      else targetRarity = 'Vulgaris'; // 85%
 
       let filtered = cardsData.filter(c => c.rarete && c.rarete.toLowerCase() === targetRarity.toLowerCase());
       if (filtered.length === 0) filtered = cardsData;
