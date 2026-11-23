@@ -231,16 +231,19 @@
       }
     }
 
-    function pullCardByRarity() {
-      const rand = Math.random() * 100 + penaltyPointsShift;
-      let targetRarity;
-      if (rand < 0.01) targetRarity = 'Arcanus'; //0.01%
-      else if (rand < 0.09) targetRarity = 'Mythicus'; //0.08%
-      else if (rand < 0.4) targetRarity = 'Legendarius'; // 0.31%
-      else if (rand < 1.0) targetRarity = 'Eximius'; // 0.6%
-      else if (rand < 3.5) targetRarity = 'Rarus'; // 2.5%
-      else if (rand < 15.0) targetRarity = 'Insolitus'; // 11.5%
-      else targetRarity = 'Vulgaris'; // 85%
+    
+function pullCardByRarity() {
+    const rand = Math.random() * 100 + penaltyPointsShift;
+
+    let targetRarity;
+
+    if (rand < 0.01) targetRarity = 'Arcanus';          // 0.01 %
+    else if (rand < 0.26) targetRarity = 'Mythicus';    // 0.25 %
+    else if (rand < 1.01) targetRarity = 'Legendarius'; // 0.75 %
+    else if (rand < 4.51) targetRarity = 'Eximius';     // 3.50 %
+    else if (rand < 15.00) targetRarity = 'Rarus';      // 10.49 %
+    else if (rand < 45.00) targetRarity = 'Insolitus';  // 30.00 %
+    else targetRarity = 'Vulgaris';                     // 55.00 %
 
       let filtered = cardsData.filter(c => c.rarete && c.rarete.toLowerCase() === targetRarity.toLowerCase());
       if (filtered.length === 0) filtered = cardsData;
